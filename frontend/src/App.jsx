@@ -1,35 +1,47 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import './App.css';
+import './components/listoftodo/ListOfTodo'
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import { useState, useEffect } from 'react';
+import ListOfTodo from './components/listoftodo/ListOfTodo';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [auth, setAuth] = useState(false || window.localStorage.getItem('auth')=='true');
+  const [token, setToken] = useState('');
 
+
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((userCred)=>{
+      if(userCred){
+        setAuth(true);
+        window.localStorage.setItem('auth','true');
+        userCred.getIdToken().then((token)=>{
+          setToken(token);
+        });
+      }
+    })
+  }, []);
+
+  const loginWithGoogle = () => {
+    firebase
+      .auth()
+      .signInWithPopup(new firebase.auth.GoogleAuthProvider())
+      .then((userCred) => {
+        if(userCred){
+          setAuth(true);
+          window.localStorage.setItem('auth','true');
+        }
+      });
+  }
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div>
+      {auth ? (
+        <ListOfTodo token={token}/>
+      ) : (
+        <button onClick={loginWithGoogle}>Login With Google</button>
+      )}
+    </div>
   )
 }
 
-export default App
+export default App;
