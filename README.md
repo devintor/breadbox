@@ -2,7 +2,7 @@ In the breadbox/frontend directory, add an env file with contents from the attac
 
 https://docs.google.com/document/d/1EsS4dfMoUuR3vbaHDwiOnuWw5NNoNZQg5JDxmXe9dtc/edit
 
-now run:
+now run (in breadbox/frontend):
 
 npm run dev
 
