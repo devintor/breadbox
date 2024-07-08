@@ -19,6 +19,7 @@ function Register() {
       if (user) {
         await setDoc(doc(db, "Users", user.uid), {
           email: user.email,
+          fullName: fname + " " + lname,
           firstName: fname,
           lastName: lname,
           photo:""

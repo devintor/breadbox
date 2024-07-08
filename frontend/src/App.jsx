@@ -61,7 +61,7 @@ import {
 } from "react-router-dom";
 
 import Login from "./components/Login";
-import SignUp from "./components/Register";
+import EditProfile from "./components/EditProfile";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -87,8 +87,8 @@ function App() {
                 element={user ? <Navigate to="/profile" /> : <Login />}
               />
               <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<SignUp />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/profile/edit" element={<EditProfile />} />
             </Routes>
             <ToastContainer />
           </div>

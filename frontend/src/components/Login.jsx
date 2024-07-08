@@ -1,36 +1,46 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
-import React, { useState } from "react";
-import { auth } from "../config/firebase-config";
-import { toast } from "react-toastify";
-// import GoogleAuth from "./GoogleAuth";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import React, { useState, useEffect } from "react";
+import { auth, db } from "../config/firebase-config";
+import { setDoc, doc } from "firebase/firestore";
+import uscnsbe from '../assets/uscnsbe.png'
+
 
 function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      console.log("User logged in Successfully");
-      window.location.href = "/profile";
-      toast.success("User logged in Successfully", {
-        position: "top-center",
+  useEffect(() => {
+    auth.onAuthStateChanged(async (user) => {
+        if (user){
+          window.location.href = "/profile" // alr logged in --> to profile
+        }
+          console.log(user);
       });
-    } catch (error) {
-      console.log(error.message);
+  }, []);
 
-      toast.error(error.message, {
-        position: "bottom-center",
-      });
-    }
-  };
+  function googleLogin() {
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(auth, provider).then(async (result) => {
+      console.log(result);
+      const user = result.user;
+      if (user) {
+        await setDoc(doc(db, "Users", user.uid), {
+          email: user.email,
+          fullName: user.displayName,
+          firstName: user.displayName.split(" ")[0],
+          lastName: user.displayName.split(" ")[1],
+          photo: user.photoURL
+        });
+        
+        window.location.href = "/profile";
+
+      }
+    });
+  }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <>
       <h3>Login</h3>
 
-      <div className="mb-3">
+      {/* <div className="mb-3">
         <label>Email address</label>
         <input
           type="email"
@@ -59,9 +69,18 @@ function Login() {
       </div>
       <p className="forgot-password text-right">
         New user <a href="/register">Register Here</a>
-      </p>
-      {/* <GoogleAuth/> */}
-    </form>
+      </p> */}
+        <p style={{textAlign: "center"}}>Use your @usc.edu address</p>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+            <img src={uscnsbe} width={"90%"}/>
+        </div>
+        <p className="continue-p">-- continue with --</p>
+        <div className="d-grid">
+        <button className="btn btn-light" onClick={googleLogin}>
+          <img src={"/google.svg"} style={{float: "left", marginRight: "-30px"}}/>Google
+        </button>
+      </div>
+    </>
   );
 }
 
