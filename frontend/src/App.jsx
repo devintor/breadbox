@@ -61,13 +61,12 @@ import {
 } from "react-router-dom";
 
 import Login from "./components/Login";
-import EditProfile from "./components/EditProfile";
 
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
 import Profile from "./components/Profile";
 import { useState } from "react";
 import { auth } from "./config/firebase-config";
+import Register from "./components/Register";
 
 function App() {
   const [user, setUser] = useState();
@@ -86,11 +85,10 @@ function App() {
                 path="/"
                 element={user ? <Navigate to="/profile" /> : <Login />}
               />
-              <Route path="/login" element={<Login />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/profile/edit" element={<EditProfile />} />
+              <Route path="/login" element={user ? <Navigate to="/profile" /> : <Login />} />
+              <Route path="/profile" element={!user ? <Navigate to="/login" /> : <Profile />} />
+              <Route path="/register" element={<Register />}/>
             </Routes>
-            <ToastContainer />
           </div>
         </div>
       </div>

@@ -1,20 +1,43 @@
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import React, { useState, useEffect } from "react";
 import { auth, db } from "../config/firebase-config";
 import { setDoc, doc } from "firebase/firestore";
+import { toast } from "react-toastify";
 import uscnsbe from '../assets/uscnsbe.png'
 
 
 function Login() {
 
-  useEffect(() => {
-    auth.onAuthStateChanged(async (user) => {
-        if (user){
-          window.location.href = "/profile" // alr logged in --> to profile
-        }
-          console.log(user);
-      });
-  }, []);
+//   useEffect(() => {
+//     auth.onAuthStateChanged(async (user) => {
+//         if (user){
+//           window.location.href = "/profile" // alr logged in --> to profile
+//         }
+//           console.log(user);
+//       });
+//   }, []);
+
+const [email, setEmail] = useState("");
+const [password, setPassword] = useState("");
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    console.log("User logged in Successfully");
+    window.location.href = "/profile";
+    toast.success("User logged in Successfully", {
+      position: "top-center",
+    });
+  } catch (error) {
+    console.log(error.message);
+
+    toast.error(error.message, {
+      position: "bottom-center",
+    });
+  }
+};
 
   function googleLogin() {
     const provider = new GoogleAuthProvider();
@@ -29,7 +52,7 @@ function Login() {
           lastName: user.displayName.split(" ")[1],
           photo: user.photoURL
         });
-        
+ 
         window.location.href = "/profile";
 
       }
@@ -40,7 +63,16 @@ function Login() {
     <>
       <h3>Login</h3>
 
-      {/* <div className="mb-3">
+      {/* 
+      <p className="forgot-password text-right">
+        New user <a href="/register">Register Here</a>
+      </p> */}
+        <p style={{textAlign: "center"}}>Use your @usc.edu address</p>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+            <img src={uscnsbe} width={"90%"}/>
+        </div>
+
+        <div className="mb-3">
         <label>Email address</label>
         <input
           type="email"
@@ -63,23 +95,20 @@ function Login() {
       </div>
 
       <div className="d-grid">
-        <button type="submit" className="btn btn-primary">
+        <button className="btn btn-primary" onClick={handleSubmit}>
           Submit
         </button>
       </div>
-      <p className="forgot-password text-right">
-        New user <a href="/register">Register Here</a>
-      </p> */}
-        <p style={{textAlign: "center"}}>Use your @usc.edu address</p>
-        <div style={{ display: "flex", justifyContent: "center" }}>
-            <img src={uscnsbe} width={"90%"}/>
-        </div>
-        <p className="continue-p">-- continue with --</p>
+        <p className="continue-p">&#8212; or continue with &#8212;</p>
+
         <div className="d-grid">
-        <button className="btn btn-light" onClick={googleLogin}>
-          <img src={"/google.svg"} style={{float: "left", marginRight: "-30px"}}/>Google
-        </button>
-      </div>
+            <button className="btn btn-light" onClick={googleLogin}>
+                <img src={"/google.svg"} style={{float: "left", marginRight: "-30px"}}/>Google
+            </button>
+        </div>
+        <p className="forgot-password text-right">
+            New User <a href="/register">Register Here</a>
+        </p>
     </>
   );
 }

@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from "react";
+import { deleteUser } from "firebase/auth";
 import { auth, db } from "../config/firebase-config";
 import { doc, getDoc } from "firebase/firestore";
 
 function EditProfile() {
-  const [userDetails, setUserDetails] = useState(null);
+    const [fname, setFname] = useState("");
+    const [lname, setLname] = useState("");
+    const [major, setMajor] = useState("");
+    const [interests, setInterests] = useState([]);
+  
+    const [userDetails, setUserDetails] = useState(null);
+  
   const fetchUserData = async () => {
     auth.onAuthStateChanged(async (user) => {
       if (!user){
@@ -31,7 +38,6 @@ function EditProfile() {
   const handleSave = async (e) => {
     e.preventDefault();
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
       const user = auth.currentUser;
       console.log(user);
       if (user) {
@@ -40,11 +46,11 @@ function EditProfile() {
           fullName: fname + " " + lname,
           firstName: fname,
           lastName: lname,
-          photo:""
+          major: major
         });
       }
-      console.log("User Registered Successfully!!");
-      toast.success("User Registered Successfully!!", {
+      console.log("User Saved Successfully!!");
+      toast.success("User Saved Successfully!!", {
         position: "top-center",
       });
     } catch (error) {
@@ -57,41 +63,51 @@ function EditProfile() {
 
 
   // replace with handle Delete
-  async function handleLogout() {
-    try {
-      await auth.signOut();
-      window.location.href = "/login";
-      console.log("User logged out successfully!");
-    } catch (error) {
-      console.error("Error logging out:", error.message);
-    }
+  async function handleDelete() {
+    auth.onAuthStateChanged(async (user) => {
+        try {
+            await deleteUser(user);
+            window.location.href = "/login";
+            console.log("User deleted out successfully!");
+        } catch (error) {
+            console.error("Error deleting user:", error.message);
+        }
+    });
   }
 
 
   return (
     <div>
-      {userDetails ? (
-        <>
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <img
-              src={userDetails.photo}
-              width={"40%"}
-              style={{ borderRadius: "50%" }}
-            />
-          </div>
-          <h3>Welcome {userDetails.fullName}</h3>
-          <div>
-            <p>Email: {userDetails.email}</p>
-            <p>First Name: {userDetails.firstName}</p>
-            <p>Last Name: {userDetails.lastName}</p>
-          </div>
-          <button className="btn btn-primary" onClick={handleLogout}>
-            Logout
-          </button>
-        </>
-      ) : (
-        <p>Loading...</p>
-      )}
+        {userDetails ? (
+            <>
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                    <img
+                        src={userDetails.photo}
+                        width={"40%"}
+                        style={{ borderRadius: "50%" }}
+                    />
+                </div>
+                <h3>Welcome {userDetails.fullName}</h3>
+                <div>
+                    <p>Email: {userDetails.email}</p>
+                    <p>First Name: {userDetails.firstName}</p>
+                    <p>Last Name: {userDetails.lastName}</p>
+                </div>
+                <select value={major} onChange={(e) => setMajor(e.target.value)} required>
+                    <option value="">Select a category</option>
+                    {categories.map((category) => (
+                        <option key={category} value={category}>
+                            {category}
+                        </option>
+                    ))}
+                </select>
+                <button className="btn btn-primary" onClick={handleSave}>
+                    Save Changes
+                </button>
+            </>
+        ) : (
+            <p>Loading...</p>
+        )}
     </div>
   );
 }
