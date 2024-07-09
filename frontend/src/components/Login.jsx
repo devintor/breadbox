@@ -9,15 +9,6 @@ import uscnsbe from '../assets/uscnsbe.png'
 
 function Login() {
 
-//   useEffect(() => {
-//     auth.onAuthStateChanged(async (user) => {
-//         if (user){
-//           window.location.href = "/profile" // alr logged in --> to profile
-//         }
-//           console.log(user);
-//       });
-//   }, []);
-
 const [email, setEmail] = useState("");
 const [password, setPassword] = useState("");
 
@@ -25,13 +16,11 @@ const handleSubmit = async (e) => {
   e.preventDefault();
   try {
     await signInWithEmailAndPassword(auth, email, password);
-    console.log("User logged in Successfully");
     window.location.href = "/profile";
     toast.success("User logged in Successfully", {
       position: "top-center",
     });
   } catch (error) {
-    console.log(error.message);
 
     toast.error(error.message, {
       position: "bottom-center",
@@ -42,7 +31,6 @@ const handleSubmit = async (e) => {
   function googleLogin() {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider).then(async (result) => {
-      console.log(result);
       const user = result.user;
       if (user) {
         await setDoc(doc(db, "Users", user.uid), {
@@ -63,10 +51,6 @@ const handleSubmit = async (e) => {
     <>
       <h3>Login</h3>
 
-      {/* 
-      <p className="forgot-password text-right">
-        New user <a href="/register">Register Here</a>
-      </p> */}
         <p style={{textAlign: "center"}}>Use your @usc.edu address</p>
         <div style={{ display: "flex", justifyContent: "center" }}>
             <img src={uscnsbe} width={"90%"}/>

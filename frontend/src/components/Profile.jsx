@@ -37,9 +37,6 @@ function Profile() {
             const docSnap = await getDoc(docRef);
             if (docSnap.exists()) {
                 setUserDetails(docSnap.data());
-                console.log(docSnap.data());
-            } else {
-                console.log("User is not logged in");
             }
         });
 
@@ -53,7 +50,6 @@ function Profile() {
         try {
             await auth.signOut();
             window.location.href = "/login";
-            console.log("User logged out successfully!");
         } catch (error) {
             console.error("Error logging out:", error.message);
         }
@@ -72,7 +68,6 @@ function Profile() {
             deleteDoc(doc(db, "Users", user.uid));
             await deleteUser(user);
             window.location.href = "/login";
-            console.log("User deleted out successfully!");
         } catch (error) {
             console.error("Error deleting user:", error.message);
         }
@@ -82,7 +77,6 @@ function Profile() {
         e.preventDefault();
         try {
           const user = auth.currentUser;
-          console.log(user);
           if (user) {
             await setDoc(doc(db, "Users", user.uid), {
               email: user.email,
@@ -93,9 +87,8 @@ function Profile() {
               major: major
             });
           }
-          console.log("User Saved Successfully!!");
         } catch (error) {
-          console.log(error.message);
+          console.error(error.message);
         }
         handleLeaveEdit();
       };
