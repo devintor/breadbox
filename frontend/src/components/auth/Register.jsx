@@ -1,14 +1,31 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import React, { useState } from "react";
-import { auth, db } from "../config/firebase-config";
-import { setDoc, doc } from "firebase/firestore";
+import React, { useState, useEffect } from "react";
+import { auth, db } from "../../config/firebase-config";
+import { setDoc, getDoc, doc } from "firebase/firestore";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    auth.onAuthStateChanged(async (user) => {
+        if (user){
+            const userRef = doc(db, "Users", user.uid);
+            const userSnap = await getDoc(userRef);
+            if (userSnap.exists()) {
+                console.log("User is already logged in\nNavigating to profile");
+                navigate('/profile');
+            }
+            
+        }
+    });
+}, []);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -47,6 +64,8 @@ function Register() {
   }
 
   return (
+    <div className="auth-wrapper">
+    <div className="auth-inner">
     <form onSubmit={handleRegister}>
       <h3>Sign Up</h3>
 
@@ -106,6 +125,8 @@ function Register() {
         Already Registered? <a href="/login">Login</a>
       </p>
     </form>
+    </div>
+    </div>
   );
 }
 export default Register;
