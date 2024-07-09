@@ -2,7 +2,6 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
 import { auth, db } from "../config/firebase-config";
 import { setDoc, doc } from "firebase/firestore";
-import { toast } from "react-toastify";
 
 function Register() {
   const [email, setEmail] = useState("");
@@ -15,26 +14,28 @@ function Register() {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       const user = auth.currentUser;
-      console.log(user);
       if (user) {
         await setDoc(doc(db, "Users", user.uid), {
           email: user.email,
+          fullName: fname + " " + lname,
           firstName: fname,
           lastName: lname,
-          photo:""
+          photo: "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
         });
       }
-      console.log("User Registered Successfully!!");
-      toast.success("User Registered Successfully!!", {
-        position: "top-center",
-      });
     } catch (error) {
-      console.log(error.message);
-      toast.error(error.message, {
-        position: "bottom-center",
-      });
+      console.error(error.message);
     }
   };
+
+  function toggleVisibility() {
+    var pw = document.getElementById("password");
+    if (pw.type === "password") {
+      pw.type = "text";
+    } else {
+      pw.type = "password";
+    }
+  }
 
   return (
     <form onSubmit={handleRegister}>
@@ -62,11 +63,11 @@ function Register() {
       </div>
 
       <div className="mb-3">
-        <label>Email address</label>
+        <label>Email Address</label>
         <input
           type="email"
           className="form-control"
-          placeholder="Enter email"
+          placeholder="Email Address"
           onChange={(e) => setEmail(e.target.value)}
           required
         />
@@ -74,9 +75,13 @@ function Register() {
 
       <div className="mb-3">
         <label>Password</label>
+        <button type="button" className="btn" data-toggle="button" aria-pressed="false" autoComplete="off" id="eye" onClick={toggleVisibility}>
+            <img src="https://cdn0.iconfinder.com/data/icons/feather/96/eye-16.png" alt="eye" />
+        </button>
         <input
           type="password"
           className="form-control"
+          id="password"
           placeholder="Enter password"
           onChange={(e) => setPassword(e.target.value)}
           required
@@ -89,7 +94,7 @@ function Register() {
         </button>
       </div>
       <p className="forgot-password text-right">
-        Already registered <a href="/login">Login</a>
+        Already Registered? <a href="/login">Login</a>
       </p>
     </form>
   );
