@@ -1,8 +1,8 @@
-In the breadbox/frontend directory, add an env file with contents from the attached document
+In the breadbox/app directory, add an env file with contents from the attached document
 
 https://docs.google.com/document/d/1EsS4dfMoUuR3vbaHDwiOnuWw5NNoNZQg5JDxmXe9dtc/edit
 
-now run (in breadbox/frontend):
+now run (in breadbox/app):
 
 npm run dev
 
