@@ -73,7 +73,13 @@ export function Header({isAuth}) {
             to="#"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
-            Expenses*
+            Requests*
+          </Link>
+          <Link
+            to="#"
+            className="text-muted-foreground transition-colors hover:text-foreground"
+          >
+            Transactions*
           </Link>
           <Link
             to="/events"
@@ -124,7 +130,13 @@ export function Header({isAuth}) {
                 to="#"
                 className="text-muted-foreground hover:text-foreground"
               >
-                Expenses
+                Requests
+              </Link>
+              <Link
+                to="#"
+                className="text-muted-foreground hover:text-foreground"
+              >
+                Transactions
               </Link>
               <Link
                 to="#"
