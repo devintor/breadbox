@@ -27,7 +27,7 @@ import { useState } from "react";
 import { auth } from "./config/firebase-config";
 import { User } from 'firebase/auth';
 
-import { ProfileProvider } from "./components/context/UserContext";
+import { ContextProvider } from "./components/context/UserContext";
 import { AuthPage } from "./pages/authpage/AuthPage";
 import { EventsPage } from "./pages/eventspage/EventsPage";
 import { MembersPage } from "./pages/memberspage/MembersPage";
@@ -35,7 +35,7 @@ import { MembersPage } from "./pages/memberspage/MembersPage";
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
-  const [isAuth, setIsAuth] = useState(false);
+  const [isAuth, setIsAuth] = useState<boolean>(false);
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
@@ -49,7 +49,7 @@ function App() {
   });
   
   return (
-    <ProfileProvider>
+    <ContextProvider>
     <Router>
       <div className="App">
       
@@ -77,7 +77,7 @@ function App() {
       </div>
     </Router>
 
-    </ProfileProvider>
+    </ContextProvider>
   );
 }
 

@@ -39,12 +39,13 @@ import {
   import { Input } from "../../components/ui/input"
 
 
-  import { useUser, useProfile } from "../context/UserContext";
+  import { useUser, useProfile, useIsAuth } from "../context/UserContext";
 import { handleLogout } from "../auth/Profile";
 
 import uscnsbe from "../../assets/uscnsbe.png";
 
-export function Header({isAuth}) {
+export function Header() {
+  const isAuth = useIsAuth();
   const user = useUser();
   const profile = useProfile();
 
@@ -168,34 +169,75 @@ export function Header({isAuth}) {
             </div>
           </form>
           
-          {isAuth && user && profile ? (
-            <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="secondary" size="icon" className="rounded-full">
-                {profile ? (
-                  <img src={profile.photo} style={{ borderRadius: "50%" }}/>
-                ) : (
-                  <CircleUser color="white" className="h-6 w-6" />  
-                ) }
+          {isAuth==null ? (
+            // replace with loading skeleton
+            <Button variant="secondary" size="icon" className="rounded-full">
+              <CircleUser color="white" className="h-6 w-6" />  
                 <span className="sr-only">Toggle user menu</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <Link to="/profile"><DropdownMenuItem>Edit profile</DropdownMenuItem></Link>
-              {/* <Link to="/register"><DropdownMenuItem>Sign up</DropdownMenuItem></Link> */}
-              <DropdownMenuSeparator />
-              <DropdownMenuItem><button onClick={handleLogout}>Logout</button></DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </Button>
           ) : (
-            
-            <Button size="sm" className="rounded-full px-2" onClick={() => {navigate('/auth')}}>
-            <CircleUser className="h-5 w-" />
-            <span style={{marginLeft: "5px", marginRight: "5px"}}>Sign In</span>
-          </Button>
+            // isAuth has loaded, now its either true or false
+            isAuth ? (
+              <DropdownMenu>
+          //   <DropdownMenuTrigger asChild>
+          //     <Button variant="secondary" size="icon" className="rounded-full">
+          //       {profile ? (
+          //         <img src={profile.photo} style={{ borderRadius: "50%" }}/>
+          //       ) : (
+          //         <CircleUser color="white" className="h-6 w-6" />  
+          //       ) }
+          //       <span className="sr-only">Toggle user menu</span>
+          //     </Button>
+          //   </DropdownMenuTrigger>
+          //   <DropdownMenuContent align="end">
+          //     <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          //     <DropdownMenuSeparator />
+          //     <Link to="/profile"><DropdownMenuItem>Edit profile</DropdownMenuItem></Link>
+          //     {/* <Link to="/register"><DropdownMenuItem>Sign up</DropdownMenuItem></Link> */}
+          //     <DropdownMenuSeparator />
+          //     <DropdownMenuItem><button onClick={handleLogout}>Logout</button></DropdownMenuItem>
+          //   </DropdownMenuContent>
+          // </DropdownMenu>
+            ) : (
+
+            )
           )}
+          
+          //   <DropdownMenu>
+          //   <DropdownMenuTrigger asChild>
+          //     <Button variant="secondary" size="icon" className="rounded-full">
+          //       {profile ? (
+          //         <img src={profile.photo} style={{ borderRadius: "50%" }}/>
+          //       ) : (
+          //         <CircleUser color="white" className="h-6 w-6" />  
+          //       ) }
+          //       <span className="sr-only">Toggle user menu</span>
+          //     </Button>
+          //   </DropdownMenuTrigger>
+          //   <DropdownMenuContent align="end">
+          //     <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          //     <DropdownMenuSeparator />
+          //     <Link to="/profile"><DropdownMenuItem>Edit profile</DropdownMenuItem></Link>
+          //     {/* <Link to="/register"><DropdownMenuItem>Sign up</DropdownMenuItem></Link> */}
+          //     <DropdownMenuSeparator />
+          //     <DropdownMenuItem><button onClick={handleLogout}>Logout</button></DropdownMenuItem>
+          //   </DropdownMenuContent>
+          // </DropdownMenu>
+          // )
+          //  : (
+
+          //   //   <Button variant="secondary" size="icon" className="rounded-full">
+          //   //       <CircleUser color="white" className="h-6 w-6" />  
+          //   //     <span className="sr-only">Toggle user menu</span>
+          //   //   </Button>
+          //   // // ) : (
+          //     <Button size="sm" className="rounded-full px-2" onClick={() => {navigate('/auth')}}>
+          //     <CircleUser color="white" className="h-6 w-6" />  
+          //       <span style={{marginLeft: "5px", marginRight: "5px"}}>Sign In</span>
+          //     </Button>
+          //   )
+            
+          // }
           
 
         </div>
