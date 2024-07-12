@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { auth, db } from "../../config/firebase-config";
 import { deleteUser, GoogleAuthProvider, reauthenticateWithPopup } from "firebase/auth";
-import { doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { Header } from "../headers/Header";
@@ -9,7 +9,7 @@ import { Header } from "../headers/Header";
 export default function Profile() {
 
     const [profileLocal, setProfileLocal] = useState<any>();
-
+    console.log(profileLocal);
 
     const majorOptions = 
     [
@@ -58,13 +58,15 @@ export default function Profile() {
                     const docRef = doc(db, "Users", user.uid);
                     const docSnap = await getDoc(docRef);
                     setProfileLocal(docSnap.data());
-                    // console.log(profileLocal);
+                    console.log(docSnap);
                 } catch {
                     
                 }
             }
             
         })
+
+        
         
 
     };
@@ -72,6 +74,8 @@ export default function Profile() {
     useEffect(() => {
         fetchProfileData();
     }, []);
+
+    console.log(profileLocal);
 
     async function handleLogout() {
         try {
@@ -129,13 +133,8 @@ export default function Profile() {
                     position: "bottom-center",
                 });
             }
-            await setDoc(doc(db, "Users", user.uid), {
-              email: profileLocal?.email,
-              photo: profileLocal?.photo,
-              firstName,
-              lastName,
-              fullName: `${firstName} ${lastName}`,
-              major
+            await updateDoc(doc(db, "Users", user.uid), {
+              ...profileLocal,
             });
           }
           console.log("User Saved Successfully!!");
@@ -182,7 +181,7 @@ export default function Profile() {
                                     value={profileLocal?.email}
                                     // placeholder="Last Name"
                                     onChange={(e) => {
-                                        setProfileLocal((prevProfileLocal) => ({
+                                        setProfileLocal((prevProfileLocal: any) => ({
                                             ...prevProfileLocal,
                                             email: e.target.value,
                                         }))}}
@@ -197,9 +196,10 @@ export default function Profile() {
                                     value={profileLocal?.firstName}
                                     // placeholder="First Name"
                                     onChange={(e) => {
-                                        setProfileLocal((prevProfileLocal) => ({
+                                        setProfileLocal((prevProfileLocal: any) => ({
                                             ...prevProfileLocal,
                                             firstName: e.target.value,
+                                            fullName: e.target.value + " " + prevProfileLocal.lastName
                                         }))}}
                                 />
                             </div>
@@ -212,9 +212,10 @@ export default function Profile() {
                                     value={profileLocal?.lastName}
                                     // placeholder="Last Name"
                                     onChange={(e) => {
-                                        setProfileLocal((prevProfileLocal) => ({
+                                        setProfileLocal((prevProfileLocal: any) => ({
                                             ...prevProfileLocal,
                                             lastName: e.target.value,
+                                            fullName: prevProfileLocal.firstName + " " + e.target.value
                                         }))}}
                                 />
                             </div>
@@ -222,7 +223,7 @@ export default function Profile() {
                             <div className="mb-3">
                                 <label>Major</label>
                                 <select value={profileLocal?.major} className="form-control" onChange={(e) => {
-                                    setProfileLocal((prevProfileLocal) => ({
+                                    setProfileLocal((prevProfileLocal: any) => ({
                                         ...prevProfileLocal,
                                         major: e.target.value,
                                     }))}} required>

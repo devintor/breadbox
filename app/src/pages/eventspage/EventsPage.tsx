@@ -1,35 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { auth, db } from "../../config/firebase-config";
-import { deleteUser, GoogleAuthProvider, reauthenticateWithPopup } from "firebase/auth";
-import { doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
 
 import {
     File,
-    Activity,
-    ArrowUpRight,
-    CircleUser,
-    CreditCard,
-    DollarSign,
     ListFilter,
-    Menu,
-    Package2,
-    Search,
-    Users,
     PlusCircle,
     MoreHorizontal,
   } from "lucide-react"
 
-  import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
-  } from "../../components/ui/sheet"
 
   import {
     DropdownMenu,
@@ -43,9 +19,7 @@ import {
 
   import { Button } from "../../components/ui/button"
   import { Badge } from "../../components/ui/badge"
-  import { Input } from "../../components/ui/input"
 import { Header } from "../../components/headers/Header";
-import Profile from "../../components/auth/Profile";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
