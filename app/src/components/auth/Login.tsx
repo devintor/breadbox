@@ -9,7 +9,7 @@ import uscnsbe from '../../assets/uscnsbe.png'
 import { Header } from "../headers/Header";
 
 
-function Login({isAuth}) {
+function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");   
     
@@ -127,7 +127,7 @@ function Login({isAuth}) {
                 </div>
                 
                 <p className="forgot-password text-right">
-                    New User <a href="/register">Register Here</a>
+                    New User <a href="/auth/register">Register Here</a>
                 </p>
 
             </div>

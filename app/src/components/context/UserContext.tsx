@@ -1,7 +1,8 @@
 import { User } from "firebase/auth";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { auth, db } from "../../config/firebase-config";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+
 
 const UserContext = createContext<User | null>(null);
 const ProfileContext = createContext<any>(null);
@@ -33,6 +34,7 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
     })
 
   };
+
 
   useEffect(() => {
       fetchProfileData();

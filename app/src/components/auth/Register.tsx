@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { Header } from "../headers/Header";
 
-function Register({isAuth}) {
+function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fname, setFname] = useState("");
@@ -117,7 +117,7 @@ function Register({isAuth}) {
         </button>
       </div>
       <p className="forgot-password text-right">
-        Already Registered? <a href="/login">Login</a>
+        Already Registered? <a href="/auth/login">Login</a>
       </p>
     </form>
     </div>

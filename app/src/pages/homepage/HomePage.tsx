@@ -42,11 +42,11 @@ import { Header } from "../../components/headers/Header";
 import Profile from "../../components/auth/Profile";
 
 
-export function HomePage({isAuth}) {
+export function HomePage() {
     
     return (
     <div className="flex min-h-screen w-full flex-col">
-      <Header isAuth={isAuth}/>
+      <Header/>
       {/* <Profile /> */}
       <h1>Home</h1>
     </div>

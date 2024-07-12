@@ -1,28 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { auth, db } from "../../config/firebase-config";
-import { deleteUser, GoogleAuthProvider, reauthenticateWithPopup } from "firebase/auth";
-import { doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
-import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 
 import {
-    Activity,
-    ArrowUpRight,
     CircleUser,
-    CreditCard,
-    DollarSign,
     Menu,
     Package2,
     Search,
-    Users,
   } from "lucide-react"
 
   import {
     Sheet,
     SheetContent,
-    SheetDescription,
-    SheetHeader,
-    SheetTitle,
     SheetTrigger,
   } from "../../components/ui/sheet"
 
@@ -51,9 +38,9 @@ export function Header() {
 
   const navigate = useNavigate();
 
-  console.log(user ?? "No user authenticated");
-  console.log(profile ?? "No profile fetched");
-  console.log(`Authorized: ${isAuth}`);
+  // console.log(`User: ${user?.displayName}`);
+  // console.log(`Profile: ${profile?.fullName}`);
+  // console.log(`Authorized: ${isAuth}`);
   return (
     <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
         <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
@@ -179,67 +166,33 @@ export function Header() {
             // isAuth has loaded, now its either true or false
             isAuth ? (
               <DropdownMenu>
-          //   <DropdownMenuTrigger asChild>
-          //     <Button variant="secondary" size="icon" className="rounded-full">
-          //       {profile ? (
-          //         <img src={profile.photo} style={{ borderRadius: "50%" }}/>
-          //       ) : (
-          //         <CircleUser color="white" className="h-6 w-6" />  
-          //       ) }
-          //       <span className="sr-only">Toggle user menu</span>
-          //     </Button>
-          //   </DropdownMenuTrigger>
-          //   <DropdownMenuContent align="end">
-          //     <DropdownMenuLabel>My Account</DropdownMenuLabel>
-          //     <DropdownMenuSeparator />
-          //     <Link to="/profile"><DropdownMenuItem>Edit profile</DropdownMenuItem></Link>
-          //     {/* <Link to="/register"><DropdownMenuItem>Sign up</DropdownMenuItem></Link> */}
-          //     <DropdownMenuSeparator />
-          //     <DropdownMenuItem><button onClick={handleLogout}>Logout</button></DropdownMenuItem>
-          //   </DropdownMenuContent>
-          // </DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="secondary" size="icon" className="rounded-full">
+                    {profile ? (
+                      <img src={profile.photo} style={{ borderRadius: "50%" }}/>
+                    ) : (
+                      <CircleUser color="white" className="h-6 w-6" />  
+                    ) }
+                    <span className="sr-only">Toggle user menu</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <Link to="/profile"><DropdownMenuItem>Edit profile</DropdownMenuItem></Link>
+                  {/* <Link to="/register"><DropdownMenuItem>Sign up</DropdownMenuItem></Link> */}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
-
+              <Button size="sm" className="rounded-full px-2" onClick={() => {navigate('/auth')}}>
+               <CircleUser color="white" className="h-6 w-6" />  
+                 <span style={{marginLeft: "5px", marginRight: "5px"}}>Sign In</span>
+               </Button>
             )
-          )}
-          
-          //   <DropdownMenu>
-          //   <DropdownMenuTrigger asChild>
-          //     <Button variant="secondary" size="icon" className="rounded-full">
-          //       {profile ? (
-          //         <img src={profile.photo} style={{ borderRadius: "50%" }}/>
-          //       ) : (
-          //         <CircleUser color="white" className="h-6 w-6" />  
-          //       ) }
-          //       <span className="sr-only">Toggle user menu</span>
-          //     </Button>
-          //   </DropdownMenuTrigger>
-          //   <DropdownMenuContent align="end">
-          //     <DropdownMenuLabel>My Account</DropdownMenuLabel>
-          //     <DropdownMenuSeparator />
-          //     <Link to="/profile"><DropdownMenuItem>Edit profile</DropdownMenuItem></Link>
-          //     {/* <Link to="/register"><DropdownMenuItem>Sign up</DropdownMenuItem></Link> */}
-          //     <DropdownMenuSeparator />
-          //     <DropdownMenuItem><button onClick={handleLogout}>Logout</button></DropdownMenuItem>
-          //   </DropdownMenuContent>
-          // </DropdownMenu>
-          // )
-          //  : (
-
-          //   //   <Button variant="secondary" size="icon" className="rounded-full">
-          //   //       <CircleUser color="white" className="h-6 w-6" />  
-          //   //     <span className="sr-only">Toggle user menu</span>
-          //   //   </Button>
-          //   // // ) : (
-          //     <Button size="sm" className="rounded-full px-2" onClick={() => {navigate('/auth')}}>
-          //     <CircleUser color="white" className="h-6 w-6" />  
-          //       <span style={{marginLeft: "5px", marginRight: "5px"}}>Sign In</span>
-          //     </Button>
-          //   )
-            
-          // }
-          
-
+          )
+        }
         </div>
       </header>
       

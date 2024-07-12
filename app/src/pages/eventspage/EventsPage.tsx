@@ -51,11 +51,11 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
 
 
-export function EventsPage({isAuth}) {
+export function EventsPage() {
     
     return (
     <div className="flex min-h-screen w-full flex-col">
-      <Header isAuth={isAuth}/>
+      <Header/>
       {/* <Profile /> */}
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
           <Tabs defaultValue="all">
@@ -99,7 +99,7 @@ export function EventsPage({isAuth}) {
                 <Button size="sm" className="h-8 gap-1">
                   <PlusCircle className="h-3.5 w-3.5" />
                   <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                    Add Product
+                    Add Event
                   </span>
                 </Button>
               </div>

@@ -31,6 +31,7 @@ import { ContextProvider } from "./components/context/UserContext";
 import { AuthPage } from "./pages/authpage/AuthPage";
 import { EventsPage } from "./pages/eventspage/EventsPage";
 import { MembersPage } from "./pages/memberspage/MembersPage";
+import { ProfilePage } from "./pages/profilepage/ProfilePage";
 
 
 function App() {
@@ -59,14 +60,17 @@ function App() {
                 path="/"
                 element={user ? <Navigate to="/profile" /> : <Login />}
               /> */}
-              <Route path="/" element={<HomePage isAuth={isAuth}/>} />
+              <Route index element={<HomePage />} />
               
-              <Route path="/home" element={<HomePage isAuth={isAuth}/>} />
-              <Route path="/auth" element={<AuthPage isAuth={isAuth}/>} />
-              <Route path="/events" element={<EventsPage isAuth={isAuth}/>} />
-              <Route path="/members" element={<MembersPage isAuth={isAuth}/>} />
+              <Route path="/home" element={<HomePage />} />
+              <Route path="/auth/*" element={<AuthPage />} />
+              <Route path="/events" element={<EventsPage />} />
+              <Route path="/members" element={<MembersPage/>} />
 
-              <Route path="/profile" element={<Profile isAuth={isAuth}/>} />
+              <Route path="/profile" element={<ProfilePage />} />
+
+              {/* implement this later */}
+              {/* <Route path="*" element={<NoMatch />} /> */}
 
               {/* <Route path="/login" element={<Login isAuth={isAuth}/>} />
               <Route path="/register" element={<Register isAuth={isAuth}/>}/>

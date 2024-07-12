@@ -42,7 +42,7 @@ import { Header } from "../../components/headers/Header";
 import Profile from "../../components/auth/Profile";
 
 
-export function MembersPage({isAuth}) {
+export function MembersPage() {
     const [members, setMembers] = useState<QueryDocumentSnapshot[]>();
 
     const fetchMembers = async () => {
@@ -69,7 +69,7 @@ export function MembersPage({isAuth}) {
 
     return (
     <div className="flex min-h-screen w-full flex-col">
-      <Header isAuth={isAuth}/>
+      <Header/>
       {/* <Profile /> */}
       <h1>Members</h1>
       <ul>

@@ -6,21 +6,10 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { Header } from "../headers/Header";
 
-export default function Profile({isAuth}) {
-    // const [fname, setFname] = useState("");
-    // const [lname, setLname] = useState("");
-    // const [major, setMajor] = useState("");
-    // const [interests, setInterests] = useState([]);
-    const [userDetails, setUserDetails] = useState<{
-        email?: string,
-        photo?: string,
-        firstName?: string,
-        lastName?: string,
-        fullName?: string,
-        major?: string
-    }>();
-    
-    const [isEditing, setIsEditing] = useState(true);
+export default function Profile() {
+
+    const [profileLocal, setProfileLocal] = useState<any>();
+
 
     const majorOptions = 
     [
@@ -59,7 +48,7 @@ export default function Profile({isAuth}) {
     
     const navigate = useNavigate();
     
-    const fetchUserData = async () => {
+    const fetchProfileData = async () => {
         
         auth.onAuthStateChanged(async (user) => {
             if (!user) {
@@ -68,12 +57,8 @@ export default function Profile({isAuth}) {
                 try {
                     const docRef = doc(db, "Users", user.uid);
                     const docSnap = await getDoc(docRef);
-                    console.log(docSnap.data());
-                    setUserDetails((prevUserDetails) => ({
-                        ...prevUserDetails,
-                        ...docSnap.data()
-                    }))
-                    console.log(userDetails);
+                    setProfileLocal(docSnap.data());
+                    // console.log(profileLocal);
                 } catch {
                     
                 }
@@ -85,7 +70,7 @@ export default function Profile({isAuth}) {
     };
     
     useEffect(() => {
-        fetchUserData();
+        fetchProfileData();
     }, []);
 
     async function handleLogout() {
@@ -104,12 +89,6 @@ export default function Profile({isAuth}) {
         }
     }
 
-    async function handleEdit() {
-        setIsEditing(true);
-    }
-    async function handleLeaveEdit() {
-        setIsEditing(false);
-    }
 
     async function handleDelete() {
         const user = auth.currentUser;
@@ -138,14 +117,12 @@ export default function Profile({isAuth}) {
     
     }
 
-    const handleSave = async (e: Event) => {
-        e.preventDefault();
-
+    async function handleEditProfile() {
         try {
           const user = auth.currentUser;
           console.log(user);
           if (user) {
-            const { firstName, lastName, major } = userDetails;
+            const { firstName, lastName, major } = profileLocal;
 
             if (!firstName || !lastName || !major) {
                 return toast.error("All fields are required", {
@@ -153,8 +130,8 @@ export default function Profile({isAuth}) {
                 });
             }
             await setDoc(doc(db, "Users", user.uid), {
-              email: userDetails?.email,
-              photo: userDetails?.photo,
+              email: profileLocal?.email,
+              photo: profileLocal?.photo,
               firstName,
               lastName,
               fullName: `${firstName} ${lastName}`,
@@ -165,38 +142,36 @@ export default function Profile({isAuth}) {
           toast.success("User Saved Successfully!!", {
             position: "top-center",
           });
-        } catch (error) {
+        } catch (error: any) {
           console.log(error.message);
           toast.error(error.message, {
             position: "bottom-center",
           });
         }
-        handleLeaveEdit();
       };
 
     return (
     <>
     <div className="auth-wrapper">
         <div className="auth-inner">
-            {userDetails ? (
+            {profileLocal ? (
                 <>
-                    {isEditing ? (
-                        <>
-                            <button className="btn btn-secondary" style={{position: "absolute"}} onClick={handleLeaveEdit}>
+                    {(console.log(profileLocal))}
+                            <button className="btn btn-secondary" style={{position: "absolute"}} onClick={() => {navigate('/home')}}>
                                 Back
                             </button>
                             <div style={{ display: "flex", justifyContent: "center" }}>
                                 <img
-                                    src={userDetails.photo}
+                                    src={profileLocal.photo}
                                     width={"40%"}
                                     style={{ borderRadius: "50%" }}
                                 />
                             </div>
-                            <h3>Welcome {userDetails.fullName}</h3>
+                            <h3>Welcome {profileLocal?.fullName}</h3>
                             {/* <div>
-                                <p>Email: {userDetails.email}</p>
-                                <p>First Name: {userDetails.firstName}</p>
-                                <p>Last Name: {userDetails.lastName}</p>
+                                <p>Email: {profileLocal.email}</p>
+                                <p>First Name: {profileLocal.firstName}</p>
+                                <p>Last Name: {profileLocal.lastName}</p>
                             </div> */}
 
                             <div className="mb-3">
@@ -204,11 +179,11 @@ export default function Profile({isAuth}) {
                                 <input
                                     type="text"
                                     className="form-control"
-                                    value={userDetails.email}
+                                    value={profileLocal?.email}
                                     // placeholder="Last Name"
                                     onChange={(e) => {
-                                        setUserDetails((prevUserDetails) => ({
-                                            ...prevUserDetails,
+                                        setProfileLocal((prevProfileLocal) => ({
+                                            ...prevProfileLocal,
                                             email: e.target.value,
                                         }))}}
                                 />
@@ -219,11 +194,11 @@ export default function Profile({isAuth}) {
                                 <input
                                     type="text"
                                     className="form-control"
-                                    value={userDetails.firstName}
+                                    value={profileLocal?.firstName}
                                     // placeholder="First Name"
                                     onChange={(e) => {
-                                        setUserDetails((prevUserDetails) => ({
-                                            ...prevUserDetails,
+                                        setProfileLocal((prevProfileLocal) => ({
+                                            ...prevProfileLocal,
                                             firstName: e.target.value,
                                         }))}}
                                 />
@@ -234,11 +209,11 @@ export default function Profile({isAuth}) {
                                 <input
                                     type="text"
                                     className="form-control"
-                                    value={userDetails.lastName}
+                                    value={profileLocal?.lastName}
                                     // placeholder="Last Name"
                                     onChange={(e) => {
-                                        setUserDetails((prevUserDetails) => ({
-                                            ...prevUserDetails,
+                                        setProfileLocal((prevProfileLocal) => ({
+                                            ...prevProfileLocal,
                                             lastName: e.target.value,
                                         }))}}
                                 />
@@ -246,12 +221,12 @@ export default function Profile({isAuth}) {
                             
                             <div className="mb-3">
                                 <label>Major</label>
-                                <select value={userDetails.major} className="form-control" onChange={(e) => {
-                                    setUserDetails((prevUserDetails) => ({
-                                        ...prevUserDetails,
+                                <select value={profileLocal?.major} className="form-control" onChange={(e) => {
+                                    setProfileLocal((prevProfileLocal) => ({
+                                        ...prevProfileLocal,
                                         major: e.target.value,
                                     }))}} required>
-                                    <option value="">{userDetails.major || "Select your major"}</option>
+                                    <option value="">{profileLocal?.major || "Select your major"}</option>
                                     {majorOptions.map((majorOption) => (
                                         <option key={majorOption} value={majorOption}>
                                             {majorOption}
@@ -260,37 +235,16 @@ export default function Profile({isAuth}) {
                                 </select>
                             </div>
                             
-                            <button className="btn btn-primary" onClick={() => handleSave}>
+                            <button className="btn btn-primary" onClick={handleEditProfile}>
                                 Save Changes
+                            </button>
+                            <button className="btn btn-primary" onClick={handleLogout}>
+                                Log Out
                             </button>
                             <button className="btn btn-danger" onClick={handleDelete}>
                                 Delete Account
                             </button>
-                        </>
-                    ) : (
-                        <>
-                            <button className="btn btn-secondary" style={{position: "absolute"}} onClick={handleEdit}>
-                                Edit
-                            </button>
-                            <div style={{ display: "flex", justifyContent: "center" }}>
-                                <img
-                                    src={userDetails.photo}
-                                    width={"40%"}
-                                    style={{ borderRadius: "50%" }}
-                                />
-                            </div>
-                            <h3>Welcome {userDetails.fullName}</h3>
-                            <div>
-                                <p>Email: {userDetails.email}</p>
-                                <p>First Name: {userDetails.firstName}</p>
-                                <p>Last Name: {userDetails.lastName}</p>
-                                <p>Major: {userDetails.major}</p>
-                            </div>
-                            <button className="btn btn-primary" onClick={handleLogout}>
-                                Logout
-                            </button>
-                        </>
-                    )}
+                        
                 </>
                     
             ) : (
