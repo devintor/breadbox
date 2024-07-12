@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { auth, db } from "../../config/firebase-config";
 import { deleteUser, GoogleAuthProvider, reauthenticateWithPopup } from "firebase/auth";
-import { doc, getDoc, setDoc, deleteDoc, collection, getDocs } from "firebase/firestore";
+import { doc, getDoc, setDoc, deleteDoc, collection, getDocs, QueryDocumentSnapshot } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -43,15 +43,15 @@ import Profile from "../../components/auth/Profile";
 
 
 export function MembersPage({isAuth}) {
-    const [members, setMembers] = useState<any>();
+    const [members, setMembers] = useState<QueryDocumentSnapshot[]>();
 
     const fetchMembers = async () => {
         
         try {
             const membersRef = collection(db, "Users");
             const membersSnap = await getDocs(membersRef);
-            console.log(membersSnap);
-            setMembers(membersSnap.docs.map((doc) => doc.data()));
+            setMembers(membersSnap.docs);
+            
             // setMembers(membersSnap);
             // console.log(members);
         } catch (error: any) {
@@ -65,7 +65,7 @@ export function MembersPage({isAuth}) {
         fetchMembers();
     }, []);
 
-    console.log(members);
+
 
     return (
     <div className="flex min-h-screen w-full flex-col">
@@ -73,8 +73,13 @@ export function MembersPage({isAuth}) {
       {/* <Profile /> */}
       <h1>Members</h1>
       <ul>
-        {members && members.map((member) => (
-            <li key={member.id}>{member.name}</li>
+        {members && members.map((member: QueryDocumentSnapshot) => (
+            <li key={member.id}>
+                <p>&emsp;{member.data().fullName}</p>
+                <p>&emsp;&emsp;{member.data().email}</p>
+                <img src={member.data().photo} width={"60px"}/>
+                &emsp;
+            </li>
         ))}
         </ul>
     </div>
