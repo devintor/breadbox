@@ -46,7 +46,6 @@ export function HomePage() {
     
     return (
     <div className="flex min-h-screen w-full flex-col">
-      <Header/>
       {/* <Profile /> */}
       <h1>Home</h1>
     </div>

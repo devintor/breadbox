@@ -84,7 +84,7 @@ export default function Profile() {
             toast.success("User logged out successfully!", {
                 position: "top-center",
               });
-            navigate('/auth');
+            navigate(-1);
         } catch (error: any) {
             console.error("Error logging out:", error.message);
             toast.error(error.message, {
@@ -156,7 +156,7 @@ export default function Profile() {
             {profileLocal ? (
                 <>
                     {(console.log(profileLocal))}
-                            <button className="btn btn-secondary" style={{position: "absolute"}} onClick={() => {navigate('/home')}}>
+                            <button className="btn btn-secondary" style={{position: "absolute"}} onClick={() => {navigate(-1)}}>
                                 Back
                             </button>
                             <div style={{ display: "flex", justifyContent: "center" }}>

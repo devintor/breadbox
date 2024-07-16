@@ -10,7 +10,7 @@ function Events() {
     // const [lname, setLname] = useState("");
     // const [major, setMajor] = useState("");
     // const [interests, setInterests] = useState([]);
-    const [eventDetails, setUserDetails] = useState<{}>();
+    const [userDetails, setUserDetails] = useState<{}>();
     const [isEditing, setIsEditing] = useState(false);
 
     const majorOptions = 
@@ -142,8 +142,8 @@ function Events() {
                 });
             }
             await setDoc(doc(db, "Users", user.uid), {
-              email: userDetails.email,
-              photo: userDetails.photo,
+              email: userDetails?.email,
+              photo: userDetails?.photo,
               firstName,
               lastName,
               fullName: `${firstName} ${lastName}`,
