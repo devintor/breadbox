@@ -240,12 +240,12 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                                 </div>
                                 <div className="grid gap-3">
                                     <Label>Time</Label>
-                                    {/* <DateTimePicker
+                                    <DateTimePicker
                                         ref={ref}
-                                        value={date}
+                                        value={new Date(eventLocal.startTime.seconds * 1000)}
                                         onChange={handleDateChange}
                                         hourCycle={12}
-                                    /> */}
+                                    />
                                 </div>
                             </div>
                         </CardContent>
