@@ -16,7 +16,6 @@ export function AuthPage() {
 
     return (
         <div className="flex min-h-screen w-full flex-col">
-            <Header/>
             <Routes>
                 <Route index element={<Login />} />
                 <Route path="login" element={<Login />} />

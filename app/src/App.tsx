@@ -10,11 +10,7 @@ import {
 // styles for this kit
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 
-import Login from "./components/auth/Login";
-import Profile from "./components/auth/Profile";
-import Register from "./components/auth/Register";
 
-import NewEvent from "./components/events/NewEvent";
 import { Header } from "./components/headers/Header";
 
 // import pages
@@ -30,13 +26,18 @@ import { User } from 'firebase/auth';
 import { ContextProvider } from "./components/context/UserContext";
 import { AuthPage } from "./pages/authpage/AuthPage";
 import { EventsPage } from "./pages/eventspage/EventsPage";
+import { EventsEditPage } from "./pages/eventspage/EventsEditPage";
 import { MembersPage } from "./pages/memberspage/MembersPage";
 import { ProfilePage } from "./pages/profilepage/ProfilePage";
+import { Dashboard } from "./pages/nav-samples/Dashboard";
+import { Settings } from "./pages/nav-samples/Settings";
+import { Transactions } from "./pages/nav-samples/Transactions";
+import { TooltipProvider } from "./components/ui/tooltip";
 
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
-  const [isAuth, setIsAuth] = useState<boolean>(false);
+  const [isAuth, setIsAuth] = useState<boolean>(true);
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
@@ -51,10 +52,11 @@ function App() {
   
   return (
     <ContextProvider>
+      <TooltipProvider>
     <Router>
       <div className="App">
       
-        {/* <Header /> */}
+        <Header />
             <Routes>
               {/* <Route
                 path="/"
@@ -62,15 +64,21 @@ function App() {
               /> */}
               <Route index element={<HomePage />} />
               
+            
+              <Route path="/events" element={isAuth ? <EventsPage /> : <Navigate to='/auth' />} />
+              <Route path="/events/edit" element={isAuth ? <EventsEditPage /> : <Navigate to='/auth' />} />
+              <Route path="/members" element={isAuth ? <MembersPage /> : <Navigate to='/auth' />} />
+
+              <Route path="/profile" element={isAuth ? <ProfilePage /> : <Navigate to='/auth' />} />
+
+              <Route path="/dashboard" element={isAuth ? <Dashboard /> : <Navigate to='/auth' />} />
+              <Route path="/settings" element={isAuth ? <Settings /> : <Navigate to='/auth' />} />
+              <Route path="/transactions" element={isAuth ? <Transactions /> : <Navigate to='/auth' />} />
+   
+              
+              <Route path="*" element={<Navigate to="/home" />} />
               <Route path="/home" element={<HomePage />} />
               <Route path="/auth/*" element={<AuthPage />} />
-              <Route path="/events" element={<EventsPage />} />
-              <Route path="/members" element={<MembersPage/>} />
-
-              <Route path="/profile" element={<ProfilePage />} />
-
-              {/* implement this later */}
-              {/* <Route path="*" element={<NoMatch />} /> */}
 
               {/* <Route path="/login" element={<Login isAuth={isAuth}/>} />
               <Route path="/register" element={<Register isAuth={isAuth}/>}/>
@@ -80,7 +88,7 @@ function App() {
             <ToastContainer/>
       </div>
     </Router>
-
+    </TooltipProvider>
     </ContextProvider>
   );
 }

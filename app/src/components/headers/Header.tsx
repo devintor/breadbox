@@ -30,6 +30,7 @@ import {
 import { handleLogout } from "../auth/Profile";
 
 import uscnsbe from "../../assets/uscnsbe.png";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export function Header() {
   const isAuth = useIsAuth();
@@ -52,10 +53,10 @@ export function Header() {
             <span className="sr-only">Acme Inc</span>
           </Link>
           <Link
-            to="#"
+            to="/dashboard"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
-            Dashboard*
+            Dashboard
           </Link>
           <Link
             to="#"
@@ -64,10 +65,10 @@ export function Header() {
             Requests*
           </Link>
           <Link
-            to="#"
+            to="/transactions"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
-            Transactions*
+            Transactions
           </Link>
           <Link
             to="/events"
@@ -82,10 +83,10 @@ export function Header() {
             Members
           </Link>
           <Link
-            to="#"
+            to="/settings"
             className="text-foreground transition-colors hover:text-foreground"
           >
-            Settings*
+            Settings
           </Link>
         </nav>
         <Sheet>
@@ -102,14 +103,14 @@ export function Header() {
           <SheetContent side="left">
             <nav className="grid gap-6 text-lg font-medium">
               <Link
-                to="#"
+                to="/home"
                 className="flex items-center gap-2 text-lg font-semibold"
               >
-                <Package2 className="h-6 w-6" />
+                <Button variant="ghost" size="icon"><img src={uscnsbe} width="85%"></img></Button>
                 <span className="sr-only">Acme Inc</span>
               </Link>
               <Link
-                to="#"
+                to="/dashboard"
                 className="text-muted-foreground hover:text-foreground"
               >
                 Dashboard
@@ -121,7 +122,7 @@ export function Header() {
                 Requests
               </Link>
               <Link
-                to="#"
+                to="/transactions"
                 className="text-muted-foreground hover:text-foreground"
               >
                 Transactions
@@ -155,7 +156,6 @@ export function Header() {
               />
             </div>
           </form>
-          
           {isAuth==null ? (
             // replace with loading skeleton
             <Button variant="secondary" size="icon" className="rounded-full">
@@ -168,11 +168,15 @@ export function Header() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="secondary" size="icon" className="rounded-full">
-                    {profile ? (
+                    {/* {profile ? (
                       <img src={profile.photo} style={{ borderRadius: "50%" }}/>
                     ) : (
                       <CircleUser color="white" className="h-6 w-6" />  
-                    ) }
+                    ) } */}
+                    <Avatar className="h-full w-full sm:flex">
+                      <AvatarImage src={profile.photo} alt="Avatar" />
+                      <AvatarFallback>{profile.firstName[0] + profile.lastName[0]}</AvatarFallback>
+                    </Avatar>
                     <span className="sr-only">Toggle user menu</span>
                   </Button>
                 </DropdownMenuTrigger>
@@ -195,6 +199,5 @@ export function Header() {
         }
         </div>
       </header>
-      
   )
 }

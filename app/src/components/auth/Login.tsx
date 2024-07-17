@@ -21,9 +21,12 @@ function Login() {
                 const userRef = doc(db, "Users", user.uid);
                 const userSnap = await getDoc(userRef);
                 if (userSnap.exists()) {
-                    console.log("User is already logged in\nNavigating to home");
+                    console.log("User is already logged in\nNavigating home");
                     navigate('/home');
+                } else {
+                    navigate('/profile')
                 }
+
                 
             }
         });

@@ -47,7 +47,6 @@ export function HomePage() {
     
     return (
     <div className="flex min-h-screen w-full flex-col">
-      <Header/>
       {/* <Profile /> */}
       <div className="w-full py-20 lg:py-40">
         <div className="container mx-auto">
