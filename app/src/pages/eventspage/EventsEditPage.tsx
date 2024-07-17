@@ -24,11 +24,12 @@ import { Textarea } from "../../components/ui/textarea"
 import { useNavigate, useParams } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
 import { db } from "../../config/firebase-config"
-import { QueryDocumentSnapshot, collection, doc, getDoc, getDocs, updateDoc } from "firebase/firestore"
+import { QueryDocumentSnapshot, Timestamp, collection, doc, getDoc, getDocs, updateDoc } from "firebase/firestore"
 import { toast } from "react-toastify"
 import { DateTimePicker, DateTimePickerRef } from "../../components/ui/datetimepicker"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../../components/ui/alert-dialog"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../../components/ui/dialog"
+import { getUnixTime } from 'date-fns';
 
   export function EventsEditPage() {
     const { eventB64 } = useParams();
@@ -39,12 +40,6 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
     
     const [eventLocal, setEventLocal] = useState<any>();
 
-    const [date, setDate] = useState<Date | undefined>(undefined);
-    const ref = useRef<DateTimePickerRef>(null);
-    const handleDateChange = (date: Date | undefined) => {
-        setDate(date);
-        console.log(ref); // logs the DateTimePicker component instance
-      };
 
     // console.log(date);
     console.log(eventLocal);
@@ -152,7 +147,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
             {eventLocal ? (
             <div className="mx-auto grid max-w-[59rem] flex-1 auto-rows-max gap-4">
                 <div className="flex items-center gap-4">
-                    <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => navigate(-1)}>
+                    <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => navigate('/admin/events')}>
                         <ChevronLeft className="h-4 w-4" />
                         <span className="sr-only">Back</span>
                     </Button>
@@ -239,11 +234,17 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                                     />
                                 </div>
                                 <div className="grid gap-3">
-                                    <Label>Time</Label>
+                                    <Label>Start Time</Label>
                                     <DateTimePicker
-                                        ref={ref}
                                         value={new Date(eventLocal.startTime.seconds * 1000)}
-                                        onChange={handleDateChange}
+                                        onChange={(date) => {
+                                            const startTime = date && Timestamp.fromDate(date)
+                                            setEventLocal((prevEventLocal: any) => ({
+                                              ...prevEventLocal,
+                                              startTime: startTime,
+                                            }))
+                                            console.log(eventLocal)
+                                          }}
                                         hourCycle={12}
                                     />
                                 </div>
