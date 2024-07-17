@@ -21,34 +21,37 @@ import {
     SelectValue,
 } from "../../components/ui/select"
 import { Textarea } from "../../components/ui/textarea"
-import { useNavigate } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { useNavigate, useParams } from "react-router-dom"
+import { useEffect, useRef, useState } from "react"
 import { db } from "../../config/firebase-config"
-import { QueryDocumentSnapshot, collection, doc, getDocs, updateDoc } from "firebase/firestore"
+import { QueryDocumentSnapshot, Timestamp, collection, doc, getDoc, getDocs, updateDoc } from "firebase/firestore"
 import { toast } from "react-toastify"
-import { DateTimePicker } from "../../components/ui/datetimepicker"
+import { DateTimePicker, DateTimePickerRef, TimePicker } from "../../components/ui/datetimepicker"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../../components/ui/alert-dialog"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../../components/ui/dialog"
+import { getUnixTime } from 'date-fns';
 
   export function EventsEditPage() {
+    const { eventB64 } = useParams();
+    const eventId = window.atob(eventB64 || "");
+    console.log(eventId);
+    
     const navigate = useNavigate();
     
-    const [events, setEvents] = useState<QueryDocumentSnapshot[]>();
     const [eventLocal, setEventLocal] = useState<any>();
 
-    const [date, setDate] = useState<Date | undefined>(undefined);
 
-    console.log(date);
-    // console.log(eventLocal);
+    // console.log(date);
+    console.log(eventLocal);
     
-    const fetchEvents = async () => {
+    const fetchEvent = async () => {
       
       try {
-          const eventsRef = collection(db, "Events");
-          const eventsSnap = await getDocs(eventsRef);
-          setEvents(eventsSnap.docs);
+          const eventRef = doc(db, "Events", eventId);
+          const eventSnap = await getDoc(eventRef);
+          setEventLocal(eventSnap.data());
 
-          console.log(events);
+          console.log(eventLocal);
       } catch (error: any) {
           console.error(error.message);
       }
@@ -60,13 +63,13 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
     
 
     useEffect(() => {
-        fetchEvents();
+        fetchEvent();
     }, []);
 
     async function handleEditEvent() {
         try {
-          if (events) {
-            await updateDoc(doc(db, "Events", events[0].id), {
+          if (eventLocal) {
+            await updateDoc(doc(db, "Events", eventId), {
               ...eventLocal,
             });
           }
@@ -141,14 +144,15 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
+            {eventLocal ? (
             <div className="mx-auto grid max-w-[59rem] flex-1 auto-rows-max gap-4">
                 <div className="flex items-center gap-4">
-                    <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => navigate(-1)}>
+                    <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => navigate('/admin/events')}>
                         <ChevronLeft className="h-4 w-4" />
                         <span className="sr-only">Back</span>
                     </Button>
                     <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-                        Event
+                        {eventLocal.title}
                     </h1>
                     <Badge variant="outline" className="ml-auto sm:ml-0">
                         Upcoming
@@ -177,17 +181,29 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                                             id="title"
                                             type="text"
                                             className="w-full"
-                                            defaultValue="General Body Meeting #"
-                                            onChange={()=>{}}
+                                            defaultValue={eventLocal.title}
+                                            onChange={(e)=>{
+                                                setEventLocal((prevEventLocal: any) => ({
+                                                    ...prevEventLocal,
+                                                    title: e.target.value,
+                                                }))
+                                                console.log(eventLocal)
+                                            }}
                                         />
                                     </div>
                                     <div className="grid gap-3">
                                         <Label htmlFor="description">Description</Label>
                                         <Textarea
                                             id="description"
-                                            defaultValue="description"
+                                            defaultValue={eventLocal.description}
                                             className="min-h-32"
-                                            onChange={()=>{}}
+                                            onChange={(e)=>{
+                                                setEventLocal((prevEventLocal: any) => ({
+                                                    ...prevEventLocal,
+                                                    description: e.target.value,
+                                                }))
+                                                console.log(eventLocal)
+                                            }}
                                         />
                                     </div>
                                 </div>
@@ -197,30 +213,66 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                             <CardHeader>
                                 <CardTitle>Location and Time</CardTitle>
                                 <CardDescription>
-                                Lipsum dolor sit amet, consectetur adipiscing elit
+                                    Lipsum dolor sit amet, consectetur adipiscing elit
                                 </CardDescription>
                             </CardHeader>
-                        <CardContent>
-                            <div className="grid gap-6">
-                                <div className="grid gap-3">
-                                    <Label htmlFor="location">Location</Label>
-                                    <Input
-                                        id="location"
-                                        type="text"
-                                        className="w-full"
-                                        defaultValue="Science Lecture Hall (SLH) 102"
-                                    />
+                            <CardContent>
+                                <div className="grid gap-6">
+                                    <div className="grid gap-3">
+                                        <Label htmlFor="location">Location</Label>
+                                        <Input
+                                            id="location"
+                                            defaultValue={eventLocal.place}
+                                            className="w-full"
+                                            onChange={(e) => {
+                                                setEventLocal((prevEventLocal: any) => ({
+                                                ...prevEventLocal,
+                                                place: e.target.value,
+                                                }));
+                                                console.log(eventLocal);
+                                            }}
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-6">
+                                        <div className="grid gap-3">
+                                            <Label htmlFor="startTime">Start Time</Label>
+                                            <DateTimePicker
+                                                granularity="minute"
+                                                value={new Date(eventLocal.startTime.seconds * 1000)}
+                                                onChange={(date) => {
+                                                const startTime = date && Timestamp.fromDate(date);
+                                                setEventLocal((prevEventLocal: any) => ({
+                                                    ...prevEventLocal,
+                                                    startTime: startTime,
+                                                }));
+                                                console.log(eventLocal);
+                                                }}
+                                                hourCycle={12}
+                                            />
+                                        </div>
+                                        <div className="grid gap-3">
+                                            <Label htmlFor="endTime">End Time</Label>
+                                            <DateTimePicker
+                                                granularity="minute"
+                                                value={new Date(eventLocal.endTime.seconds * 1000)}
+                                                onChange={(date) => {
+                                                const endTime = date && Timestamp.fromDate(date);
+                                                if (endTime && (endTime.seconds <= eventLocal.startTime.seconds)) {
+                                                    console.error("Event end time must be after start time")
+                                                } else {
+                                                    setEventLocal((prevEventLocal: any) => ({
+                                                        ...prevEventLocal,
+                                                        endTime: endTime,
+                                                    }));
+                                                }
+                                                console.log(eventLocal);
+                                                }}
+                                                hourCycle={12}
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="grid gap-3">
-                                    <Label htmlFor="time">Time</Label>
-                                    <DateTimePicker
-                                        value={date}
-                                        onChange={setDate}
-                                        hourCycle={12}
-                                    />
-                                </div>
-                            </div>
-                        </CardContent>
+                            </CardContent>
                         </Card>
                         <Card x-chunk="dashboard-07-chunk-5">
                             <CardHeader>
@@ -238,8 +290,8 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                                         <AlertDialogHeader>
                                             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                                             <AlertDialogDescription>
-                                                This action cannot be undone. This will permanently delete your account
-                                                and remove your data from our servers.
+                                                This action cannot be undone. This will permanently delete this event
+                                                and remove its data from our servers.
                                             </AlertDialogDescription>
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
@@ -260,9 +312,18 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                                 <div className="grid gap-6">
                                     <div className="grid gap-3">
                                         <Label htmlFor="company">Company</Label>
-                                        <Select>
+                                        <Select
+                                            defaultValue={eventLocal.company}
+                                            onValueChange={(value)=>{
+                                                setEventLocal((prevEventLocal: any) => ({
+                                                    ...prevEventLocal,
+                                                    company: value,
+                                                }))
+                                                console.log(eventLocal)
+                                            }}
+                                        >
                                             <SelectTrigger id="company" aria-label="Select company">
-                                                <SelectValue placeholder="Select company" />
+                                                <SelectValue placeholder={eventLocal.company} />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value="Google">Google</SelectItem>
@@ -290,20 +351,29 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                                 <div className="grid gap-6">
                                     <div className="grid gap-3">
                                         <Label htmlFor="food">Food</Label>
-                                        <Select>
+                                        <Select
+                                            defaultValue={eventLocal.food}
+                                            onValueChange={(value)=>{
+                                                setEventLocal((prevEventLocal: any) => ({
+                                                    ...prevEventLocal,
+                                                    food: value,
+                                                }))
+                                                console.log(eventLocal)
+                                            }}
+                                        >
                                             <SelectTrigger id="food" aria-label="Select food">
                                                 <SelectValue placeholder="Select food" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="chick">Chick Fil-A</SelectItem>
-                                                <SelectItem value="chip">Chipotle</SelectItem>
-                                                <SelectItem value="panera">Panera</SelectItem>
-                                                <SelectItem value="mikes">Jersey Mike's</SelectItem>
-                                                <SelectItem value="panda">Panda Express</SelectItem>
-                                                <SelectItem value="canes">Raising Canes</SelectItem>
-                                                <SelectItem value="snacks">Snacks</SelectItem>
-                                                <SelectItem value="other">Other</SelectItem>
-                                                <SelectItem value="none">None</SelectItem>
+                                                <SelectItem value="Chick Fil-A">Chick Fil-A</SelectItem>
+                                                <SelectItem value="Chipotle">Chipotle</SelectItem>
+                                                <SelectItem value="Panera">Panera</SelectItem>
+                                                <SelectItem value="Jersey Mike's">Jersey Mike's</SelectItem>
+                                                <SelectItem value="Panda Express">Panda Express</SelectItem>
+                                                <SelectItem value="Raising Canes">Raising Canes</SelectItem>
+                                                <SelectItem value="Snacks">Snacks</SelectItem>
+                                                <SelectItem value="Other">Other</SelectItem>
+                                                <SelectItem value="None">None</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
@@ -362,6 +432,10 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                     <Button size="sm">Save Product</Button>
                 </div>
             </div>
+            ) : (
+            <></>
+            )}
+            
         </main>
     </div>
     )

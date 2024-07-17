@@ -65,17 +65,15 @@ function App() {
               <Route index element={<HomePage />} />
               
             
-              <Route path="/events" element={isAuth ? <EventsPage /> : <Navigate to='/auth' />} />
-              <Route path="/events/edit" element={isAuth ? <EventsEditPage /> : <Navigate to='/auth' />} />
-              <Route path="/members" element={isAuth ? <MembersPage /> : <Navigate to='/auth' />} />
+              <Route path="/admin/events" element={isAuth ? <EventsPage /> : <Navigate to='/auth' />} />
+              <Route path="/admin/events/:eventB64/edit" element={isAuth ? <EventsEditPage /> : <Navigate to='/auth' />} />
+              <Route path="/admin/members" element={isAuth ? <MembersPage /> : <Navigate to='/auth' />} />
+              <Route path="/admin/dashboard" element={isAuth ? <Dashboard /> : <Navigate to='/auth' />} />
+              <Route path="/admin/transactions" element={isAuth ? <Transactions /> : <Navigate to='/auth' />} />
+              <Route path="/admin/settings" element={isAuth ? <Settings /> : <Navigate to='/auth' />} />
 
               <Route path="/profile" element={isAuth ? <ProfilePage /> : <Navigate to='/auth' />} />
 
-              <Route path="/dashboard" element={isAuth ? <Dashboard /> : <Navigate to='/auth' />} />
-              <Route path="/settings" element={isAuth ? <Settings /> : <Navigate to='/auth' />} />
-              <Route path="/transactions" element={isAuth ? <Transactions /> : <Navigate to='/auth' />} />
-   
-              
               <Route path="*" element={<Navigate to="/home" />} />
               <Route path="/home" element={<HomePage />} />
               <Route path="/auth/*" element={<AuthPage />} />
