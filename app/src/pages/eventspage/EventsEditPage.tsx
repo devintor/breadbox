@@ -40,6 +40,12 @@ import { getUnixTime } from 'date-fns';
     
     const [eventLocal, setEventLocal] = useState<any>();
 
+    const [imageQuery, setImageQuery] = useState<string>();
+
+    const imageOptions = new Map()
+    imageOptions.set("company", ["https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/M%C3%BCnster%2C_LVM%2C_B%C3%BCrogeb%C3%A4ude_--_2013_--_5149-51.jpg/1200px-M%C3%BCnster%2C_LVM%2C_B%C3%BCrogeb%C3%A4ude_--_2013_--_5149-51.jpg"]);
+    imageOptions.set("google", ["https://s39939.pcdn.co/wp-content/uploads/2023/02/iStock-1169427542.jpg"]);
+    imageOptions.set("meta",    ["https://about.fb.com/wp-content/uploads/2021/10/Meta-Planets-img-16x9-1.jpg?w=1200"]);
 
     // console.log(date);
     console.log(eventLocal);
@@ -84,6 +90,17 @@ import { getUnixTime } from 'date-fns';
           });
         }
       };
+
+    function handleImageSearch() {
+        console.log(imageQuery)
+        console.log(imageOptions)
+        if (!imageQuery || !imageOptions.get(imageQuery)) {
+            return ["/placeholder.svg"]
+        } else {
+            return imageOptions.get(imageQuery)
+        }
+        // return ["/placeholder.svg"]
+    }
 
     return (
 
@@ -393,10 +410,10 @@ import { getUnixTime } from 'date-fns';
                                         alt="Product image"
                                         className="aspect-square w-full rounded-md object-cover"
                                         height="300"
-                                        src="/placeholder.svg"
+                                        src={eventLocal.image}
                                         width="300"
                                     />
-                                    <div className="grid grid-cols-3 gap-2">
+                                    {/* <div className="grid grid-cols-3 gap-2">
                                         <button>
                                             <img
                                                 alt="Product image"
@@ -419,7 +436,59 @@ import { getUnixTime } from 'date-fns';
                                             <Upload className="h-4 w-4 text-muted-foreground" />
                                             <span className="sr-only">Upload</span>
                                         </button>
+                                    </div> */}
+                                    <Dialog>
+                                    <DialogTrigger>
+                                        <Button variant="secondary">Edit Image</Button>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>Image Options</DialogTitle>
+                                            <DialogDescription>
+                                                
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <Label htmlFor="image-query">Image Query</Label>
+                                        <Input
+                                            id="image-query"
+                                            type="text"
+                                            className="w-full"
+                                            placeholder={eventLocal.company}
+                                            onChange={(e)=>{
+                                                setImageQuery(e.target.value)
+                                                console.log(imageQuery)
+                                            }}
+                                        />
+                                        <div className="grid grid-cols-3 gap-2">
+                                    
+                                            <img
+                                                alt="Product image"
+                                                className="aspect-square w-full rounded-md object-cover"
+                                                height="84"
+                                                src={handleImageSearch()[0] || '/placeholder.svg'}
+                                                width="84"
+                                            />
+                                    
+                                            <img
+                                                alt="Product image"
+                                                className="aspect-square w-full rounded-md object-cover"
+                                                height="84"
+                                                src="/placeholder.svg"
+                                                width="84"
+                                            />
+                                        
+                                            <Upload className="h-4 w-4 text-muted-foreground" />
+                                            <span className="sr-only">Upload</span>
+    
                                     </div>
+
+
+                                        <DialogFooter>
+                                            <DialogClose>Cancel</DialogClose>
+                                            <Button>Save</Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
                                 </div>
                             </CardContent>
                         </Card>
