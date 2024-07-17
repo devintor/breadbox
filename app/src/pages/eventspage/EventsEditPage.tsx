@@ -444,66 +444,49 @@ import { getUnixTime } from 'date-fns';
                                         </button>
                                     </div> */}
                                     <Dialog>
-                                    <DialogTrigger>
-                                        <Button variant="secondary">Edit Image</Button>
-                                    </DialogTrigger>
-                                    <DialogContent>
-                                        <DialogHeader>
-                                            <DialogTitle>Image Options</DialogTitle>
-                                            <DialogDescription>
-                                                
-                                            </DialogDescription>
-                                        </DialogHeader>
-                                        <Label htmlFor="image-query">Image Query</Label>
-                                        <Input
-                                            id="image-query"
-                                            type="text"
-                                            className="w-full"
-                                            placeholder={eventLocal.company}
-                                            onChange={(e)=>{
-                                                setImageQuery(e.target.value)
-                                                console.log(imageQuery)
-                                            }}
-                                        />
-                                        <div className="grid auto-rows-max items-start gap-2 grid-cols-2 lg:gap-4">
-                                            {handleImageSearch().map((image:string) => (
-                                            <button>
-                                                <img
-                                                    alt="Product image"
-                                                    className="rounded-md object-cover"
-                                                    height="100%"
-                                                    src={image || '/placeholder.svg'}
-                                                    // width="100%"
-                                                />
-                                            </button>
-                                            ))}
-                                            {/* <img
-                                                alt="Product image"
-                                                className="aspect-square w-full rounded-md object-cover"
-                                                height="84"
-                                                src={handleImageSearch()[0] || '/placeholder.svg'}
-                                                width="84"
+                                        <DialogTrigger asChild>
+                                            <Button variant="outline">Edit Image</Button>
+                                        </DialogTrigger>
+                                        <DialogContent>
+                                            <DialogHeader>
+                                                <DialogTitle>Image Options</DialogTitle>
+                                            </DialogHeader>
+                                            
+                                            <Label htmlFor="image-query">Image Query</Label>
+                                            <Input
+                                                id="image-query"
+                                                type="text"
+                                                className="w-full"
+                                                placeholder={eventLocal.company}
+                                                onChange={(e)=>{
+                                                    setImageQuery(e.target.value)
+                                                    console.log(imageQuery)
+                                                }}
                                             />
-                                    
-                                            <img
-                                                alt="Product image"
-                                                className="aspect-square w-full rounded-md object-cover"
-                                                height="84"
-                                                src="/placeholder.svg"
-                                                width="84"
-                                            /> */}
-                                        
-                                            <Upload className="h-4 w-4 text-muted-foreground" />
-                                            <span className="sr-only">Upload</span>
-    
-                                    </div>
+                                            <div className="grid auto-rows-max items-start gap-2 grid-cols-2 lg:gap-4">
+                                                {handleImageSearch().map((image:string) => (
+                                                <button>
+                                                    <img
+                                                        alt="Product image"
+                                                        className="rounded-md object-cover"
+                                                        height="100%"
+                                                        src={image || '/placeholder.svg'}
+                                                        // width="100%"
+                                                    />
+                                                </button>
+                                                ))}
+
+                                            
+                                                <Upload className="h-4 w-4 text-muted-foreground" />
+                                                <span className="sr-only">Upload</span>
+        
+                                            </div>
 
 
                                         <DialogFooter>
-                                            <DialogClose>Cancel</DialogClose>
-                                            <Button>Save</Button>
+                                            <Button type="submit">Save</Button>
                                         </DialogFooter>
-                                    </DialogContent>
+                                    </DialogContent>    
                                 </Dialog>
                                 </div>
                             </CardContent>
