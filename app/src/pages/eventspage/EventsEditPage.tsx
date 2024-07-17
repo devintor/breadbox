@@ -26,7 +26,7 @@ import { useEffect, useRef, useState } from "react"
 import { db } from "../../config/firebase-config"
 import { QueryDocumentSnapshot, Timestamp, collection, doc, getDoc, getDocs, updateDoc } from "firebase/firestore"
 import { toast } from "react-toastify"
-import { DateTimePicker, DateTimePickerRef } from "../../components/ui/datetimepicker"
+import { DateTimePicker, DateTimePickerRef, TimePicker } from "../../components/ui/datetimepicker"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../../components/ui/alert-dialog"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../../components/ui/dialog"
 import { getUnixTime } from 'date-fns';
@@ -213,43 +213,66 @@ import { getUnixTime } from 'date-fns';
                             <CardHeader>
                                 <CardTitle>Location and Time</CardTitle>
                                 <CardDescription>
-                                Lipsum dolor sit amet, consectetur adipiscing elit
+                                    Lipsum dolor sit amet, consectetur adipiscing elit
                                 </CardDescription>
                             </CardHeader>
-                        <CardContent>
-                            <div className="grid gap-6">
-                                <div className="grid gap-3">
-                                    <Label htmlFor="location">Location</Label>
-                                    <Input
-                                        id="location"
-                                        defaultValue={eventLocal.place}
-                                        className="w-full"
-                                        onChange={(e)=>{
-                                            setEventLocal((prevEventLocal: any) => ({
+                            <CardContent>
+                                <div className="grid gap-6">
+                                    <div className="grid gap-3">
+                                        <Label htmlFor="location">Location</Label>
+                                        <Input
+                                            id="location"
+                                            defaultValue={eventLocal.place}
+                                            className="w-full"
+                                            onChange={(e) => {
+                                                setEventLocal((prevEventLocal: any) => ({
                                                 ...prevEventLocal,
                                                 place: e.target.value,
-                                            }))
-                                            console.log(eventLocal)
-                                        }}
-                                    />
+                                                }));
+                                                console.log(eventLocal);
+                                            }}
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-6">
+                                        <div className="grid gap-3">
+                                            <Label htmlFor="startTime">Start Time</Label>
+                                            <DateTimePicker
+                                                granularity="minute"
+                                                value={new Date(eventLocal.startTime.seconds * 1000)}
+                                                onChange={(date) => {
+                                                const startTime = date && Timestamp.fromDate(date);
+                                                setEventLocal((prevEventLocal: any) => ({
+                                                    ...prevEventLocal,
+                                                    startTime: startTime,
+                                                }));
+                                                console.log(eventLocal);
+                                                }}
+                                                hourCycle={12}
+                                            />
+                                        </div>
+                                        <div className="grid gap-3">
+                                            <Label htmlFor="endTime">End Time</Label>
+                                            <DateTimePicker
+                                                granularity="minute"
+                                                value={new Date(eventLocal.endTime.seconds * 1000)}
+                                                onChange={(date) => {
+                                                const endTime = date && Timestamp.fromDate(date);
+                                                if (endTime && (endTime.seconds <= eventLocal.startTime.seconds)) {
+                                                    console.error("Event end time must be after start time")
+                                                } else {
+                                                    setEventLocal((prevEventLocal: any) => ({
+                                                        ...prevEventLocal,
+                                                        endTime: endTime,
+                                                    }));
+                                                }
+                                                console.log(eventLocal);
+                                                }}
+                                                hourCycle={12}
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="grid gap-3">
-                                    <Label>Start Time</Label>
-                                    <DateTimePicker
-                                        value={new Date(eventLocal.startTime.seconds * 1000)}
-                                        onChange={(date) => {
-                                            const startTime = date && Timestamp.fromDate(date)
-                                            setEventLocal((prevEventLocal: any) => ({
-                                              ...prevEventLocal,
-                                              startTime: startTime,
-                                            }))
-                                            console.log(eventLocal)
-                                          }}
-                                        hourCycle={12}
-                                    />
-                                </div>
-                            </div>
-                        </CardContent>
+                            </CardContent>
                         </Card>
                         <Card x-chunk="dashboard-07-chunk-5">
                             <CardHeader>
