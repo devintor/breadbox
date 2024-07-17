@@ -23,13 +23,68 @@ import { Header } from "../../components/headers/Header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
+import { useEffect, useState } from "react";
+import { QueryDocumentSnapshot, collection, getDocs } from "firebase/firestore";
+import { db } from "../../config/firebase-config";
+import { useNavigate } from "react-router-dom";
 
 
 export function EventsPage() {
-    
+  const navigate = useNavigate();
+  
+  const [events, setEvents] = useState<QueryDocumentSnapshot[]>();
+
+  const fetchEvents = async () => {
+      
+      try {
+          const eventsRef = collection(db, "Events");
+          const eventsSnap = await getDocs(eventsRef);
+          setEvents(eventsSnap.docs);
+
+          console.log(events);
+      } catch (error: any) {
+          console.error(error.message);
+      }
+      
+  };
+  
+  useEffect(() => {
+      fetchEvents();
+  }, []);
+
+  // return (
+  //   <div className="flex min-h-screen w-full flex-col">
+  //     <Header/>
+  //     {/* <h1>Events</h1>
+  //     <ul>
+  //       {events && events.map((event: QueryDocumentSnapshot) => (
+  //           <li key={event.id}>
+  //               <p>&emsp;{event.data().title}</p>
+  //               <p>&emsp;&emsp;{event.data().place}</p>
+  //               <p>&emsp;&emsp;{event.data().food}</p>
+  //               <p>&emsp;&emsp;{event.data().startTime}</p>
+  //               <img src={event.data().photo} width={"60px"}/>
+  //               &emsp;
+  //           </li>
+  //       ))}
+  //       </ul> */}
+  //       {events?.map((event) => (
+  //         <div key={event.id}>
+  //           <h2>{event.data().title}</h2>
+  //           <p>{event.data().place}</p>
+  //           <p>{event.data().food}</p>
+  //           <p>{event.data().company}</p>
+  //           <p>{event.data().ratings}</p>
+  //           <img src={event.data().image} width={"300px"}/>
+            
+  //           {/* <p>Event Date: {event.data().startTime.toDate().toLocaleString()}</p> */}
+  //         </div>
+  //       ))}
+  //   </div>
+  // )
+  
     return (
     <div className="flex min-h-screen w-full flex-col">
-      <Header/>
       {/* <Profile /> */}
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
           <Tabs defaultValue="all">
@@ -70,7 +125,7 @@ export function EventsPage() {
                     Export
                   </span>
                 </Button>
-                <Button size="sm" className="h-8 gap-1">
+                <Button size="sm" className="h-8 gap-1" onClick={() => navigate("/events/edit")}>
                   <PlusCircle className="h-3.5 w-3.5" />
                   <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                     Add Event
@@ -99,43 +154,63 @@ export function EventsPage() {
                     <TableHead className="hidden md:table-cell">Company Sponsors</TableHead>
                     <TableHead className="hidden md:table-cell">RSVPs</TableHead>
                     <TableHead className="hidden md:table-cell">Attendees</TableHead>
-                    <TableHead className="hidden md:table-cell">Timestamp</TableHead>
+                    <TableHead className="hidden md:table-cell">Date</TableHead>
+                    <TableHead className="hidden md:table-cell">Location</TableHead>
                       <TableHead>
                         <span className="sr-only">Actions</span>
                       </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    <TableRow>
+                    
+
+                  {events?.map((event) => (
+                    <TableRow key={event.id}>
                       <TableCell className="hidden sm:table-cell">
-                        <img
-                          alt="Event image"
-                          className="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/placeholder.svg"
-                          width="64"
-                        />
+                        {event.data().image ? (
+                          <img
+                            alt="Event image"
+                            className="aspect-square rounded-md object-cover"
+                            height="64"
+                            src={event.data().image}
+                            width="64"
+                          />
+                        ) : (
+                          <img
+                            alt="Event image"
+                            className="aspect-square rounded-md object-cover"
+                            height="64"
+                            src='/placeholder.svg'
+                            width="64"
+                          />
+                        )
+                        }
                       </TableCell>
                       <TableCell className="font-medium">
-                        General Body Meeting (GBM)
+                        {event.id}
                       </TableCell>
                       <TableCell>
                           <Badge variant="outline">Upcoming</Badge>
                         </TableCell>
                     <TableCell className="hidden md:table-cell">
-                        Chick-fil-A
+                      {event.data().food || "None"}
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
-                        Company A, Company B
+                      {event.data().company}
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
-                        50
+                      {event.data().usersRegistered ? event.data().usersRegistered.length : "None"}
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
-                        20
+                      {event.data().usersAttended ? event.data().usersAttended.length : "None"}
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
-                        Monday, 7pm
+                      {event.data().startTime.seconds ? new Date(event.data().startTime.seconds * 1000).toLocaleDateString('en-US') : "TBD"}
+                      <br></br>
+                      {event.data().startTime.seconds ? new Date(event.data().startTime.seconds * 1000).toLocaleTimeString('en-US', { hour12: true, second: undefined }) : "TBD"}
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell">
+                      {event.data().place || "TBD"}
                       </TableCell>
                       <TableCell>
                         <DropdownMenu>
@@ -157,108 +232,8 @@ export function EventsPage() {
                         </DropdownMenu>
                       </TableCell>
                     </TableRow>
-                    <TableRow>
-                      <TableCell className="hidden sm:table-cell">
-                        <img
-                          alt="Event image"
-                          className="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/placeholder.svg"
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        Social Event
-                      </TableCell>
-                      <TableCell>
-                          <Badge variant="outline">Upcoming</Badge>
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                        Chipotle
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        Company C, Company D
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        30
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        15
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        Friday, 5pm
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="hidden sm:table-cell">
-                        <img
-                          alt="Event image"
-                          className="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/placeholder.svg"
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        Charity Event
-                      </TableCell>
-                      <TableCell>
-                          <Badge variant="outline">Upcoming</Badge>
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                        None
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        Company E, Company F
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        20
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        10
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        Saturday, 2pm
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
+                  ))}
+
                   </TableBody>
                 </Table>
               </CardContent>

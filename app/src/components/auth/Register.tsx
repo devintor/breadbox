@@ -39,10 +39,9 @@ function Register() {
           fullName: fname + " " + lname,
           firstName: fname,
           lastName: lname,
-          photo: "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error.message);
     }
   };

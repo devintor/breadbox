@@ -11,12 +11,11 @@ export function ProfilePage() {
     const isAuth = useIsAuth();
     
     if (isAuth==false) {
-        navigate("/auth");
+        navigate('/auth');
     }
 
     return (
     <div className="flex min-h-screen w-full flex-col">
-      <Header/>
         <Profile />
     </div>
     )

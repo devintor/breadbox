@@ -52,8 +52,7 @@ export function MembersPage() {
             const membersSnap = await getDocs(membersRef);
             setMembers(membersSnap.docs);
             
-            // setMembers(membersSnap);
-            // console.log(members);
+            console.log(members);
         } catch (error: any) {
             console.error(error.message);
         }
@@ -69,15 +68,13 @@ export function MembersPage() {
 
     return (
     <div className="flex min-h-screen w-full flex-col">
-      <Header/>
-      {/* <Profile /> */}
       <h1>Members</h1>
       <ul>
         {members && members.map((member: QueryDocumentSnapshot) => (
             <li key={member.id}>
                 <p>&emsp;{member.data().fullName}</p>
                 <p>&emsp;&emsp;{member.data().email}</p>
-                <img src={member.data().photo} width={"60px"}/>
+                <img src={member.data().photo || "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"} width={"60px"}/>
                 &emsp;
             </li>
         ))}
