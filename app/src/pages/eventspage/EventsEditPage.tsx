@@ -44,7 +44,13 @@ import { getUnixTime } from 'date-fns';
 
     const imageOptions = new Map()
     imageOptions.set("company", ["https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/M%C3%BCnster%2C_LVM%2C_B%C3%BCrogeb%C3%A4ude_--_2013_--_5149-51.jpg/1200px-M%C3%BCnster%2C_LVM%2C_B%C3%BCrogeb%C3%A4ude_--_2013_--_5149-51.jpg"]);
-    imageOptions.set("google", ["https://s39939.pcdn.co/wp-content/uploads/2023/02/iStock-1169427542.jpg"]);
+    imageOptions.set("google", ["https://s39939.pcdn.co/wp-content/uploads/2023/02/iStock-1169427542.jpg",
+                                "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/PxG_GVE_Blog_Header-bike_1.width-1300.png",
+                                "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Googleplex_HQ_%28cropped%29.jpg/1200px-Googleplex_HQ_%28cropped%29.jpg",
+                                "https://s39939.pcdn.co/wp-content/uploads/2023/02/iStock-1169427542.jpg",
+                                "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/PxG_GVE_Blog_Header-bike_1.width-1300.png",
+                                "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Googleplex_HQ_%28cropped%29.jpg/1200px-Googleplex_HQ_%28cropped%29.jpg"
+                                ]);
     imageOptions.set("meta",    ["https://about.fb.com/wp-content/uploads/2021/10/Meta-Planets-img-16x9-1.jpg?w=1200"]);
 
     // console.log(date);
@@ -459,9 +465,19 @@ import { getUnixTime } from 'date-fns';
                                                 console.log(imageQuery)
                                             }}
                                         />
-                                        <div className="grid grid-cols-3 gap-2">
-                                    
-                                            <img
+                                        <div className="grid auto-rows-max items-start gap-2 grid-cols-2 lg:gap-4">
+                                            {handleImageSearch().map((image:string) => (
+                                            <button>
+                                                <img
+                                                    alt="Product image"
+                                                    className="rounded-md object-cover"
+                                                    height="100%"
+                                                    src={image || '/placeholder.svg'}
+                                                    // width="100%"
+                                                />
+                                            </button>
+                                            ))}
+                                            {/* <img
                                                 alt="Product image"
                                                 className="aspect-square w-full rounded-md object-cover"
                                                 height="84"
@@ -475,7 +491,7 @@ import { getUnixTime } from 'date-fns';
                                                 height="84"
                                                 src="/placeholder.svg"
                                                 width="84"
-                                            />
+                                            /> */}
                                         
                                             <Upload className="h-4 w-4 text-muted-foreground" />
                                             <span className="sr-only">Upload</span>
