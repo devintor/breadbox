@@ -46,7 +46,6 @@ export function EventsPage() {
           console.error(error.message);
       }
       
-
   };
   
   useEffect(() => {
