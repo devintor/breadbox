@@ -83,59 +83,6 @@ export function EventsPage() {
   //   </div>
   // )
   
-  const navigate = useNavigate();
-  
-  const [events, setEvents] = useState<QueryDocumentSnapshot[]>();
-
-  const fetchEvents = async () => {
-      
-      try {
-          const eventsRef = collection(db, "Events");
-          const eventsSnap = await getDocs(eventsRef);
-          setEvents(eventsSnap.docs);
-
-          console.log(events);
-      } catch (error: any) {
-          console.error(error.message);
-      }
-      
-  };
-  
-  useEffect(() => {
-      fetchEvents();
-  }, []);
-
-  // return (
-  //   <div className="flex min-h-screen w-full flex-col">
-  //     <Header/>
-  //     {/* <h1>Events</h1>
-  //     <ul>
-  //       {events && events.map((event: QueryDocumentSnapshot) => (
-  //           <li key={event.id}>
-  //               <p>&emsp;{event.data().title}</p>
-  //               <p>&emsp;&emsp;{event.data().place}</p>
-  //               <p>&emsp;&emsp;{event.data().food}</p>
-  //               <p>&emsp;&emsp;{event.data().startTime}</p>
-  //               <img src={event.data().photo} width={"60px"}/>
-  //               &emsp;
-  //           </li>
-  //       ))}
-  //       </ul> */}
-  //       {events?.map((event) => (
-  //         <div key={event.id}>
-  //           <h2>{event.data().title}</h2>
-  //           <p>{event.data().place}</p>
-  //           <p>{event.data().food}</p>
-  //           <p>{event.data().company}</p>
-  //           <p>{event.data().ratings}</p>
-  //           <img src={event.data().image} width={"300px"}/>
-            
-  //           {/* <p>Event Date: {event.data().startTime.toDate().toLocaleString()}</p> */}
-  //         </div>
-  //       ))}
-  //   </div>
-  // )
-  
     return (
     <div className="flex min-h-screen w-full flex-col">
       {/* <Profile /> */}
