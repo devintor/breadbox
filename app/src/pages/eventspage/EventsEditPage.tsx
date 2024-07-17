@@ -22,11 +22,11 @@ import {
 } from "../../components/ui/select"
 import { Textarea } from "../../components/ui/textarea"
 import { useNavigate, useParams } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { db } from "../../config/firebase-config"
 import { QueryDocumentSnapshot, collection, doc, getDoc, getDocs, updateDoc } from "firebase/firestore"
 import { toast } from "react-toastify"
-import { DateTimePicker } from "../../components/ui/datetimepicker"
+import { DateTimePicker, DateTimePickerRef } from "../../components/ui/datetimepicker"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../../components/ui/alert-dialog"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../../components/ui/dialog"
 
@@ -40,6 +40,11 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
     const [eventLocal, setEventLocal] = useState<any>();
 
     const [date, setDate] = useState<Date | undefined>(undefined);
+    const ref = useRef<DateTimePickerRef>(null);
+    const handleDateChange = (date: Date | undefined) => {
+        setDate(date);
+        console.log(ref); // logs the DateTimePicker component instance
+      };
 
     // console.log(date);
     console.log(eventLocal);
@@ -222,21 +227,25 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                                     <Label htmlFor="location">Location</Label>
                                     <Input
                                         id="location"
-                                        type="text"
+                                        defaultValue={eventLocal.place}
                                         className="w-full"
-                                        defaultValue="Science Lecture Hall (SLH) 102"
+                                        onChange={(e)=>{
+                                            setEventLocal((prevEventLocal: any) => ({
+                                                ...prevEventLocal,
+                                                place: e.target.value,
+                                            }))
+                                            console.log(eventLocal)
+                                        }}
                                     />
                                 </div>
                                 <div className="grid gap-3">
-                                    <Label htmlFor="time">Time</Label>
-                                    <DateTimePicker
+                                    <Label>Time</Label>
+                                    {/* <DateTimePicker
+                                        ref={ref}
                                         value={date}
-                                        onChange={(e) => {
-                                            setDate
-                                            console.log(date)
-                                        }}
+                                        onChange={handleDateChange}
                                         hourCycle={12}
-                                    />
+                                    /> */}
                                 </div>
                             </div>
                         </CardContent>
@@ -257,8 +266,8 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                                         <AlertDialogHeader>
                                             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                                             <AlertDialogDescription>
-                                                This action cannot be undone. This will permanently delete your account
-                                                and remove your data from our servers.
+                                                This action cannot be undone. This will permanently delete this event
+                                                and remove its data from our servers.
                                             </AlertDialogDescription>
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
@@ -279,9 +288,18 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                                 <div className="grid gap-6">
                                     <div className="grid gap-3">
                                         <Label htmlFor="company">Company</Label>
-                                        <Select>
+                                        <Select
+                                            defaultValue={eventLocal.company}
+                                            onValueChange={(value)=>{
+                                                setEventLocal((prevEventLocal: any) => ({
+                                                    ...prevEventLocal,
+                                                    company: value,
+                                                }))
+                                                console.log(eventLocal)
+                                            }}
+                                        >
                                             <SelectTrigger id="company" aria-label="Select company">
-                                                <SelectValue placeholder="Select company" />
+                                                <SelectValue placeholder={eventLocal.company} />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value="Google">Google</SelectItem>
@@ -309,20 +327,29 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                                 <div className="grid gap-6">
                                     <div className="grid gap-3">
                                         <Label htmlFor="food">Food</Label>
-                                        <Select>
+                                        <Select
+                                            defaultValue={eventLocal.food}
+                                            onValueChange={(value)=>{
+                                                setEventLocal((prevEventLocal: any) => ({
+                                                    ...prevEventLocal,
+                                                    food: value,
+                                                }))
+                                                console.log(eventLocal)
+                                            }}
+                                        >
                                             <SelectTrigger id="food" aria-label="Select food">
                                                 <SelectValue placeholder="Select food" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="chick">Chick Fil-A</SelectItem>
-                                                <SelectItem value="chip">Chipotle</SelectItem>
-                                                <SelectItem value="panera">Panera</SelectItem>
-                                                <SelectItem value="mikes">Jersey Mike's</SelectItem>
-                                                <SelectItem value="panda">Panda Express</SelectItem>
-                                                <SelectItem value="canes">Raising Canes</SelectItem>
-                                                <SelectItem value="snacks">Snacks</SelectItem>
-                                                <SelectItem value="other">Other</SelectItem>
-                                                <SelectItem value="none">None</SelectItem>
+                                                <SelectItem value="Chick Fil-A">Chick Fil-A</SelectItem>
+                                                <SelectItem value="Chipotle">Chipotle</SelectItem>
+                                                <SelectItem value="Panera">Panera</SelectItem>
+                                                <SelectItem value="Jersey Mike's">Jersey Mike's</SelectItem>
+                                                <SelectItem value="Panda Express">Panda Express</SelectItem>
+                                                <SelectItem value="Raising Canes">Raising Canes</SelectItem>
+                                                <SelectItem value="Snacks">Snacks</SelectItem>
+                                                <SelectItem value="Other">Other</SelectItem>
+                                                <SelectItem value="None">None</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
