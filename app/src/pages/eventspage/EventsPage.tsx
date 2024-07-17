@@ -226,7 +226,7 @@ export function EventsPage() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => navigate(`/admin/events/${window.btoa(event.id)}/edit`)}>Edit</DropdownMenuItem>
                             <DropdownMenuItem>Delete</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>

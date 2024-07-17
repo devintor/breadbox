@@ -53,7 +53,7 @@ export function Header() {
             <span className="sr-only">Acme Inc</span>
           </Link>
           <Link
-            to="/dashboard"
+            to="/admin/dashboard"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
             Dashboard
@@ -65,25 +65,25 @@ export function Header() {
             Requests*
           </Link>
           <Link
-            to="/transactions"
+            to="/admin/transactions"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
             Transactions
           </Link>
           <Link
-            to="/events"
+            to="/admin/events"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
             Events
           </Link>
           <Link
-            to="/members"
+            to="/admin/members"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
             Members
           </Link>
           <Link
-            to="/settings"
+            to="/admin/settings"
             className="text-foreground transition-colors hover:text-foreground"
           >
             Settings
@@ -110,7 +110,7 @@ export function Header() {
                 <span className="sr-only">Acme Inc</span>
               </Link>
               <Link
-                to="/dashboard"
+                to="/admin/dashboard"
                 className="text-muted-foreground hover:text-foreground"
               >
                 Dashboard
@@ -122,24 +122,27 @@ export function Header() {
                 Requests
               </Link>
               <Link
-                to="/transactions"
+                to="/admin/transactions"
                 className="text-muted-foreground hover:text-foreground"
               >
                 Transactions
               </Link>
               <Link
-                to="#"
+                to="/admin/events"
                 className="text-muted-foreground hover:text-foreground"
               >
                 Events
               </Link>
               <Link
-                to="#"
+                to="/admin/members"
                 className="text-muted-foreground hover:text-foreground"
               >
                 Members
               </Link>
-              <Link to="#" className="hover:text-foreground">
+              <Link
+                to="/admin/settings"
+                className="hover:text-foreground"
+              >
                 Settings
               </Link>
             </nav>

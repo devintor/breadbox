@@ -21,34 +21,37 @@ import {
     SelectValue,
 } from "../../components/ui/select"
 import { Textarea } from "../../components/ui/textarea"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
 import { db } from "../../config/firebase-config"
-import { QueryDocumentSnapshot, collection, doc, getDocs, updateDoc } from "firebase/firestore"
+import { QueryDocumentSnapshot, collection, doc, getDoc, getDocs, updateDoc } from "firebase/firestore"
 import { toast } from "react-toastify"
 import { DateTimePicker } from "../../components/ui/datetimepicker"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../../components/ui/alert-dialog"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../../components/ui/dialog"
 
   export function EventsEditPage() {
+    const { eventB64 } = useParams();
+    const eventId = window.atob(eventB64 || "");
+    console.log(eventId);
+    
     const navigate = useNavigate();
     
-    const [events, setEvents] = useState<QueryDocumentSnapshot[]>();
     const [eventLocal, setEventLocal] = useState<any>();
 
     const [date, setDate] = useState<Date | undefined>(undefined);
 
-    console.log(date);
-    // console.log(eventLocal);
+    // console.log(date);
+    console.log(eventLocal);
     
-    const fetchEvents = async () => {
+    const fetchEvent = async () => {
       
       try {
-          const eventsRef = collection(db, "Events");
-          const eventsSnap = await getDocs(eventsRef);
-          setEvents(eventsSnap.docs);
+          const eventRef = doc(db, "Events", eventId);
+          const eventSnap = await getDoc(eventRef);
+          setEventLocal(eventSnap.data());
 
-          console.log(events);
+          console.log(eventLocal);
       } catch (error: any) {
           console.error(error.message);
       }
@@ -60,13 +63,13 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
     
 
     useEffect(() => {
-        fetchEvents();
+        fetchEvent();
     }, []);
 
     async function handleEditEvent() {
         try {
-          if (events) {
-            await updateDoc(doc(db, "Events", events[0].id), {
+          if (eventLocal) {
+            await updateDoc(doc(db, "Events", eventId), {
               ...eventLocal,
             });
           }
