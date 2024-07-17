@@ -144,6 +144,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
+            {eventLocal ? (
             <div className="mx-auto grid max-w-[59rem] flex-1 auto-rows-max gap-4">
                 <div className="flex items-center gap-4">
                     <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => navigate(-1)}>
@@ -151,7 +152,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                         <span className="sr-only">Back</span>
                     </Button>
                     <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-                        Event
+                        {eventLocal.title}
                     </h1>
                     <Badge variant="outline" className="ml-auto sm:ml-0">
                         Upcoming
@@ -180,17 +181,29 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                                             id="title"
                                             type="text"
                                             className="w-full"
-                                            defaultValue="General Body Meeting #"
-                                            onChange={()=>{}}
+                                            defaultValue={eventLocal.title}
+                                            onChange={(e)=>{
+                                                setEventLocal((prevEventLocal: any) => ({
+                                                    ...prevEventLocal,
+                                                    title: e.target.value,
+                                                }))
+                                                console.log(eventLocal)
+                                            }}
                                         />
                                     </div>
                                     <div className="grid gap-3">
                                         <Label htmlFor="description">Description</Label>
                                         <Textarea
                                             id="description"
-                                            defaultValue="description"
+                                            defaultValue={eventLocal.description}
                                             className="min-h-32"
-                                            onChange={()=>{}}
+                                            onChange={(e)=>{
+                                                setEventLocal((prevEventLocal: any) => ({
+                                                    ...prevEventLocal,
+                                                    description: e.target.value,
+                                                }))
+                                                console.log(eventLocal)
+                                            }}
                                         />
                                     </div>
                                 </div>
@@ -218,7 +231,10 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                                     <Label htmlFor="time">Time</Label>
                                     <DateTimePicker
                                         value={date}
-                                        onChange={setDate}
+                                        onChange={(e) => {
+                                            setDate
+                                            console.log(date)
+                                        }}
                                         hourCycle={12}
                                     />
                                 </div>
@@ -365,6 +381,10 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                     <Button size="sm">Save Product</Button>
                 </div>
             </div>
+            ) : (
+            <></>
+            )}
+            
         </main>
     </div>
     )
