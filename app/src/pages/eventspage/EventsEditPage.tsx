@@ -415,8 +415,8 @@ import { getUnixTime } from 'date-fns';
                                 <div className="grid gap-2">
                                     <img
                                         alt="Product image"
-                                        className="aspect-square w-full rounded-md object-cover"
-                                        height="300"
+                                        className="w-full rounded-md object-cover"
+                                        height="auto"
                                         src={eventLocal.image}
                                         width="300"
                                     />
@@ -446,7 +446,7 @@ import { getUnixTime } from 'date-fns';
                                     </div> */}
                                     <Dialog>
                                         <DialogTrigger asChild>
-                                            <Button variant="outline" onClick={()=>setImageSelected(undefined)}>Edit Image</Button>
+                                            <Button variant="outline">Edit Image</Button>
                                         </DialogTrigger>
                                         <DialogContent>
                                             <DialogHeader>
@@ -514,10 +514,16 @@ import { getUnixTime } from 'date-fns';
                                             <Button
                                                 type="submit"
                                                 onClick={()=>{
-                                                    setEventLocal((prevEventLocal: any) => ({
-                                                        ...prevEventLocal,
-                                                        image: imageSelected,
-                                                    }))
+                                                    {imageSelected ? (
+                                                        setEventLocal((prevEventLocal: any) => ({
+                                                            ...prevEventLocal,
+                                                            image: imageSelected,
+                                                        }))
+                                                    ):(
+                                                        console.log("No new image selected")
+                                                    )}
+                                                    // setImageQuery(undefined)
+                                                    // setImageSelected(undefined)
                                                     console.log(eventLocal)
                                                 }}
                                             >
