@@ -56,7 +56,7 @@ import { getUnixTime } from 'date-fns';
 
     // console.log(date);
     console.log(eventLocal);
-    
+
     const fetchEvent = async () => {
       
       try {
@@ -72,12 +72,34 @@ import { getUnixTime } from 'date-fns';
 
     };
 
+    const fetchImages = async (query: string) => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-User-Agent': '',
+                'X-Proxy-Location': '',
+                'X-Api-Key': 'qRa9xQVJCNJG3AkZtzwRD3dA'
+            }
+        };
+    
+        try {
+            const response = await fetch(`https://api.serply.io/v1/image/q=${query}`, options);
+            const data = await response.json();
+            return data.imageResults;
+        } catch (err) {
+            console.error(err);
+            return null;
+        }
+    }
 
     
 
     useEffect(() => {
         fetchEvent();
     }, []);
+
+
 
     async function handleEditEvent() {
         try {
