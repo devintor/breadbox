@@ -502,12 +502,21 @@ import { getUnixTime } from 'date-fns';
                                                 )}
                                                 </>
                                             )}
-                                            {imageSelected!=undefined && (<>
-                                                <Label>Image Selected</Label>
-                                                <Card className="overflow-hidden">
-                                                    <img src={imageSelected}></img>
-                                                </Card>
-                                            </>)}
+                                            {imageSelected!=undefined ? (
+                                                <>
+                                                    <Label>Image Selected</Label>
+                                                    <Card className="overflow-hidden">
+                                                        <img src={imageSelected}></img>
+                                                    </Card>
+                                                </>
+                                            ):(
+                                                <>
+                                                    <Label>Current Image</Label>
+                                                    <Card className="overflow-hidden">
+                                                        <img src={eventLocal.image}></img>
+                                                    </Card>
+                                                </>
+                                            )}
 
                                         <DialogFooter>
                                             <DialogClose>
