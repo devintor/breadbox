@@ -41,6 +41,7 @@ import { getUnixTime } from 'date-fns';
     const [eventLocal, setEventLocal] = useState<any>();
 
     const [imageQuery, setImageQuery] = useState<string>();
+    const [imageSelected, setImageSelected] = useState<string>();
 
     const imageOptions = new Map()
     imageOptions.set("company", ["https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/M%C3%BCnster%2C_LVM%2C_B%C3%BCrogeb%C3%A4ude_--_2013_--_5149-51.jpg/1200px-M%C3%BCnster%2C_LVM%2C_B%C3%BCrogeb%C3%A4ude_--_2013_--_5149-51.jpg"]);
@@ -101,7 +102,7 @@ import { getUnixTime } from 'date-fns';
         console.log(imageQuery)
         console.log(imageOptions)
         if (!imageQuery || !imageOptions.get(imageQuery)) {
-            return ["/placeholder.svg"]
+            return undefined
         } else {
             return imageOptions.get(imageQuery)
         }
@@ -445,12 +446,14 @@ import { getUnixTime } from 'date-fns';
                                     </div> */}
                                     <Dialog>
                                         <DialogTrigger asChild>
-                                            <Button variant="outline">Edit Image</Button>
+                                            <Button variant="outline" onClick={()=>setImageSelected(undefined)}>Edit Image</Button>
                                         </DialogTrigger>
                                         <DialogContent>
                                             <DialogHeader>
                                                 <DialogTitle>Image Options</DialogTitle>
+                                                <DialogDescription>Use the search bar to find a relevant graphic</DialogDescription>
                                             </DialogHeader>
+                                            
                                             
                                             <Label htmlFor="image-query">Image Query</Label>
                                             <Input
@@ -463,28 +466,64 @@ import { getUnixTime } from 'date-fns';
                                                     console.log(imageQuery)
                                                 }}
                                             />
-                                            <div className="grid auto-rows-max items-start gap-2 grid-cols-2 lg:gap-4">
+                                            {handleImageSearch()!=undefined ? (
+                                                <>
+                                            <div className="grid auto-rows-max items-start gap-1 grid-cols-3 lg:gap-4">
                                                 {handleImageSearch().map((image:string) => (
-                                                <button>
+                                                <Card
+                                                    className="bg-white shadow-md overflow-hidden transition-all ease-in-out duration-300 hover:scale-105"
+                                                    onClick={()=>{
+                                                        setImageSelected(image)
+                                                        }}>
+                                                    
                                                     <img
                                                         alt="Product image"
-                                                        className="rounded-md object-cover"
+                                                        className="object-cover "
                                                         height="100%"
                                                         src={image || '/placeholder.svg'}
-                                                        // width="100%"
                                                     />
-                                                </button>
+                                                </Card>
                                                 ))}
 
-                                            
-                                                <Upload className="h-4 w-4 text-muted-foreground" />
-                                                <span className="sr-only">Upload</span>
+                                                
+                                                
+                                                {/* <Upload className="h-4 w-4 text-muted-foreground" />
+                                                <span className="sr-only">Upload</span> */}
         
                                             </div>
-
+                                            
+                                            </>
+                                            ):(
+                                                <>
+                                                {imageQuery ? (
+                                                <Label>Loading...</Label>
+                                                ) : (
+                                                    <></>
+                                                )}
+                                                </>
+                                            )}
+                                            {imageSelected!=undefined && (<>
+                                                <Label>Image Selected</Label>
+                                                <Card className="overflow-hidden">
+                                                    <img src={imageSelected}></img>
+                                                </Card>
+                                            </>)}
 
                                         <DialogFooter>
-                                            <Button type="submit">Save</Button>
+                                            <DialogClose>
+                                            <Button
+                                                type="submit"
+                                                onClick={()=>{
+                                                    setEventLocal((prevEventLocal: any) => ({
+                                                        ...prevEventLocal,
+                                                        image: imageSelected,
+                                                    }))
+                                                    console.log(eventLocal)
+                                                }}
+                                            >
+                                                    Save
+                                            </Button>
+                                            </DialogClose>
                                         </DialogFooter>
                                     </DialogContent>    
                                 </Dialog>
