@@ -444,7 +444,10 @@ import { getUnixTime } from 'date-fns';
                                             <span className="sr-only">Upload</span>
                                         </button>
                                     </div> */}
-                                    <Dialog>
+                                    <Dialog onOpenChange={()=>{
+                                        setImageQuery(undefined)
+                                        setImageSelected(undefined)
+                                    }}>
                                         <DialogTrigger asChild>
                                             <Button variant="outline">Edit Image</Button>
                                         </DialogTrigger>
@@ -531,8 +534,6 @@ import { getUnixTime } from 'date-fns';
                                                     ):(
                                                         console.log("No new image selected")
                                                     )}
-                                                    // setImageQuery(undefined)
-                                                    // setImageSelected(undefined)
                                                     console.log(eventLocal)
                                                 }}
                                             >
