@@ -259,7 +259,7 @@ import { getUnixTime } from 'date-fns';
                                     </div>
                                     <div className="grid grid-cols-2 gap-6">
                                         <div className="grid gap-3">
-                                            <Label htmlFor="startTime">Start Time</Label>
+                                            <Label>Start Time</Label>
                                             <DateTimePicker
                                                 granularity="minute"
                                                 value={new Date(eventLocal.startTime.seconds * 1000)}
@@ -275,7 +275,7 @@ import { getUnixTime } from 'date-fns';
                                             />
                                         </div>
                                         <div className="grid gap-3">
-                                            <Label htmlFor="endTime">End Time</Label>
+                                            <Label>End Time</Label>
                                             <DateTimePicker
                                                 granularity="minute"
                                                 value={new Date(eventLocal.endTime.seconds * 1000)}
@@ -335,7 +335,7 @@ import { getUnixTime } from 'date-fns';
                             <CardContent>
                                 <div className="grid gap-6">
                                     <div className="grid gap-3">
-                                        <Label htmlFor="company">Company</Label>
+                                        <Label>Company</Label>
                                         <Select
                                             defaultValue={eventLocal.company}
                                             onValueChange={(value)=>{
@@ -374,7 +374,7 @@ import { getUnixTime } from 'date-fns';
                             <CardContent>
                                 <div className="grid gap-6">
                                     <div className="grid gap-3">
-                                        <Label htmlFor="food">Food</Label>
+                                        <Label>Food</Label>
                                         <Select
                                             defaultValue={eventLocal.food}
                                             onValueChange={(value)=>{
