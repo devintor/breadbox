@@ -368,10 +368,10 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                             <CardContent>
                                 <div className="grid gap-2">
                                     <img
-                                        alt="Product image"
+                                        alt="Event image"
                                         className="w-full rounded-md object-cover"
                                         height="auto"
-                                        src={eventLocal.image}
+                                        src={eventLocal.image || '/placeholder.svg'}
                                         width="300"
                                     />
                                     <Dialog onOpenChange={()=>{
@@ -433,18 +433,11 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                                                 )}
                                                 </>
                                             )}
-                                            {imageSelected!=undefined ? (
+                                            {imageSelected!=undefined && (
                                                 <>
                                                     <Label>Image Selected</Label>
                                                     <Card className="overflow-hidden">
                                                         <img src={imageSelected}></img>
-                                                    </Card>
-                                                </>
-                                            ):(
-                                                <>
-                                                    <Label>Current Image</Label>
-                                                    <Card className="overflow-hidden">
-                                                        <img src={eventLocal.image}></img>
                                                     </Card>
                                                 </>
                                             )}
