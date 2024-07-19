@@ -84,7 +84,7 @@ import { getUnixTime } from 'date-fns';
             }
         };
         try {
-            const response = await fetch(`https://api.serply.io/v1/image/q=${imageQuery}`, options);
+            const response = await fetch(`https://api.serply.io/v1/image/q=${imageQuery}&tbs=isz:l,itp:photo`, options);
             const data = await response.json();
             const images = data.image_results;
             console.log(images)
