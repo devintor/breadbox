@@ -41,6 +41,7 @@ import { getUnixTime } from 'date-fns';
     const [eventLocal, setEventLocal] = useState<any>();
 
     const [imageQuery, setImageQuery] = useState<string>();
+    const [imagesSearched, setImagesSearched] = useState<any>();
     const [imageSelected, setImageSelected] = useState<string>();
 
     const imageOptions = new Map()
@@ -72,7 +73,7 @@ import { getUnixTime } from 'date-fns';
 
     };
 
-    const fetchImages = async (query: string) => {
+    const fetchImages = async (imageQuery: string) => {
         const options = {
             method: 'GET',
             headers: {
@@ -82,16 +83,17 @@ import { getUnixTime } from 'date-fns';
                 'X-Api-Key': 'qRa9xQVJCNJG3AkZtzwRD3dA'
             }
         };
-    
         try {
-            const response = await fetch(`https://api.serply.io/v1/image/q=${query}`, options);
+            const response = await fetch(`https://api.serply.io/v1/image/q=${imageQuery}`, options);
             const data = await response.json();
-            return data.imageResults;
+            const images = data.image_results;
+            console.log(images)
+            return images;
         } catch (err) {
             console.error(err);
             return null;
         }
-    }
+    };
 
     
 
@@ -120,15 +122,25 @@ import { getUnixTime } from 'date-fns';
         }
       };
 
-    function handleImageSearch() {
+    async function handleImageSearch(e: Event) {
+        e.preventDefault();
         console.log(imageQuery)
-        console.log(imageOptions)
-        if (!imageQuery || !imageOptions.get(imageQuery)) {
-            return undefined
+        if (!imageQuery) {
+            console.log('no query')
         } else {
-            return imageOptions.get(imageQuery)
+            const images = await fetchImages(imageQuery);
+            console.log(images)
+            setImagesSearched(images);
+
         }
-        // return ["/placeholder.svg"]
+
+        // console.log(imageQuery)
+        // if (!imageQuery) {
+        //     console.log('no query')
+        // } else {
+        //     await fetchImages(imageQuery);
+        // }
+        // // return ["/placeholder.svg"]
     }
 
     return (
@@ -481,7 +493,20 @@ import { getUnixTime } from 'date-fns';
                                             
                                             
                                             <Label htmlFor="image-query">Image Query</Label>
+                                           <form id="image-query" onSubmit={handleImageSearch}>
                                             <Input
+                                                    id="image-query"
+                                                    type="text"
+                                                    className="w-full"
+                                                    placeholder={eventLocal.company}
+                                                    onChange={(e)=>{
+                                                        setImageQuery(e.target.value)
+                                                        console.log(imageQuery)
+                                                    }}
+                                                />
+                                                <Button type="submit">Search</Button>
+                                            </form>
+                                           {/* <Input
                                                 id="image-query"
                                                 type="text"
                                                 className="w-full"
@@ -490,25 +515,27 @@ import { getUnixTime } from 'date-fns';
                                                     setImageQuery(e.target.value)
                                                     console.log(imageQuery)
                                                 }}
-                                            />
-                                            {handleImageSearch()!=undefined ? (
+                                            /> */}
+                                            {imagesSearched!=undefined ? (
                                                 <>
+                                                {console.log(imagesSearched)}
                                             <div className="grid auto-rows-max items-start gap-1 grid-cols-3 lg:gap-4">
-                                                {handleImageSearch().map((image:string) => (
+                                                {/* {imagesSearched?.map((imageSearched:any) => (
                                                 <Card
                                                     className="bg-white shadow-md overflow-hidden transition-all ease-in-out duration-300 hover:scale-105"
                                                     onClick={()=>{
-                                                        setImageSelected(image)
+                                                        setImageSelected(imageSearched.image.src)
                                                         }}>
                                                     
                                                     <img
                                                         alt="Product image"
                                                         className="object-cover "
                                                         height="100%"
-                                                        src={image || '/placeholder.svg'}
+                                                        src={imageSearched.image.src || '/placeholder.svg'}
                                                     />
                                                 </Card>
-                                                ))}
+                                                ))} */}
+
 
                                                 
                                                 
