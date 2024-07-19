@@ -43,17 +43,31 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 
 
     const fetchEvent = async () => {
-      
-      try {
-          const eventRef = doc(db, "Events", eventId);
-          const eventSnap = await getDoc(eventRef);
-          setEventLocal(eventSnap.data());
+        setEventLocal({
+            title: '',
+            description: '',
+            company: '',
+            place: '',
+            startTime: Timestamp.fromDate(new Date()),
+            endTime: Timestamp.fromDate(new Date()),
+            food: '',
+            image: ''
+        })
 
-      } catch (error: any) {
-          console.error(error.message);
-      }
-      
+        try {
+            const eventRef = doc(db, "Events", eventId);
+            const eventSnap = await getDoc(eventRef);
+            console.log(eventSnap.data())
+            setEventLocal((prevEventLocal: any) => ({
+                ...prevEventLocal,
+                ...eventSnap.data(),
+            }))
+            eventLocal && console.log(await eventLocal)
 
+        } catch (error: any) {
+            console.error(error.message);
+        }
+    
     };
 
     const fetchImages = async (imageQuery: string) => {
@@ -120,7 +134,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                         <span className="sr-only">Back</span>
                     </Button>
                     <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-                        {eventLocal.title}
+                        {eventLocal.title || "Untitled Event"}
                     </h1>
                     <Badge variant="outline" className="ml-auto sm:ml-0">
                         Upcoming
@@ -150,6 +164,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                                             type="text"
                                             className="w-full"
                                             defaultValue={eventLocal.title}
+                                            placeholder="Enter a title"
                                             onChange={(e)=>{
                                                 setEventLocal((prevEventLocal: any) => ({
                                                     ...prevEventLocal,
@@ -163,6 +178,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                                         <Textarea
                                             id="description"
                                             defaultValue={eventLocal.description}
+                                            placeholder="Enter a description"
                                             className="min-h-32"
                                             onChange={(e)=>{
                                                 setEventLocal((prevEventLocal: any) => ({
@@ -189,6 +205,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                                         <Input
                                             id="location"
                                             defaultValue={eventLocal.place}
+                                            placeholder="Enter a location"
                                             className="w-full"
                                             onChange={(e) => {
                                                 setEventLocal((prevEventLocal: any) => ({
@@ -285,7 +302,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                                             }}
                                         >
                                             <SelectTrigger id="company" aria-label="Select company">
-                                                <SelectValue placeholder={eventLocal.company} />
+                                                <SelectValue placeholder={eventLocal.company || "Select company"} />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value="Google">Google</SelectItem>
@@ -323,7 +340,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                                             }}
                                         >
                                             <SelectTrigger id="food" aria-label="Select food">
-                                                <SelectValue placeholder="Select food" />
+                                                <SelectValue placeholder={eventLocal.food || "Select food"} />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value="Chick Fil-A">Chick Fil-A</SelectItem>
