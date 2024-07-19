@@ -196,7 +196,7 @@ export function EventsPage() {
                       {event.data().food || "None"}
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
-                      {event.data().company}
+                      {event.data().company || "None"}
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
                       {event.data().usersRegistered ? event.data().usersRegistered.length : "None"}
@@ -205,9 +205,9 @@ export function EventsPage() {
                       {event.data().usersAttended ? event.data().usersAttended.length : "None"}
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
-                      {event.data().startTime.seconds ? new Date(event.data().startTime.seconds * 1000).toLocaleDateString('en-US') : "TBD"}
+                      {event.data().startTime?.seconds ? new Date(event.data().startTime.seconds * 1000).toLocaleDateString('en-US') : "TBD"}
                       <br></br>
-                      {event.data().startTime.seconds ? new Date(event.data().startTime.seconds * 1000).toLocaleTimeString('en-US', { hour12: true, second: undefined }) : "TBD"}
+                      {event.data().startTime?.seconds ? new Date(event.data().startTime.seconds * 1000).toLocaleTimeString('en-US', { hour12: true, second: undefined }) : ""}
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
                       {event.data().place || "TBD"}

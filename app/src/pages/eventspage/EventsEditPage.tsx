@@ -40,20 +40,33 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
     const [imageQuery, setImageQuery] = useState<string>();
     const [imagesSearched, setImagesSearched] = useState<any>();
     const [imageSelected, setImageSelected] = useState<string>();
+    
+    const getClosestFutureMonday = () => {
+        const now = new Date();
+        const dayOfWeek = now.getDay();
+        const daysUntilMonday = (8 - dayOfWeek) % 7;
+        const closestMonday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + daysUntilMonday);
+        return closestMonday;
+    };
 
-
-    const fetchEvent = async () => {
+    const resetEvent = () => {
+        const closestMonday = getClosestFutureMonday();
         setEventLocal({
             title: '',
             description: '',
             company: '',
             place: '',
-            startTime: Timestamp.fromDate(new Date()),
-            endTime: Timestamp.fromDate(new Date()),
+            startTime: Timestamp.fromDate(new Date(closestMonday.getTime() + 19 * 60 * 60 * 1000)),
+            endTime: Timestamp.fromDate(new Date(closestMonday.getTime() + 21 * 60 * 60 * 1000)),
             food: '',
-            image: ''
+            image: '',
+            status: "Upcoming"
         })
+    }
+    
 
+
+    const fetchEvent = async () => {
         try {
             const eventRef = doc(db, "Events", eventId);
             const eventSnap = await getDoc(eventRef);
@@ -89,6 +102,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
     
 
     useEffect(() => {
+        resetEvent();
         fetchEvent();
     }, []);
 
@@ -223,10 +237,14 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                                                 value={new Date(eventLocal.startTime.seconds * 1000)}
                                                 onChange={(date) => {
                                                 const startTime = date && Timestamp.fromDate(date);
-                                                setEventLocal((prevEventLocal: any) => ({
-                                                    ...prevEventLocal,
-                                                    startTime: startTime,
-                                                }));
+                                                if (startTime && (startTime.seconds > eventLocal.endTime.seconds)) {
+                                                    console.error("Event end time must be after start time")
+                                                } else {
+                                                    setEventLocal((prevEventLocal: any) => ({
+                                                        ...prevEventLocal,
+                                                        startTime: startTime,
+                                                    }));
+                                                }
                                                 }}
                                                 hourCycle={12}
                                             />
