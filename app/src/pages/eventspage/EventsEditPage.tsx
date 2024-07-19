@@ -1,6 +1,5 @@
 import {
     ChevronLeft,
-    Upload,
 } from "lucide-react"
 import { Badge } from "../../components/ui/badge"
 import { Button } from "../../components/ui/button"
@@ -22,19 +21,17 @@ import {
 } from "../../components/ui/select"
 import { Textarea } from "../../components/ui/textarea"
 import { useNavigate, useParams } from "react-router-dom"
-import { FormEvent, useEffect, useRef, useState } from "react"
+import { FormEvent, useEffect, useState } from "react"
 import { db } from "../../config/firebase-config"
-import { QueryDocumentSnapshot, Timestamp, collection, doc, getDoc, getDocs, updateDoc } from "firebase/firestore"
+import { Timestamp, doc, getDoc, updateDoc } from "firebase/firestore"
 import { toast } from "react-toastify"
-import { DateTimePicker, DateTimePickerRef, TimePicker } from "../../components/ui/datetimepicker"
+import { DateTimePicker } from "../../components/ui/datetimepicker"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../../components/ui/alert-dialog"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../../components/ui/dialog"
-import { getUnixTime } from 'date-fns';
 
   export function EventsEditPage() {
     const { eventB64 } = useParams();
     const eventId = window.atob(eventB64 || "");
-    console.log(eventId);
     
     const navigate = useNavigate();
     
@@ -44,8 +41,6 @@ import { getUnixTime } from 'date-fns';
     const [imagesSearched, setImagesSearched] = useState<any>();
     const [imageSelected, setImageSelected] = useState<string>();
 
-    // console.log(date);
-    console.log(eventLocal);
 
     const fetchEvent = async () => {
       
@@ -54,7 +49,6 @@ import { getUnixTime } from 'date-fns';
           const eventSnap = await getDoc(eventRef);
           setEventLocal(eventSnap.data());
 
-          console.log(eventLocal);
       } catch (error: any) {
           console.error(error.message);
       }
@@ -63,27 +57,6 @@ import { getUnixTime } from 'date-fns';
     };
 
     const fetchImages = async (imageQuery: string) => {
-        // const options = {
-        //     method: 'GET',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //         'X-User-Agent': 'US',
-        //         'X-Proxy-Location': 'desktop',
-        //         'X-Api-Key': 'qRa9xQVJCNJG3AkZtzwRD3dA'
-        //     }
-        // };
-        // try {
-        //     const response = await fetch(`https://api.serply.io/v1/image/q=${imageQuery}&tbs=isz:l,itp:photo`, options);
-        //     const data = await response.json();
-        //     console.log(data)
-        //     const images = data.image_results;
-        //     console.log(images)
-        //     return images;
-        // } catch (err) {
-        //     console.error(err);
-        //     return null;
-        // }
-
         try {
             const response = await fetch(`http://localhost:3000/?query=${imageQuery}`);
             const data = await response.json();
@@ -114,12 +87,10 @@ import { getUnixTime } from 'date-fns';
               ...eventLocal,
             });
           }
-          console.log("Event Saved Successfully!!");
           toast.success("Event Saved Successfully!!", {
             position: "top-center",
           });
         } catch (error: any) {
-          console.log(error.message);
           toast.error(error.message, {
             position: "bottom-center",
           });
@@ -135,14 +106,6 @@ import { getUnixTime } from 'date-fns';
               setImagesSearched(images);
             });
         }
-
-        // console.log(imageQuery)
-        // if (!imageQuery) {
-        //     console.log('no query')
-        // } else {
-        //     await fetchImages(imageQuery);
-        // }
-        // // return ["/placeholder.svg"]
     }
 
     return (
@@ -192,7 +155,6 @@ import { getUnixTime } from 'date-fns';
                                                     ...prevEventLocal,
                                                     title: e.target.value,
                                                 }))
-                                                console.log(eventLocal)
                                             }}
                                         />
                                     </div>
@@ -207,7 +169,6 @@ import { getUnixTime } from 'date-fns';
                                                     ...prevEventLocal,
                                                     description: e.target.value,
                                                 }))
-                                                console.log(eventLocal)
                                             }}
                                         />
                                     </div>
@@ -234,7 +195,6 @@ import { getUnixTime } from 'date-fns';
                                                 ...prevEventLocal,
                                                 place: e.target.value,
                                                 }));
-                                                console.log(eventLocal);
                                             }}
                                         />
                                     </div>
@@ -250,7 +210,6 @@ import { getUnixTime } from 'date-fns';
                                                     ...prevEventLocal,
                                                     startTime: startTime,
                                                 }));
-                                                console.log(eventLocal);
                                                 }}
                                                 hourCycle={12}
                                             />
@@ -270,7 +229,6 @@ import { getUnixTime } from 'date-fns';
                                                         endTime: endTime,
                                                     }));
                                                 }
-                                                console.log(eventLocal);
                                                 }}
                                                 hourCycle={12}
                                             />
@@ -324,7 +282,6 @@ import { getUnixTime } from 'date-fns';
                                                     ...prevEventLocal,
                                                     company: value,
                                                 }))
-                                                console.log(eventLocal)
                                             }}
                                         >
                                             <SelectTrigger id="company" aria-label="Select company">
@@ -363,7 +320,6 @@ import { getUnixTime } from 'date-fns';
                                                     ...prevEventLocal,
                                                     food: value,
                                                 }))
-                                                console.log(eventLocal)
                                             }}
                                         >
                                             <SelectTrigger id="food" aria-label="Select food">
@@ -401,30 +357,6 @@ import { getUnixTime } from 'date-fns';
                                         src={eventLocal.image}
                                         width="300"
                                     />
-                                    {/* <div className="grid grid-cols-3 gap-2">
-                                        <button>
-                                            <img
-                                                alt="Product image"
-                                                className="aspect-square w-full rounded-md object-cover"
-                                                height="84"
-                                                src="/placeholder.svg"
-                                                width="84"
-                                            />
-                                        </button>
-                                        <button>
-                                            <img
-                                                alt="Product image"
-                                                className="aspect-square w-full rounded-md object-cover"
-                                                height="84"
-                                                src="/placeholder.svg"
-                                                width="84"
-                                            />
-                                        </button>
-                                        <button className="flex aspect-square w-full items-center justify-center rounded-md border border-dashed">
-                                            <Upload className="h-4 w-4 text-muted-foreground" />
-                                            <span className="sr-only">Upload</span>
-                                        </button>
-                                    </div> */}
                                     <Dialog onOpenChange={()=>{
                                         setImageQuery(undefined)
                                         setImageSelected(undefined)
@@ -452,16 +384,6 @@ import { getUnixTime } from 'date-fns';
                                                 />
                                                 <Button type="submit">Search</Button>
                                             </form>
-                                           {/* <Input
-                                                id="image-query"
-                                                type="text"
-                                                className="w-full"
-                                                placeholder={eventLocal.company}
-                                                onChange={(e)=>{
-                                                    setImageQuery(e.target.value)
-                                                    console.log(imageQuery)
-                                                }}
-                                            /> */}
                                             {imagesSearched!=undefined ? (
                                                 <>
                                             <div className="grid auto-rows-max items-start gap-1 grid-cols-3 lg:gap-4">
@@ -481,12 +403,6 @@ import { getUnixTime } from 'date-fns';
                                                     />
                                                 </Card>
                                                 ))}
-
-
-                                                
-                                                
-                                                {/* <Upload className="h-4 w-4 text-muted-foreground" />
-                                                <span className="sr-only">Upload</span> */}
         
                                             </div>
                                             
@@ -529,7 +445,6 @@ import { getUnixTime } from 'date-fns';
                                                     ):(
                                                         console.log("No new image selected")
                                                     )}
-                                                    console.log(eventLocal)
                                                 }}
                                             >
                                                     Save
