@@ -44,17 +44,6 @@ import { getUnixTime } from 'date-fns';
     const [imagesSearched, setImagesSearched] = useState<any>();
     const [imageSelected, setImageSelected] = useState<string>();
 
-    const imageOptions = new Map()
-    imageOptions.set("company", ["https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/M%C3%BCnster%2C_LVM%2C_B%C3%BCrogeb%C3%A4ude_--_2013_--_5149-51.jpg/1200px-M%C3%BCnster%2C_LVM%2C_B%C3%BCrogeb%C3%A4ude_--_2013_--_5149-51.jpg"]);
-    imageOptions.set("google", ["https://s39939.pcdn.co/wp-content/uploads/2023/02/iStock-1169427542.jpg",
-                                "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/PxG_GVE_Blog_Header-bike_1.width-1300.png",
-                                "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Googleplex_HQ_%28cropped%29.jpg/1200px-Googleplex_HQ_%28cropped%29.jpg",
-                                "https://s39939.pcdn.co/wp-content/uploads/2023/02/iStock-1169427542.jpg",
-                                "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/PxG_GVE_Blog_Header-bike_1.width-1300.png",
-                                "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Googleplex_HQ_%28cropped%29.jpg/1200px-Googleplex_HQ_%28cropped%29.jpg"
-                                ]);
-    imageOptions.set("meta",    ["https://about.fb.com/wp-content/uploads/2021/10/Meta-Planets-img-16x9-1.jpg?w=1200"]);
-
     // console.log(date);
     console.log(eventLocal);
 
@@ -74,26 +63,41 @@ import { getUnixTime } from 'date-fns';
     };
 
     const fetchImages = async (imageQuery: string) => {
-        const options = {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-User-Agent': '',
-                'X-Proxy-Location': '',
-                'X-Api-Key': 'qRa9xQVJCNJG3AkZtzwRD3dA'
-            }
-        };
+        // const options = {
+        //     method: 'GET',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         'X-User-Agent': 'US',
+        //         'X-Proxy-Location': 'desktop',
+        //         'X-Api-Key': 'qRa9xQVJCNJG3AkZtzwRD3dA'
+        //     }
+        // };
+        // try {
+        //     const response = await fetch(`https://api.serply.io/v1/image/q=${imageQuery}&tbs=isz:l,itp:photo`, options);
+        //     const data = await response.json();
+        //     console.log(data)
+        //     const images = data.image_results;
+        //     console.log(images)
+        //     return images;
+        // } catch (err) {
+        //     console.error(err);
+        //     return null;
+        // }
+
         try {
-            const response = await fetch(`https://api.serply.io/v1/image/q=${imageQuery}&tbs=isz:l,itp:photo`, options);
+            const response = await fetch(`http://localhost:3000/?query=${imageQuery}`);
             const data = await response.json();
-            const images = data.image_results;
-            console.log(images)
+            const images = data.images_results;
             return images;
         } catch (err) {
             console.error(err);
             return null;
         }
+
     };
+
+
+    
 
     
 
@@ -103,7 +107,7 @@ import { getUnixTime } from 'date-fns';
 
 
 
-    async function handleEditEvent() {
+    async function handleSaveEvent() {
         try {
           if (eventLocal) {
             await updateDoc(doc(db, "Events", eventId), {
@@ -124,7 +128,6 @@ import { getUnixTime } from 'date-fns';
 
     function handleImageSearch(e: FormEvent) {
         e.preventDefault();
-        console.log(imageQuery)
         if (!imageQuery) {
             console.log('no query')
         } else {
@@ -500,7 +503,6 @@ import { getUnixTime } from 'date-fns';
                                                     placeholder={eventLocal.company}
                                                     onChange={(e)=>{
                                                         setImageQuery(e.target.value)
-                                                        console.log(imageQuery)
                                                     }}
                                                 />
                                                 <Button type="submit">Search</Button>
@@ -517,23 +519,23 @@ import { getUnixTime } from 'date-fns';
                                             /> */}
                                             {imagesSearched!=undefined ? (
                                                 <>
-                                                {console.log(imagesSearched)}
                                             <div className="grid auto-rows-max items-start gap-1 grid-cols-3 lg:gap-4">
-                                                {/* {imagesSearched?.map((imageSearched:any) => (
+                                                {imagesSearched.slice(0,6).map((imageSearched:any) => (
                                                 <Card
+                                                    key={imageSearched.title}
                                                     className="bg-white shadow-md overflow-hidden transition-all ease-in-out duration-300 hover:scale-105"
                                                     onClick={()=>{
-                                                        setImageSelected(imageSearched.image.src)
+                                                        setImageSelected(imageSearched.original)
                                                         }}>
                                                     
                                                     <img
                                                         alt="Product image"
                                                         className="object-cover "
                                                         height="100%"
-                                                        src={imageSearched.image.src || '/placeholder.svg'}
+                                                        src={imageSearched.original || '/placeholder.svg'}
                                                     />
                                                 </Card>
-                                                ))} */}
+                                                ))}
 
 
                                                 
