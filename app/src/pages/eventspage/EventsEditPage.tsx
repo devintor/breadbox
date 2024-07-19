@@ -114,8 +114,8 @@ import { getUnixTime } from 'date-fns';
               ...eventLocal,
             });
           }
-          console.log("User Saved Successfully!!");
-          toast.success("User Saved Successfully!!", {
+          console.log("Event Saved Successfully!!");
+          toast.success("Event Saved Successfully!!", {
             position: "top-center",
           });
         } catch (error: any) {
@@ -147,61 +147,6 @@ import { getUnixTime } from 'date-fns';
 
     return (
 
-    //     <form onSubmit={handleEditEvent}>
-    //   <h3>Sign Up</h3>
-
-    //   <div className="mb-3">
-    //     <label>First name</label>
-    //     <input
-    //       type="text"
-    //       className="form-control"
-    //       placeholder="First name"
-    //       onChange={(e) => setFname(e.target.value)}
-    //       required
-    //     />
-    //   </div>
-
-    //   <div className="mb-3">
-    //     <label>Last name</label>
-    //     <input
-    //       type="text"
-    //       className="form-control"
-    //       placeholder="Last name"
-    //       onChange={(e) => setLname(e.target.value)}
-    //     />
-    //   </div>
-
-    //   <div className="mb-3">
-    //     <label>Email Address</label>
-    //     <input
-    //       type="email"
-    //       className="form-control"
-    //       placeholder="Email Address"
-    //       onChange={(e) => setEmail(e.target.value)}
-    //       required
-    //     />
-    //   </div>
-
-    //   <div className="mb-3">
-    //     <label>Password</label>
-    //     <input
-    //       type="password"
-    //       className="form-control"
-    //       id="password"
-    //       placeholder="Enter password"
-    //       onChange={(e) => setPassword(e.target.value)}
-    //       required
-    //     />
-    //   </div>
-
-    //   <div className="d-grid">
-    //     <button type="submit" className="btn btn-primary">
-    //       Create
-    //     </button>
-    //   </div>
-    // </form>
-
-
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
             {eventLocal ? (
@@ -221,7 +166,7 @@ import { getUnixTime } from 'date-fns';
                         <Button variant="outline" size="sm">
                             Discard
                         </Button>
-                        <Button size="sm">Save Event</Button>
+                        <Button size="sm" onClick={handleSaveEvent}>Save Event</Button>
                     </div>
                 </div>
                 <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
