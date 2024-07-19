@@ -22,7 +22,7 @@ import {
 } from "../../components/ui/select"
 import { Textarea } from "../../components/ui/textarea"
 import { useNavigate, useParams } from "react-router-dom"
-import { useEffect, useRef, useState } from "react"
+import { FormEvent, useEffect, useRef, useState } from "react"
 import { db } from "../../config/firebase-config"
 import { QueryDocumentSnapshot, Timestamp, collection, doc, getDoc, getDocs, updateDoc } from "firebase/firestore"
 import { toast } from "react-toastify"
@@ -122,16 +122,15 @@ import { getUnixTime } from 'date-fns';
         }
       };
 
-    async function handleImageSearch(e: Event) {
+    function handleImageSearch(e: FormEvent) {
         e.preventDefault();
         console.log(imageQuery)
         if (!imageQuery) {
             console.log('no query')
         } else {
-            const images = await fetchImages(imageQuery);
-            console.log(images)
-            setImagesSearched(images);
-
+            fetchImages(imageQuery).then(images => {
+              setImagesSearched(images);
+            });
         }
 
         // console.log(imageQuery)
@@ -493,7 +492,7 @@ import { getUnixTime } from 'date-fns';
                                             
                                             
                                             <Label htmlFor="image-query">Image Query</Label>
-                                           <form id="image-query" onSubmit={handleImageSearch}>
+                                           <form id="image-query" onSubmit={(e: FormEvent) => handleImageSearch(e)}>
                                             <Input
                                                     id="image-query"
                                                     type="text"
