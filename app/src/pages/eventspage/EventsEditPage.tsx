@@ -51,17 +51,22 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 
     const resetEvent = () => {
         const closestMonday = getClosestFutureMonday();
+        const startTime = Timestamp.fromDate(new Date(closestMonday.getTime() + 19 * 60 * 60 * 1000))
+        const endTime = Timestamp.fromDate(new Date(closestMonday.getTime() + 21.1 * 60 * 60 * 1000))
+        const duration = Math.ceil((endTime.seconds - startTime.seconds) / 1800) * 30;
         setEventLocal({
             title: '',
             description: '',
             company: '',
             place: '',
-            startTime: Timestamp.fromDate(new Date(closestMonday.getTime() + 19 * 60 * 60 * 1000)),
-            endTime: Timestamp.fromDate(new Date(closestMonday.getTime() + 21 * 60 * 60 * 1000)),
+            // startTime: startTime,
+            // endTime: endTime,
+            // duration: eventLocal.startTime - eventLocal.endTime,
             food: '',
             image: '',
             status: "Upcoming"
         })
+        console.log(`This event is ${duration} minutes long (${duration / 60} hours)`)
     }
     
 
@@ -234,17 +239,21 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                                             <Label>Start Time</Label>
                                             <DateTimePicker
                                                 granularity="minute"
-                                                value={new Date(eventLocal.startTime.seconds * 1000)}
+                                                value={eventLocal.startTime ? new Date(eventLocal.startTime.seconds * 1000) : undefined}
                                                 onChange={(date) => {
-                                                const startTime = date && Timestamp.fromDate(date);
-                                                if (startTime && (startTime.seconds > eventLocal.endTime.seconds)) {
-                                                    console.error("Event end time must be after start time")
-                                                } else {
-                                                    setEventLocal((prevEventLocal: any) => ({
-                                                        ...prevEventLocal,
-                                                        startTime: startTime,
-                                                    }));
-                                                }
+                                                    const startTime = date && Timestamp.fromDate(date);
+                                                    if (startTime && (startTime.seconds > eventLocal.endTime.seconds)) {
+                                                        setEventLocal((prevEventLocal: any) => ({
+                                                            ...prevEventLocal,
+                                                            startTime: startTime,
+                                                            endTime: startTime
+                                                        }));
+                                                    } else {
+                                                        setEventLocal((prevEventLocal: any) => ({
+                                                            ...prevEventLocal,
+                                                            startTime: startTime,
+                                                        }));
+                                                    }
                                                 }}
                                                 hourCycle={12}
                                             />
@@ -253,17 +262,21 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                                             <Label>End Time</Label>
                                             <DateTimePicker
                                                 granularity="minute"
-                                                value={new Date(eventLocal.endTime.seconds * 1000)}
+                                                value={eventLocal.endTime ? new Date(eventLocal.endTime.seconds * 1000) : undefined}
                                                 onChange={(date) => {
-                                                const endTime = date && Timestamp.fromDate(date);
-                                                if (endTime && (endTime.seconds <= eventLocal.startTime.seconds)) {
-                                                    console.error("Event end time must be after start time")
-                                                } else {
-                                                    setEventLocal((prevEventLocal: any) => ({
-                                                        ...prevEventLocal,
-                                                        endTime: endTime,
-                                                    }));
-                                                }
+                                                    const endTime = date && Timestamp.fromDate(date);
+                                                    if (endTime && (endTime.seconds <= eventLocal.startTime.seconds)) {
+                                                        setEventLocal((prevEventLocal: any) => ({
+                                                            ...prevEventLocal,
+                                                            startTime: endTime,
+                                                            endTime: endTime
+                                                        }));
+                                                    } else {
+                                                        setEventLocal((prevEventLocal: any) => ({
+                                                            ...prevEventLocal,
+                                                            endTime: endTime,
+                                                        }));
+                                                    }
                                                 }}
                                                 hourCycle={12}
                                             />
