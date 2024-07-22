@@ -29,6 +29,7 @@ import { DateTimePicker } from "../../components/ui/datetimepicker"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../../components/ui/alert-dialog"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../../components/ui/dialog"
 import data from "../../components/events/events.json"
+import { Recommend } from "../../components/events/Recommend"
 
   export function EventsEditPage() {
     const { eventB64 } = useParams();
@@ -56,21 +57,24 @@ import data from "../../components/events/events.json"
 
     const resetEventLocal = () => {
         const closestMonday = getClosestFutureMonday();
-        // const startTime = Timestamp.fromDate(new Date(closestMonday.getTime() + 19 * 60 * 60 * 1000))
-        // const endTime = Timestamp.fromDate(new Date(closestMonday.getTime() + 21.1 * 60 * 60 * 1000))
-        // const duration = Math.ceil((endTime.seconds - startTime.seconds) / 1800) * 30;
+        const startTime = Timestamp.fromDate(new Date(closestMonday.getTime() + 19 * 60 * 60 * 1000))
+        const endTime = Timestamp.fromDate(new Date(closestMonday.getTime() + 21 * 60 * 60 * 1000))
+        const duration = Math.ceil((endTime.seconds - startTime.seconds) / 1800) * 30;
         setEventLocal({
+            startTime: startTime,
+            endTime: endTime,
+        })
+        setEventLocal((prevEventLocal: any) => ({
+            ...prevEventLocal,
             title: '',
             description: '',
             company: '',
             place: '',
-            // startTime: startTime,
-            // endTime: endTime,
-            // duration: eventLocal.startTime - eventLocal.endTime,
+            duration: prevEventLocal.startTime - prevEventLocal.endTime,
             food: '',
             image: '',
             status: "Upcoming"
-        })
+        }))
         // console.log(`This event is ${duration} minutes long (${duration / 60} hours)`)
     }
     
@@ -129,6 +133,7 @@ import data from "../../components/events/events.json"
           if (eventLocal) {
             await updateDoc(doc(db, "Events", eventId), {
               ...eventLocal,
+              duration: durationCalc(eventLocal.startTime, eventLocal.endTime)
             });
           }
           toast.success("Event Saved Successfully!!", {
@@ -200,6 +205,7 @@ import data from "../../components/events/events.json"
     return (
 
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
+        <Recommend/>
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
             {eventLocal ? (
             <div className="mx-auto grid max-w-[59rem] flex-1 auto-rows-max gap-4">
@@ -312,11 +318,12 @@ import data from "../../components/events/events.json"
                                             <Label>Start Time</Label>
                                             <DateTimePicker
                                                 granularity="minute"
-                                                value={eventLocal.startTime ? new Date(eventLocal.startTime.seconds * 1000) : undefined}
+                                                value={eventLocal.startTime ? new Date(eventLocal.startTime.seconds * 1000) : new Date()}
                                                 onChange={(date) => {
                                                     const startTime = date && Timestamp.fromDate(date);
                                                     console.log(startTime)
-                                                    if (startTime && (startTime.seconds > eventLocal.endTime.seconds)) {
+                                                    console.log(eventLocal)
+                                                    if (startTime && startTime.seconds && (startTime.seconds > eventLocal.endTime.seconds)) {
                                                         setEventLocal((prevEventLocal: any) => ({
                                                             ...prevEventLocal,
                                                             startTime: startTime,
@@ -337,7 +344,7 @@ import data from "../../components/events/events.json"
                                             <Label>End Time</Label>
                                             <DateTimePicker
                                                 granularity="minute"
-                                                value={eventLocal.endTime ? new Date(eventLocal.endTime.seconds * 1000) : undefined}
+                                                value={eventLocal.endTime ? new Date(eventLocal.endTime.seconds * 1000) : new Date()}
                                                 onChange={(date) => {
                                                     const endTime = date && Timestamp.fromDate(date);
                                                     if (endTime && (endTime.seconds <= eventLocal.startTime.seconds)) {
