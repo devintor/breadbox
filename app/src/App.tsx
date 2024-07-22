@@ -74,7 +74,7 @@ function App() {
 
               <Route path="/profile" element={isAuth ? <ProfilePage /> : <Navigate to='/auth' />} />
 
-              {/* <Route path="*" element={<Navigate to="/home" />} /> */}
+              <Route path="*" element={<Navigate to="/home" />} />
               <Route path="/home" element={<HomePage />} />
               <Route path="/auth/*" element={<AuthPage />} />
 
