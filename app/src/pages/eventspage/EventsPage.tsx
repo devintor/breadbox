@@ -34,6 +34,10 @@ export function EventsPage() {
   
   const [events, setEvents] = useState<QueryDocumentSnapshot[]>();
 
+  const createEvent = async () => {
+    
+  }
+
   const fetchEvents = async () => {
       
       try {
@@ -51,6 +55,8 @@ export function EventsPage() {
   useEffect(() => {
       fetchEvents();
   }, []);
+
+  
 
   // return (
   //   <div className="flex min-h-screen w-full flex-col">
@@ -125,7 +131,7 @@ export function EventsPage() {
                     Export
                   </span>
                 </Button>
-                <Button size="sm" className="h-8 gap-1" onClick={() => navigate("/events/edit")}>
+                <Button size="sm" className="h-8 gap-1" onClick={() => navigate(`/admin/events/${window.btoa("New Event")}/edit`)}>
                   <PlusCircle className="h-3.5 w-3.5" />
                   <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                     Add Event
