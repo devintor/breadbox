@@ -24,15 +24,20 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/ta
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
 import { useEffect, useState } from "react";
-import { QueryDocumentSnapshot, collection, getDocs } from "firebase/firestore";
+import { QueryDocumentSnapshot, collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { db } from "../../config/firebase-config";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 
 export function EventsPage() {
   const navigate = useNavigate();
   
   const [events, setEvents] = useState<QueryDocumentSnapshot[]>();
+
+  const createEvent = async () => {
+    
+  }
 
   const fetchEvents = async () => {
       
@@ -47,10 +52,30 @@ export function EventsPage() {
       }
       
   };
+
+  async function handleDeleteEvent(eventId: string) {
+
+    try {
+        deleteDoc(doc(db, "Events", eventId));
+        console.log("Event deleted successfully!");
+        toast.success("Event deleted successfully!", {
+            position: "top-center",
+        });
+
+        fetchEvents();
+    } catch (error: any) {
+        console.error("Error deleting event:", error.message);
+        toast.error(error.message, {
+            position: "bottom-center",
+          });
+    }
+}
   
   useEffect(() => {
       fetchEvents();
   }, []);
+
+  
 
   // return (
   //   <div className="flex min-h-screen w-full flex-col">
@@ -125,7 +150,7 @@ export function EventsPage() {
                     Export
                   </span>
                 </Button>
-                <Button size="sm" className="h-8 gap-1" onClick={() => navigate("/events/edit")}>
+                <Button size="sm" className="h-8 gap-1" onClick={() => navigate(`/admin/events/${window.btoa("New Event")}/edit`)}>
                   <PlusCircle className="h-3.5 w-3.5" />
                   <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                     Add Event
@@ -227,7 +252,7 @@ export function EventsPage() {
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuItem onClick={() => navigate(`/admin/events/${window.btoa(event.id)}/edit`)}>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleDeleteEvent(event.id)}>Delete</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>

@@ -23,7 +23,7 @@ import { Textarea } from "../../components/ui/textarea"
 import { useNavigate, useParams } from "react-router-dom"
 import { FormEvent, useEffect, useState } from "react"
 import { db } from "../../config/firebase-config"
-import { Timestamp, doc, getDoc, updateDoc } from "firebase/firestore"
+import { Timestamp, deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore"
 import { toast } from "react-toastify"
 import { DateTimePicker } from "../../components/ui/datetimepicker"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../../components/ui/alert-dialog"
@@ -31,7 +31,10 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 
   export function EventsEditPage() {
     const { eventB64 } = useParams();
-    const eventId = window.atob(eventB64 || "");
+    const [eventId, setEventId] = useState<string>(window.atob(eventB64 || ""));
+
+    
+    const isNewEvent: boolean = (eventId == "New Event");
     
     const navigate = useNavigate();
     
@@ -40,6 +43,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
     const [imageQuery, setImageQuery] = useState<string>();
     const [imagesSearched, setImagesSearched] = useState<any>();
     const [imageSelected, setImageSelected] = useState<string>();
+
     
     const getClosestFutureMonday = () => {
         const now = new Date();
@@ -49,7 +53,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
         return closestMonday;
     };
 
-    const resetEvent = () => {
+    const resetEventLocal = () => {
         const closestMonday = getClosestFutureMonday();
         // const startTime = Timestamp.fromDate(new Date(closestMonday.getTime() + 19 * 60 * 60 * 1000))
         // const endTime = Timestamp.fromDate(new Date(closestMonday.getTime() + 21.1 * 60 * 60 * 1000))
@@ -113,8 +117,8 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
     
 
     useEffect(() => {
-        resetEvent();
-        fetchEvent();
+        resetEventLocal();
+        !isNewEvent && fetchEvent();
     }, []);
 
 
@@ -135,6 +139,51 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
           });
         }
       };
+
+    async function handleCreateEvent() {
+        try {
+          if (eventLocal.title != "") {
+            await setDoc(doc(db, "Events", eventLocal.title), {
+              ...eventLocal,
+            });
+            toast.success("Event Saved Successfully!!", {
+                position: "top-center",
+              });
+            navigate("/admin/events")
+          } else {
+            toast.error("This event needs a title", {
+                position: "bottom-center",
+              });
+            }
+          
+        } catch (error: any) {
+          toast.error(error.message, {
+            position: "bottom-center",
+          });
+        }
+      };
+
+    async function handleDeleteEvent() {
+        if (!isNewEvent) {
+            try {
+                deleteDoc(doc(db, "Events", eventId));
+                console.log("Event deleted successfully!");
+                toast.success("Event deleted successfully!", {
+                    position: "top-center",
+                });
+                
+                
+                navigate('/admin/events');
+            } catch (error: any) {
+                console.error("Error deleting event:", error.message);
+                toast.error(error.message, {
+                    position: "bottom-center",
+                  });
+            }
+        } else {
+            navigate('/admin/events');
+        }
+    }
 
     function handleImageSearch(e: FormEvent) {
         e.preventDefault();
@@ -181,11 +230,11 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
                                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction>Delete</AlertDialogAction>
+                                    <AlertDialogAction onClick={handleDeleteEvent}>Delete</AlertDialogAction>
                                 </AlertDialogFooter>
                             </AlertDialogContent>
                         </AlertDialog>
-                        <Button size="sm" onClick={handleSaveEvent}>Save Event</Button>
+                        <Button size="sm" onClick={isNewEvent ? handleCreateEvent : handleSaveEvent}>Save Event</Button>
                     </div>
                 </div>
                 <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
