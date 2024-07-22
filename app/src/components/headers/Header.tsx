@@ -154,6 +154,7 @@ export function Header() {
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
+                name="search"
                 placeholder="Doesn't do anything..."
                 className="pl-8 left-2.5 sm:w-[300px] md:w-[200px] lg:w-[300px]"
               />
