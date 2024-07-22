@@ -149,6 +149,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
             toast.success("Event Saved Successfully!!", {
                 position: "top-center",
               });
+            navigate("/admin/events")
           } else {
             toast.error("This event needs a title", {
                 position: "bottom-center",
