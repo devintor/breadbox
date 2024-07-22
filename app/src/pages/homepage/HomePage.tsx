@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { auth, db } from "../../config/firebase-config";
 import { deleteUser, GoogleAuthProvider, reauthenticateWithPopup } from "firebase/auth";
-import { doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, deleteDoc, QueryDocumentSnapshot, collection, getDocs } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -44,8 +44,27 @@ import { Badge } from "../../components/ui/badge";
 
 
 export function HomePage() {
+  const navigate = useNavigate();
+  
+  const [events, setEvents] = useState<QueryDocumentSnapshot[]>();
+  
+  const fetchEvents = async () => {
+      
+    try {
+        const eventsRef = collection(db, "Events");
+        const eventsSnap = await getDocs(eventsRef);
+        setEvents(eventsSnap.docs);
+
+        console.log(events);
+    } catch (error: any) {
+        console.error(error.message);
+    }
     
-    return (
+  };
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+  return (
     <div className="flex min-h-screen w-full flex-col">
       {/* <Profile /> */}
       <div className="w-full py-20 lg:py-40">
@@ -65,6 +84,17 @@ export function HomePage() {
               </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {events?.map((event) => (
+                <div key={event.id} className="flex flex-col gap-2">
+                  <div className="bg-muted rounded-md aspect-video mb-2">
+                    <img src={event.data().image} style={{ height: "100%", objectFit: 'cover', objectPosition: 'center' }}/>
+                  </div>
+                  <h3 className="text-xl tracking-tight">{event.data().title}</h3>
+                  <p className="text-muted-foreground text-base">
+                    {event.data().description}
+                  </p>
+                </div>
+              ))}
               <div className="flex flex-col gap-2">
                 <div className="bg-muted rounded-md aspect-video mb-2"></div>
                 <h3 className="text-xl tracking-tight">Pay supplier invoices</h3>
