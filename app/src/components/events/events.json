@@ -23,7 +23,7 @@
     "Blue Origin",
     "Other"
   ],
-  "weightings": {
+  "weights": {
     "food": 1.75,
     "time": 0.75,
     "company": 1.25,

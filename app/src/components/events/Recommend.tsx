@@ -1,4 +1,4 @@
-import { QueryDocumentSnapshot, collection, doc, getDoc, getDocs, query, setDoc, where } from "firebase/firestore";
+import { QueryDocumentSnapshot, collection, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
 import { db } from "../../config/firebase-config";
 import { useEffect, useState } from "react";
 import data from "./events.json"
@@ -10,15 +10,17 @@ export function Recommend() {
 
     function averageRating(queryDocs: QueryDocumentSnapshot[] | undefined) {
         var sum = 0;
+        var count = 0;
 
         if (queryDocs) {
             queryDocs.forEach((event) => {
                 if (event.data().ratings) {
                     sum += average(event.data().ratings);
+                    count++;
                 }
               });
             
-            return (sum / queryDocs.length);
+            return (Math.round(sum / count * 1000) / 1000);
         } else {
             return 0;
         }
@@ -30,7 +32,7 @@ export function Recommend() {
         array.forEach(element => {
           sum += element;
         });
-    
+        
         return (sum / array.length);
       }
     
@@ -40,9 +42,11 @@ export function Recommend() {
             const querySnap = await getDocs(query(eventsRef, where(field, "==", option)));
             
             if (querySnap.docs.length != 0) {
-                // console.log(querySnap.docs);
+                console.log(querySnap.docs);
                 const avgRating = averageRating(querySnap.docs);
-                return avgRating
+                return avgRating;
+            } else {
+                return 2.5; // no data yet -> mid rating
             }
         } catch (error: any) {
             console.error(error.message);
@@ -53,22 +57,18 @@ export function Recommend() {
         // Get the average rating for the option
         const averageRating = await getAverageRating(field, option);
         // Get the weighting for the attribute
-        const weighting = data.weightings[field];
+        const weight = data.weights[field];
     
         if (averageRating) {
-            const value = averageRating * weighting / 5;
-            console.log(`Average ${field}: "${option}" rating ${averageRating}, weighting ${weighting}, and value ${value}`)
+            const value = Math.round(averageRating * weight / 5 * 1000) / 1000;
+            console.log(`Average ${field}: "${option}" rating ${averageRating}, weighting ${weight}, and value ${value}`)
             // console.log(eventRecValuesLocal)
             setEventRecValuesLocal((prevEventRecValuesLocal: any) => ({
                 ...prevEventRecValuesLocal,
                 [field]: {
-                    ...prevEventRecValuesLocal[field],
                     [option]: value
                 }
             }))
-            await setDoc(doc(db, "Events", "Event Rec Values"), {  
-                ...eventRecValuesLocal
-            })
         }
         // Calculate the value of the option
       }
@@ -77,9 +77,15 @@ export function Recommend() {
         
         for (const food of data.foodOptions) {
             await calculateValue("food", food);
+            await updateDoc(doc(db, "Recommendations", "Event Rec Values"), {  
+                ...eventRecValuesLocal
+            })
         }
         for (const company of data.companyOptions) {
             await calculateValue("company", company);
+            await updateDoc(doc(db, "Recommendations", "Event Rec Values"), {  
+                ...eventRecValuesLocal
+            })
         }
 
         console.log(eventRecValuesLocal)
@@ -88,7 +94,7 @@ export function Recommend() {
 
       const fetchValues = async () => {
         try {
-            const valuesRef = doc(db, "Events", "Event Rec Values");
+            const valuesRef = doc(db, "Recommendations", "Event Rec Values");
             const valuesSnap = await getDoc(valuesRef);
             console.log(valuesSnap.data())
             setEventRecValuesLocal((prevEventRecValuesLocal: any) => ({
@@ -105,7 +111,10 @@ export function Recommend() {
       
     useEffect(()=> {
         fetchValues().then(() => {
-            console.log(eventRecValuesLocal)
+            // console.log(eventRecValuesLocal)
+            updateDoc(doc(db, "Recommendations", "Event Rec Values"), {  
+                ...eventRecValuesLocal
+            })
         })
     }, [])
 
