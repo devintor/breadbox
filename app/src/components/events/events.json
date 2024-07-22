@@ -1,0 +1,32 @@
+{
+  "foodOptions": [
+    "Chick Fil-A",
+    "Chipotle",
+    "Panera",
+    "Jersey Mike's",
+    "Panda Express",
+    "Raising Canes",
+    "Snacks",
+    "Other",
+    "None"
+  ],
+  "companyOptions": [
+    "Google",
+    "Meta",
+    "Apple",
+    "SpaceX",
+    "Boeing",
+    "McKinsey",
+    "Deloitte",
+    "Accenture",
+    "BCG",
+    "Blue Origin",
+    "Other"
+  ],
+  "weightings": {
+    "foodOption": 1.75,
+    "timeOfDay": 1.5,
+    "indoorOrOutdoor": 0.75,
+    "duration": 1
+  }
+}
