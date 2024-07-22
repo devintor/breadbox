@@ -23,7 +23,7 @@ import { Textarea } from "../../components/ui/textarea"
 import { useNavigate, useParams } from "react-router-dom"
 import { FormEvent, useEffect, useState } from "react"
 import { db } from "../../config/firebase-config"
-import { Timestamp, doc, getDoc, setDoc, updateDoc } from "firebase/firestore"
+import { Timestamp, deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore"
 import { toast } from "react-toastify"
 import { DateTimePicker } from "../../components/ui/datetimepicker"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../../components/ui/alert-dialog"
@@ -33,6 +33,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
     const { eventB64 } = useParams();
     const [eventId, setEventId] = useState<string>(window.atob(eventB64 || ""));
 
+    
     const isNewEvent: boolean = (eventId == "New Event");
     
     const navigate = useNavigate();
@@ -161,6 +162,28 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
         }
       };
 
+    async function handleDeleteEvent() {
+        if (!isNewEvent) {
+            try {
+                deleteDoc(doc(db, "Events", eventId));
+                console.log("Event deleted successfully!");
+                toast.success("Event deleted successfully!", {
+                    position: "top-center",
+                });
+                
+                
+                navigate('/admin/events');
+            } catch (error: any) {
+                console.error("Error deleting event:", error.message);
+                toast.error(error.message, {
+                    position: "bottom-center",
+                  });
+            }
+        } else {
+            navigate('/admin/events');
+        }
+    }
+
     function handleImageSearch(e: FormEvent) {
         e.preventDefault();
         if (!imageQuery) {
@@ -206,7 +229,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
                                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction>Delete</AlertDialogAction>
+                                    <AlertDialogAction onClick={handleDeleteEvent}>Delete</AlertDialogAction>
                                 </AlertDialogFooter>
                             </AlertDialogContent>
                         </AlertDialog>
