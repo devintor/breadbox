@@ -28,6 +28,7 @@ import { toast } from "react-toastify"
 import { DateTimePicker } from "../../components/ui/datetimepicker"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../../components/ui/alert-dialog"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../../components/ui/dialog"
+import data from "../../components/events/events.json"
 
   export function EventsEditPage() {
     const { eventB64 } = useParams();
@@ -383,17 +384,9 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                                                 <SelectValue placeholder={eventLocal.company || "Select company"} />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="Google">Google</SelectItem>
-                                                <SelectItem value="Meta">Meta</SelectItem>
-                                                <SelectItem value="Apple">Apple</SelectItem>
-                                                <SelectItem value="SpaceX">SpaceX</SelectItem>
-                                                <SelectItem value="Boeing">Boeing</SelectItem>
-                                                <SelectItem value="McKinsey">McKinsey</SelectItem>
-                                                <SelectItem value="Deloitte">Deloitte</SelectItem>
-                                                <SelectItem value="Accenture">Accenture</SelectItem>
-                                                <SelectItem value="BCG">BCG</SelectItem>
-                                                <SelectItem value="Blue Origin">Blue Origin</SelectItem>
-                                                <SelectItem value="other">Other</SelectItem>
+                                                {data.companyOptions.map((option: string) => (
+                                                    <SelectItem value={option}>{option}</SelectItem>
+                                                ))}
                                             </SelectContent>
                                         </Select>
                                     </div>
@@ -421,15 +414,9 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                                                 <SelectValue placeholder={eventLocal.food || "Select food"} />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="Chick Fil-A">Chick Fil-A</SelectItem>
-                                                <SelectItem value="Chipotle">Chipotle</SelectItem>
-                                                <SelectItem value="Panera">Panera</SelectItem>
-                                                <SelectItem value="Jersey Mike's">Jersey Mike's</SelectItem>
-                                                <SelectItem value="Panda Express">Panda Express</SelectItem>
-                                                <SelectItem value="Raising Canes">Raising Canes</SelectItem>
-                                                <SelectItem value="Snacks">Snacks</SelectItem>
-                                                <SelectItem value="Other">Other</SelectItem>
-                                                <SelectItem value="None">None</SelectItem>
+                                                {data.foodOptions.map((option: string) => (
+                                                    <SelectItem value={option}>{option}</SelectItem>
+                                                ))}
                                             </SelectContent>
                                         </Select>
                                     </div>
