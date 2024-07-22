@@ -41,12 +41,28 @@ import {
 import { Header } from "../../components/headers/Header";
 import Profile from "../../components/auth/Profile";
 import { Badge } from "../../components/ui/badge";
+import { Card } from "../../components/ui/card";
 
 
 export function HomePage() {
   const navigate = useNavigate();
   
   const [events, setEvents] = useState<QueryDocumentSnapshot[]>();
+
+  const [rating, setRating] = useState(0)
+  const handleRating = (rate: number) => {
+    setRating(rate)
+  }
+
+  const average = (array: number[]) => {
+    var sum = 0;
+    
+    array.forEach(element => {
+      sum += element;
+    });
+
+    return (sum / array.length);
+  }
   
   const fetchEvents = async () => {
       
@@ -83,66 +99,26 @@ export function HomePage() {
                 </p>
               </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 px-4 py-12 md:px-6 lg:px-8">
               {events?.map((event) => (
-                <div key={event.id} className="flex flex-col gap-2">
-                  <div className="bg-muted rounded-md aspect-video mb-2">
-                    <img src={event.data().image} style={{ height: "100%", objectFit: 'cover', objectPosition: 'center' }}/>
-                  </div>
-                  <h3 className="text-xl tracking-tight">{event.data().title}</h3>
-                  <p className="text-muted-foreground text-base">
-                    {event.data().description}
-                  </p>
+                <div key={event.id} className="bg-background rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                  <Link to="#" className="block">
+                    <img src={event.data().image || '/placeholder.svg'} alt={event.data().title} width={600} height={400} className="w-full h-48 object-cover" />
+                    <div className="p-4">
+                      <h3 className="text-lg font-semibold mb-2">{event.data().title}</h3>
+                      <p className="text-muted-foreground text-sm mb-4">
+                        {event.data().description}
+                      </p>
+                      <p className="text-muted-foreground text-sm mb-4">
+                          Avg Rating: {event.data().ratings && average(event.data().ratings)}
+                      </p>
+                      <Button variant="link">Read More</Button>
+                    </div>
+                  </Link>
+                  
                 </div>
               ))}
-              <div className="flex flex-col gap-2">
-                <div className="bg-muted rounded-md aspect-video mb-2"></div>
-                <h3 className="text-xl tracking-tight">Pay supplier invoices</h3>
-                <p className="text-muted-foreground text-base">
-                  Our goal is to streamline SMB trade, making it easier and faster
-                  than ever.
-                </p>
-              </div>
-              <div className="flex flex-col gap-2">
-                <div className="bg-muted rounded-md aspect-video mb-2"></div>
-                <h3 className="text-xl tracking-tight">Pay supplier invoices</h3>
-                <p className="text-muted-foreground text-base">
-                  Our goal is to streamline SMB trade, making it easier and faster
-                  than ever.
-                </p>
-              </div>
-              <div className="flex flex-col gap-2">
-                <div className="bg-muted rounded-md aspect-video mb-2"></div>
-                <h3 className="text-xl tracking-tight">Pay supplier invoices</h3>
-                <p className="text-muted-foreground text-base">
-                  Our goal is to streamline SMB trade, making it easier and faster
-                  than ever.
-                </p>
-              </div>
-              <div className="flex flex-col gap-2">
-                <div className="bg-muted rounded-md aspect-video mb-2"></div>
-                <h3 className="text-xl tracking-tight">Pay supplier invoices</h3>
-                <p className="text-muted-foreground text-base">
-                  Our goal is to streamline SMB trade, making it easier and faster
-                  than ever.
-                </p>
-              </div>
-              <div className="flex flex-col gap-2">
-                <div className="bg-muted rounded-md aspect-video mb-2"></div>
-                <h3 className="text-xl tracking-tight">Pay supplier invoices</h3>
-                <p className="text-muted-foreground text-base">
-                  Our goal is to streamline SMB trade, making it easier and faster
-                  than ever.
-                </p>
-              </div>
-              <div className="flex flex-col gap-2">
-                <div className="bg-muted rounded-md aspect-video mb-2"></div>
-                <h3 className="text-xl tracking-tight">Pay supplier invoices</h3>
-                <p className="text-muted-foreground text-base">
-                  Our goal is to streamline SMB trade, making it easier and faster
-                  than ever.
-                </p>
-              </div>
+
             </div>
           </div>
         </div>
