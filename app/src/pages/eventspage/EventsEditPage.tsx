@@ -51,9 +51,9 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 
     const resetEvent = () => {
         const closestMonday = getClosestFutureMonday();
-        const startTime = Timestamp.fromDate(new Date(closestMonday.getTime() + 19 * 60 * 60 * 1000))
-        const endTime = Timestamp.fromDate(new Date(closestMonday.getTime() + 21.1 * 60 * 60 * 1000))
-        const duration = Math.ceil((endTime.seconds - startTime.seconds) / 1800) * 30;
+        // const startTime = Timestamp.fromDate(new Date(closestMonday.getTime() + 19 * 60 * 60 * 1000))
+        // const endTime = Timestamp.fromDate(new Date(closestMonday.getTime() + 21.1 * 60 * 60 * 1000))
+        // const duration = Math.ceil((endTime.seconds - startTime.seconds) / 1800) * 30;
         setEventLocal({
             title: '',
             description: '',
@@ -66,7 +66,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
             image: '',
             status: "Upcoming"
         })
-        console.log(`This event is ${duration} minutes long (${duration / 60} hours)`)
+        // console.log(`This event is ${duration} minutes long (${duration / 60} hours)`)
     }
     
 
@@ -87,6 +87,12 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
         }
     
     };
+    
+    const durationCalc = (startTime: Timestamp, endTime: Timestamp) => {
+        const duration = Math.ceil((endTime.seconds - startTime.seconds) / 1800) * 30;
+        console.log(duration);
+        return duration;
+    }
 
     const fetchImages = async (imageQuery: string) => {
         try {
@@ -159,9 +165,26 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                         Upcoming
                     </Badge>
                     <div className="hidden items-center gap-2 md:ml-auto md:flex">
-                        <Button variant="outline" size="sm">
-                            Discard
-                        </Button>
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button variant="outline" size="sm">
+                                    Delete
+                                </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        This action cannot be undone. This will permanently delete this event
+                                        and remove its data from our servers.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction>Delete</AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
                         <Button size="sm" onClick={handleSaveEvent}>Save Event</Button>
                     </div>
                 </div>
@@ -242,16 +265,18 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                                                 value={eventLocal.startTime ? new Date(eventLocal.startTime.seconds * 1000) : undefined}
                                                 onChange={(date) => {
                                                     const startTime = date && Timestamp.fromDate(date);
+                                                    console.log(startTime)
                                                     if (startTime && (startTime.seconds > eventLocal.endTime.seconds)) {
                                                         setEventLocal((prevEventLocal: any) => ({
                                                             ...prevEventLocal,
                                                             startTime: startTime,
                                                             endTime: startTime
                                                         }));
-                                                    } else {
+                                                    } else if (startTime) {
                                                         setEventLocal((prevEventLocal: any) => ({
                                                             ...prevEventLocal,
                                                             startTime: startTime,
+                                                            duration: durationCalc(startTime, eventLocal.endTime)
                                                         }));
                                                     }
                                                 }}
@@ -271,10 +296,11 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                                                             startTime: endTime,
                                                             endTime: endTime
                                                         }));
-                                                    } else {
+                                                    } else if (endTime) {
                                                         setEventLocal((prevEventLocal: any) => ({
                                                             ...prevEventLocal,
                                                             endTime: endTime,
+                                                            duration: durationCalc(eventLocal.startTime, endTime)
                                                         }));
                                                     }
                                                 }}
@@ -283,34 +309,6 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
                                         </div>
                                     </div>
                                 </div>
-                            </CardContent>
-                        </Card>
-                        <Card x-chunk="dashboard-07-chunk-5">
-                            <CardHeader>
-                                <CardTitle>Delete Event</CardTitle>
-                                <CardDescription>
-                                    Mistakenly created or cancelled
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <AlertDialog>
-                                    <AlertDialogTrigger>
-                                        <Button variant="secondary">Delete Event</Button>
-                                    </AlertDialogTrigger>
-                                    <AlertDialogContent>
-                                        <AlertDialogHeader>
-                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                            <AlertDialogDescription>
-                                                This action cannot be undone. This will permanently delete this event
-                                                and remove its data from our servers.
-                                            </AlertDialogDescription>
-                                        </AlertDialogHeader>
-                                        <AlertDialogFooter>
-                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                            <Button variant="destructive" asChild><AlertDialogAction>Delete</AlertDialogAction></Button>
-                                        </AlertDialogFooter>
-                                    </AlertDialogContent>
-                                </AlertDialog>
                             </CardContent>
                         </Card>
                     </div>
