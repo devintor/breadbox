@@ -205,7 +205,7 @@ import { Recommend } from "../../components/events/Recommend"
     return (
 
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
-        <Recommend/>
+        
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
             {eventLocal ? (
             <div className="mx-auto grid max-w-[59rem] flex-1 auto-rows-max gap-4">
@@ -241,6 +241,7 @@ import { Recommend } from "../../components/events/Recommend"
                                 </AlertDialogFooter>
                             </AlertDialogContent>
                         </AlertDialog>
+                        <Recommend/>
                         <Button size="sm" onClick={isNewEvent ? handleCreateEvent : handleSaveEvent}>Save Event</Button>
                     </div>
                 </div>
@@ -392,7 +393,7 @@ import { Recommend } from "../../components/events/Recommend"
                                             </SelectTrigger>
                                             <SelectContent>
                                                 {data.companyOptions.map((option: string) => (
-                                                    <SelectItem value={option}>{option}</SelectItem>
+                                                    <SelectItem key={option} value={option}>{option}</SelectItem>
                                                 ))}
                                             </SelectContent>
                                         </Select>
@@ -422,7 +423,7 @@ import { Recommend } from "../../components/events/Recommend"
                                             </SelectTrigger>
                                             <SelectContent>
                                                 {data.foodOptions.map((option: string) => (
-                                                    <SelectItem value={option}>{option}</SelectItem>
+                                                    <SelectItem key={option} value={option}>{option}</SelectItem>
                                                 ))}
                                             </SelectContent>
                                         </Select>
@@ -461,7 +462,7 @@ import { Recommend } from "../../components/events/Recommend"
                                             
                                             
                                             <Label htmlFor="image-query">Image Query</Label>
-                                           <form id="image-query" onSubmit={(e: FormEvent) => handleImageSearch(e)}>
+                                           <form name="image-query" onSubmit={(e: FormEvent) => handleImageSearch(e)}>
                                             <Input
                                                     id="image-query"
                                                     type="text"
@@ -515,7 +516,7 @@ import { Recommend } from "../../components/events/Recommend"
                                             )}
 
                                         <DialogFooter>
-                                            <DialogClose>
+                                            <DialogClose asChild>
                                             <Button
                                                 type="submit"
                                                 onClick={()=>{
