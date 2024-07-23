@@ -9,21 +9,23 @@ export function Recommend() {
 
 
     function averageRating(queryDocs: QueryDocumentSnapshot[] | undefined) {
-        var sum = 0;
-        var repeatCount = 0;
         var count = 0;
+        var rating = 0;
 
         if (queryDocs) {
             queryDocs.forEach((event) => {
-                repeatCount++;
-                if (event.data().ratings) {
-                    count++;
-                    sum += average(event.data().ratings) - repeatCount;
+                count++;
+                if (event.data().ratings?.length > 0) {
+                    rating+= average(event.data().ratings)
+                } else {
+                    console.log(`No rating, returning 2.5 for ${event.data().company}`)
+                    rating+= 2.5
                 }
               });
+              
             
-              sum && console.log(`${sum}  ${count}`)
-            return (Math.round(sum / count * 1000) / 1000);
+              rating && console.log(`${rating}  ${count}`)
+            return (Math.round(rating / count * 1000) / 1000);
         } else {
             return 0;
         }
@@ -73,6 +75,8 @@ export function Recommend() {
                 },
                 calculatedAt: Timestamp.fromDate(new Date())
             }))
+        } else {
+            console.log(`No rating for: ${option}`)
         }
         // Calculate the value of the option
       }
@@ -85,6 +89,7 @@ export function Recommend() {
             await calculateValue("food", food);
         }
         for (const company of data.companyOptions) {
+            console.log(company);
             await calculateValue("company", company);
         }
         

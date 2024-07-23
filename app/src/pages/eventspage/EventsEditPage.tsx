@@ -46,6 +46,8 @@ import { Recommend } from "../../components/events/Recommend"
     const [imagesSearched, setImagesSearched] = useState<any>();
     const [imageSelected, setImageSelected] = useState<string>();
 
+    const [ratingProjection, setRatingProjection] = useState<number>(0);
+
     
     const getClosestFutureMonday = () => {
         const now = new Date();
@@ -125,6 +127,23 @@ import { Recommend } from "../../components/events/Recommend"
         resetEventLocal();
         !isNewEvent && fetchEvent();
     }, []);
+
+    useEffect(() => {
+        if (eventLocal) {
+            let localVals = window.localStorage.getItem("Event Rec Values")
+            if (localVals && localVals != "{}") { // null and empty check
+                let parsedVals = JSON.parse(localVals);
+                let proj = 2
+                if (eventLocal.food) {
+                    proj += parsedVals.food[eventLocal.food];
+                }
+                if (eventLocal.company) {
+                    proj += parsedVals.company[eventLocal.company];
+                }
+                setRatingProjection(proj);
+            }
+        }
+    }, [eventLocal])
 
 
 
@@ -219,6 +238,9 @@ import { Recommend } from "../../components/events/Recommend"
                     </h1>
                     <Badge variant="outline" className="ml-auto sm:ml-0">
                         Upcoming
+                    </Badge>
+                    <Badge variant="outline" className="ml-auto sm:ml-0">
+                        Projected Rating: {ratingProjection}
                     </Badge>
                     <div className="hidden items-center gap-2 md:ml-auto md:flex">
                         <AlertDialog>
