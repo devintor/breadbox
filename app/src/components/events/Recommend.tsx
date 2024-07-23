@@ -89,12 +89,29 @@ export function Recommend() {
 
     const fetchValues = async () => {
         try {
-            const valuesRef = doc(db, "Recommendations", "Event Rec Values");
-            const valuesSnap = await getDoc(valuesRef);
-            setEventRecValuesLocal((prevEventRecValuesLocal: any) => ({
-                ...prevEventRecValuesLocal,
-                ...valuesSnap.data(),
-            }))
+            let localVals = window.localStorage.getItem("Event Rec Values")
+            
+            if (localVals && localVals != "{}") { // null and empty check
+                // if there is data in local storage
+                setEventRecValuesLocal({
+                    ...JSON.parse(localVals)
+                })
+            } else {
+                // if there is no data in local storage
+                const valuesRef = doc(db, "Recommendations", "Event Rec Values");
+                const valuesSnap = await getDoc(valuesRef);
+                console.log(valuesSnap.data())
+                if (JSON.stringify(valuesSnap.data()) != '{}') {
+                    setEventRecValuesLocal((prevEventRecValuesLocal: any) => ({
+                        ...prevEventRecValuesLocal,
+                        ...valuesSnap.data(),
+                    }))
+                } else {
+                    calculateValues();
+                }
+
+            }
+            
         } catch (error: any) {
           console.error(error.message);
         }
@@ -113,21 +130,13 @@ export function Recommend() {
     useEffect( () => {
         fetchValues()
     }, [])
-      
-    // useEffect(()=> {
-    //     fetchValues()
-    //     .then(calculateValues)
-    //     .then(() => {
-    //         // console.log(eventRecValuesLocal)
-    //         updateDoc(doc(db, "Recommendations", "Event Rec Values"), {  
-    //             ...eventRecValuesLocal
-    //         })
-    //     })
-    // }, [])
 
       return (
         <>
-        <Button size="sm" onClick={async () => {await calculateValues()}}>Recommend</Button>
+        <Button size="sm" onClick={async () => {
+            await calculateValues();
+            window.localStorage.setItem("Event Rec Values", JSON.stringify(eventRecValuesLocal))
+        }}>Recommend</Button>
         </>
       )
       
