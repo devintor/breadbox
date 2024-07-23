@@ -1,4 +1,4 @@
-import { QueryDocumentSnapshot, collection, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
+import { QueryDocumentSnapshot, Timestamp, collection, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
 import { db } from "../../config/firebase-config";
 import { useEffect, useState } from "react";
 import data from "./events.json"
@@ -70,13 +70,16 @@ export function Recommend() {
                 [field]: {
                     ...prevEventRecValuesLocal[field],
                     [option]: value
-                }
+                },
+                calculatedAt: Timestamp.fromDate(new Date())
             }))
         }
         // Calculate the value of the option
       }
 
     const calculateValues = async () => {
+        window.localStorage.removeItem("Event Rec Values");
+        setEventRecValuesLocal({});
         
         for (const food of data.foodOptions) {
             await calculateValue("food", food);
