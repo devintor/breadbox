@@ -23,10 +23,11 @@
     "Blue Origin",
     "Other"
   ],
-  "weightings": {
-    "foodOption": 1.75,
-    "timeOfDay": 1.5,
-    "indoorOrOutdoor": 0.75,
-    "duration": 1
+  "weights": {
+    "food": 1.75,
+    "time": 0.75,
+    "company": 1.25,
+    "setting": 0.75,
+    "duration": 0.5
   }
 }

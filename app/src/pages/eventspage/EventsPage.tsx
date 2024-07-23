@@ -35,10 +35,6 @@ export function EventsPage() {
   
   const [events, setEvents] = useState<QueryDocumentSnapshot[]>();
 
-  const createEvent = async () => {
-    
-  }
-
   const fetchEvents = async () => {
       
       try {
