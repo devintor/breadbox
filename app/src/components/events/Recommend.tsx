@@ -124,6 +124,7 @@ export function Recommend() {
             await updateDoc(doc(db, "Recommendations", "Event Rec Values"), {  
                 ...eventRecValuesLocal
             })
+            window.localStorage.setItem("Event Rec Values", JSON.stringify(eventRecValuesLocal))
         })()
     }, [eventRecValuesLocal])
 
