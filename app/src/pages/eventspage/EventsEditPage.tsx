@@ -147,7 +147,7 @@ import { Recommend } from "../../components/events/Recommend"
             }
         }
         console.log(eventLocal)
-    }, [eventLocal?.company, eventLocal?.food, eventLocal?.time, eventLocal?.duration, eventLocal?.setting])
+    }, [eventLocal?.company, eventLocal?.food, eventLocal?.time, eventLocal?.duration, eventLocal?.setting, eventLocal?.place])
 
     useEffect(() => {
         // live update status, time, duration
@@ -155,6 +155,8 @@ import { Recommend } from "../../components/events/Recommend"
             const startDate = eventLocal.startTime.toDate();
             const endDate = eventLocal.endTime.toDate();
             const currentDate = new Date();
+            const hours = startDate.getHours();
+            const place = eventLocal.place;
             
             var status = "Upcoming"
             if (startDate < currentDate && endDate < currentDate) {
@@ -162,9 +164,7 @@ import { Recommend } from "../../components/events/Recommend"
             } else if (startDate < currentDate && endDate > currentDate) {
                 status = "Active"
             }
-
-            const hours = startDate.getHours();
-            console.log(hours)
+            
             var time = "Overnight";
             if (hours >= 18) {
                 time = "Evening";
@@ -173,11 +173,18 @@ import { Recommend } from "../../components/events/Recommend"
             } else if (hours >= 6) {
                 time = "Morning";
             }
+
+            var setting = "Indoor";
+            if (new RegExp("quad", 'i').test(place)) {
+                setting = "Outdoor";
+            }
+
             setEventLocal((prev:any) => ({
                 ...prev,
                 duration: durationCalc(eventLocal.startTime, eventLocal.endTime),
                 time: time,
-                status: status
+                status: status,
+                setting: setting
             }))
         }
     }, [eventLocal?.startTime, eventLocal?.endTime, eventLocal?.place])
