@@ -66,7 +66,7 @@ function App() {
               
             
               <Route path="/admin/events" element={isAuth ? <EventsPage /> : <Navigate to='/auth' />} />
-              <Route path="/admin/events/:eventB64/edit" element={isAuth ? <EventsEditPage /> : <Navigate to='/auth' />} />
+              <Route path="/admin/events/:eventParam/edit" element={isAuth ? <EventsEditPage /> : <Navigate to='/auth' />} />
               <Route path="/admin/members" element={isAuth ? <MembersPage /> : <Navigate to='/auth' />} />
               <Route path="/admin/dashboard" element={isAuth ? <Dashboard /> : <Navigate to='/auth' />} />
               <Route path="/admin/transactions" element={isAuth ? <Transactions /> : <Navigate to='/auth' />} />

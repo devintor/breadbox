@@ -32,8 +32,8 @@ import data from "../../components/events/events.json"
 import { Recommend } from "../../components/events/Recommend"
 
   export function EventsEditPage() {
-    const { eventB64 } = useParams();
-    const [eventId, setEventId] = useState<string>(window.atob(eventB64 || ""));
+    const { eventParam } = useParams();
+    const eventId:string = eventParam || '';
 
     
     const isNewEvent: boolean = (eventId == "New Event");
