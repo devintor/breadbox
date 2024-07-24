@@ -34,9 +34,6 @@ import { Recommend } from "../../components/events/Recommend"
   export function EventsEditPage() {
     const { eventParam } = useParams();
     const eventId:string = eventParam || '';
-
-    
-    const isNewEvent: boolean = (eventId == "New Event");
     
     const navigate = useNavigate();
     
@@ -125,7 +122,7 @@ import { Recommend } from "../../components/events/Recommend"
 
     useEffect(() => {
         resetEventLocal();
-        !isNewEvent && fetchEvent();
+        fetchEvent();
     }, []);
 
     useEffect(() => {
@@ -217,48 +214,21 @@ import { Recommend } from "../../components/events/Recommend"
         }
       };
 
-    async function handleCreateEvent() {
-        try {
-          if (eventLocal.title != "") {
-            await addDoc(collection(db, "Events"), {
-              ...eventLocal,
-            });
-            toast.success("Event Saved Successfully!!", {
-                position: "top-center",
-              });
-            navigate("/admin/events")
-          } else {
-            toast.error("This event needs a title", {
-                position: "bottom-center",
-              });
-            }
-          
-        } catch (error: any) {
-          toast.error(error.message, {
-            position: "bottom-center",
-          });
-        }
-      };
-
     async function handleDeleteEvent() {
-        if (!isNewEvent) {
-            try {
-                deleteDoc(doc(db, "Events", eventId));
-                console.log("Event deleted successfully!");
-                toast.success("Event deleted successfully!", {
-                    position: "top-center",
-                });
-                
-                
-                navigate('/admin/events');
-            } catch (error: any) {
-                console.error("Error deleting event:", error.message);
-                toast.error(error.message, {
-                    position: "bottom-center",
-                  });
-            }
-        } else {
+        try {
+            deleteDoc(doc(db, "Events", eventId));
+            console.log("Event deleted successfully!");
+            toast.success("Event deleted successfully!", {
+                position: "top-center",
+            });
+            
+            
             navigate('/admin/events');
+        } catch (error: any) {
+            console.error("Error deleting event:", error.message);
+            toast.error(error.message, {
+                position: "bottom-center",
+                });
         }
     }
 
@@ -316,7 +286,7 @@ import { Recommend } from "../../components/events/Recommend"
                             </AlertDialogContent>
                         </AlertDialog>
                         <Recommend/>
-                        <Button size="sm" onClick={isNewEvent ? handleCreateEvent : handleSaveEvent}>Save Event</Button>
+                        <Button size="sm" onClick={handleSaveEvent}>Save Event</Button>
                     </div>
                 </div>
                 <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">

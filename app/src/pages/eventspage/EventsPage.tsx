@@ -51,8 +51,8 @@ export function EventsPage() {
 
   async function handleCreateEvent() {
     try {
-        await addDoc(collection(db, "Events"), {
-        }).then((event) => navigate(`/admin/events/${event.id}/edit`))
+        await addDoc(collection(db, "Events"), {})
+        .then((event) => navigate(`/admin/events/${event.id}/edit`))
     } catch (error: any) {
       toast.error(error.message, {
         position: "bottom-center",
@@ -219,7 +219,7 @@ export function EventsPage() {
                         }
                       </TableCell>
                       <TableCell className="font-medium">
-                        {event.id}
+                        {event.data().title}
                       </TableCell>
                       <TableCell>
                           <Badge variant="outline">{event.data().status}</Badge>
