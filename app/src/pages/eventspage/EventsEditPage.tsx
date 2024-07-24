@@ -150,9 +150,19 @@ import { Recommend } from "../../components/events/Recommend"
     }, [eventLocal?.company, eventLocal?.food, eventLocal?.time, eventLocal?.duration, eventLocal?.setting])
 
     useEffect(() => {
-        // live update duration and time
+        // live update status, time, duration
         if (eventLocal?.startTime && eventLocal?.endTime) {
             const startDate = eventLocal.startTime.toDate();
+            const endDate = eventLocal.endTime.toDate();
+            const currentDate = new Date();
+            
+            var status = "Upcoming"
+            if (startDate < currentDate && endDate < currentDate) {
+                status = "Past"
+            } else if (startDate < currentDate && endDate > currentDate) {
+                status = "Active"
+            }
+
             const hours = startDate.getHours();
             console.log(hours)
             var time = "Overnight";
@@ -166,7 +176,8 @@ import { Recommend } from "../../components/events/Recommend"
             setEventLocal((prev:any) => ({
                 ...prev,
                 duration: durationCalc(eventLocal.startTime, eventLocal.endTime),
-                time: time
+                time: time,
+                status: status
             }))
         }
     }, [eventLocal?.startTime, eventLocal?.endTime, eventLocal?.place])
