@@ -23,11 +23,25 @@
     "Blue Origin",
     "Other"
   ],
+  "timeOptions": [
+    "Morning",
+    "Afternoon",
+    "Evening",
+    "Overnight"
+  ],
+  "settingOptions": [
+    "Indoor",
+    "Outdoor"
+  ],
+  "statusOptions": [
+    "Upcoming",
+    "Active",
+    "Past"
+  ],
   "weights": {
     "food": 1.75,
     "time": 0.75,
-    "company": 1.25,
-    "setting": 0.75,
-    "duration": 0.5
+    "company": 1.75,
+    "setting": 0.75
   }
 }
