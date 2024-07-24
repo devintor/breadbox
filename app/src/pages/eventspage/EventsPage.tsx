@@ -24,7 +24,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/ta
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
 import { useEffect, useState } from "react";
-import { QueryDocumentSnapshot, collection, deleteDoc, doc, getDocs } from "firebase/firestore";
+import { QueryDocumentSnapshot, addDoc, collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { db } from "../../config/firebase-config";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -47,6 +47,17 @@ export function EventsPage() {
           console.error(error.message);
       }
       
+  };
+
+  async function handleCreateEvent() {
+    try {
+        await addDoc(collection(db, "Events"), {})
+        .then((event) => navigate(`/admin/events/${event.id}/edit`))
+    } catch (error: any) {
+      toast.error(error.message, {
+        position: "bottom-center",
+      });
+    }
   };
 
   async function handleDeleteEvent(eventId: string) {
@@ -146,7 +157,7 @@ export function EventsPage() {
                     Export
                   </span>
                 </Button>
-                <Button size="sm" className="h-8 gap-1" onClick={() => navigate(`/admin/events/${window.btoa("New Event")}/edit`)}>
+                <Button size="sm" className="h-8 gap-1" onClick={() => handleCreateEvent()}>
                   <PlusCircle className="h-3.5 w-3.5" />
                   <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                     Add Event
@@ -208,7 +219,7 @@ export function EventsPage() {
                         }
                       </TableCell>
                       <TableCell className="font-medium">
-                        {event.id}
+                        {event.data().title}
                       </TableCell>
                       <TableCell>
                           <Badge variant="outline">{event.data().status}</Badge>
@@ -247,7 +258,7 @@ export function EventsPage() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem onClick={() => navigate(`/admin/events/${window.btoa(event.id)}/edit`)}>Edit</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => navigate(`/admin/events/${event.id}/edit`)}>Edit</DropdownMenuItem>
                             <DropdownMenuItem onClick={() => handleDeleteEvent(event.id)}>Delete</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
