@@ -9,25 +9,49 @@ export function Recommend() {
 
 
     function averageRating(queryDocs: QueryDocumentSnapshot[] | undefined) {
-        var count = 0;
-        var rating = 0;
+        var rCount = 0;
+        var qCount = 0;
+        var sum = 0;
 
-        if (queryDocs) {
-            queryDocs.forEach((event) => {
-                count++;
-                if (event.data().ratings?.length > 0) {
-                    rating+= average(event.data().ratings)
-                } else {
-                    console.log(`No rating, returning 2.5 for ${event.data().company}`)
-                    rating+= 2.5
+        // try
+        try {
+            // for every event
+            queryDocs?.forEach((event) => {
+                // if this event has ratings
+                if (event.data().ratings) {
+                    // accumulate this event's average rating into sum
+                    sum += average(event.data().ratings)
+                    // increment num events rated
+                    rCount++;
+                    // increment num events queried
+                    qCount++;
                 }
-              });
-              
-            
-              rating && console.log(`${rating}  ${count}`)
-            return (Math.round(rating / count * 1000) / 1000);
-        } else {
-            return 0;
+                // ELSE if this event doesnt have ratings 
+                else {
+                    // increment num events queried
+                    qCount++;
+                }
+            })
+
+            // if there were events rated
+            if (rCount > 0) {
+                // the average rating is sum ratings / num ratings
+                var avgRating = (sum / rCount);
+                // adjust to reduce value of repeated attributes
+                var adjRating = avgRating * (Math.pow((4.5 + avgRating)/10, qCount - 1))
+                
+                return adjRating ;
+            }
+            // ELSE if there were no events rated,
+            else {
+                return 2.5;
+            }
+
+        }
+        // catch
+        catch (error: any) {
+            // throw err
+            console.error(error.message);
         }
       }
     
