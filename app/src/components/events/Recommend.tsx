@@ -8,7 +8,7 @@ export function Recommend() {
     const [eventRecValuesLocal, setEventRecValuesLocal] = useState<any>({});
 
 
-    function averageRating(queryDocs: QueryDocumentSnapshot[] | undefined) {
+    function averageRating(queryDocs: QueryDocumentSnapshot[] | undefined, adjust: boolean) {
         var rCount = 0;
         var qCount = 0;
         var sum = 0;
@@ -24,9 +24,13 @@ export function Recommend() {
 
             if (rCount > 0) {
                 var avgRating = (sum / rCount);
-                var adjRating = avgRating * (Math.pow((4.5 + avgRating)/10, qCount - 1))
-                var adjRating = Math.round(adjRating * 1000) / 1000;
-                return adjRating;
+                if (adjust) {
+                    var adjRating = avgRating * (Math.pow((4.5 + avgRating)/10, qCount - 1))
+                    var adjRating = Math.round(adjRating * 1000) / 1000;
+                    return adjRating
+                }
+                var avgRating = Math.round(avgRating * 1000) / 1000;
+                return avgRating;
             }
             else {
                 return 2.5;
@@ -55,7 +59,7 @@ export function Recommend() {
             
             if (querySnap.docs.length != 0) {
                 console.log(querySnap.docs);
-                const avgRating = averageRating(querySnap.docs);
+                const avgRating = averageRating(querySnap.docs, field=="food");
                 return avgRating;
             } else {
                 return 2.5; // no data yet -> mid rating
@@ -98,6 +102,14 @@ export function Recommend() {
         for (const company of data.companyOptions) {
             console.log(company);
             await calculateValue("company", company);
+        }
+        for (const time of data.timeOptions) {
+            console.log(time);
+            await calculateValue("time", time);
+        }
+        for (const setting of data.settingOptions) {
+            console.log(setting);
+            await calculateValue("setting", setting);
         }
         
       }
