@@ -25,7 +25,8 @@ export function Recommend() {
             if (rCount > 0) {
                 var avgRating = (sum / rCount);
                 var adjRating = avgRating * (Math.pow((4.5 + avgRating)/10, qCount - 1))
-                return adjRating ;
+                var adjRating = Math.round(adjRating * 1000) / 1000;
+                return adjRating;
             }
             else {
                 return 2.5;
