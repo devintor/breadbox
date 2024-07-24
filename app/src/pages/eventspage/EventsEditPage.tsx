@@ -23,7 +23,7 @@ import { Textarea } from "../../components/ui/textarea"
 import { useNavigate, useParams } from "react-router-dom"
 import { FormEvent, useEffect, useState } from "react"
 import { db } from "../../config/firebase-config"
-import { Timestamp, deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore"
+import { Timestamp, addDoc, collection, deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore"
 import { toast } from "react-toastify"
 import { DateTimePicker } from "../../components/ui/datetimepicker"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../../components/ui/alert-dialog"
@@ -220,7 +220,7 @@ import { Recommend } from "../../components/events/Recommend"
     async function handleCreateEvent() {
         try {
           if (eventLocal.title != "") {
-            await setDoc(doc(db, "Events", eventLocal.title), {
+            await addDoc(collection(db, "Events"), {
               ...eventLocal,
             });
             toast.success("Event Saved Successfully!!", {
