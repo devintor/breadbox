@@ -1,4 +1,4 @@
-import { QueryDocumentSnapshot, collection, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
+import { QueryDocumentSnapshot, Timestamp, collection, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
 import { db } from "../../config/firebase-config";
 import { useEffect, useState } from "react";
 import data from "./events.json"
@@ -9,23 +9,31 @@ export function Recommend() {
 
 
     function averageRating(queryDocs: QueryDocumentSnapshot[] | undefined) {
+        var rCount = 0;
+        var qCount = 0;
         var sum = 0;
-        var repeatCount = 0;
-        var count = 0;
 
-        if (queryDocs) {
-            queryDocs.forEach((event) => {
-                repeatCount++;
+        try {
+            queryDocs?.forEach((event) => {
+                qCount++;
                 if (event.data().ratings) {
-                    count++;
-                    sum += average(event.data().ratings) - repeatCount;
+                    sum += average(event.data().ratings)
+                    rCount++;
                 }
-              });
-            
-              sum && console.log(`${sum}  ${count}`)
-            return (Math.round(sum / count * 1000) / 1000);
-        } else {
-            return 0;
+            })
+
+            if (rCount > 0) {
+                var avgRating = (sum / rCount);
+                var adjRating = avgRating * (Math.pow((4.5 + avgRating)/10, qCount - 1))
+                return adjRating ;
+            }
+            else {
+                return 2.5;
+            }
+
+        }
+        catch (error: any) {
+            console.error(error.message);
         }
       }
     
@@ -70,18 +78,24 @@ export function Recommend() {
                 [field]: {
                     ...prevEventRecValuesLocal[field],
                     [option]: value
-                }
+                },
+                calculatedAt: Timestamp.fromDate(new Date())
             }))
+        } else {
+            console.log(`No rating for: ${option}`)
         }
         // Calculate the value of the option
       }
 
     const calculateValues = async () => {
+        window.localStorage.removeItem("Event Rec Values");
+        setEventRecValuesLocal({});
         
         for (const food of data.foodOptions) {
             await calculateValue("food", food);
         }
         for (const company of data.companyOptions) {
+            console.log(company);
             await calculateValue("company", company);
         }
         
@@ -89,12 +103,29 @@ export function Recommend() {
 
     const fetchValues = async () => {
         try {
-            const valuesRef = doc(db, "Recommendations", "Event Rec Values");
-            const valuesSnap = await getDoc(valuesRef);
-            setEventRecValuesLocal((prevEventRecValuesLocal: any) => ({
-                ...prevEventRecValuesLocal,
-                ...valuesSnap.data(),
-            }))
+            let localVals = window.localStorage.getItem("Event Rec Values")
+            
+            if (localVals && localVals != "{}") { // null and empty check
+                // if there is data in local storage
+                setEventRecValuesLocal({
+                    ...JSON.parse(localVals)
+                })
+            } else {
+                // if there is no data in local storage
+                const valuesRef = doc(db, "Recommendations", "Event Rec Values");
+                const valuesSnap = await getDoc(valuesRef);
+                console.log(valuesSnap.data())
+                if (JSON.stringify(valuesSnap.data()) != '{}') {
+                    setEventRecValuesLocal((prevEventRecValuesLocal: any) => ({
+                        ...prevEventRecValuesLocal,
+                        ...valuesSnap.data(),
+                    }))
+                } else {
+                    calculateValues();
+                }
+
+            }
+            
         } catch (error: any) {
           console.error(error.message);
         }
@@ -107,27 +138,20 @@ export function Recommend() {
             await updateDoc(doc(db, "Recommendations", "Event Rec Values"), {  
                 ...eventRecValuesLocal
             })
+            window.localStorage.setItem("Event Rec Values", JSON.stringify(eventRecValuesLocal))
         })()
     }, [eventRecValuesLocal])
 
     useEffect( () => {
         fetchValues()
     }, [])
-      
-    // useEffect(()=> {
-    //     fetchValues()
-    //     .then(calculateValues)
-    //     .then(() => {
-    //         // console.log(eventRecValuesLocal)
-    //         updateDoc(doc(db, "Recommendations", "Event Rec Values"), {  
-    //             ...eventRecValuesLocal
-    //         })
-    //     })
-    // }, [])
 
       return (
         <>
-        <Button size="sm" onClick={async () => {await calculateValues()}}>Recommend</Button>
+        <Button size="sm" onClick={async () => {
+            await calculateValues();
+            window.localStorage.setItem("Event Rec Values", JSON.stringify(eventRecValuesLocal))
+        }}>Recommend</Button>
         </>
       )
       
