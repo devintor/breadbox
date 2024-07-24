@@ -65,7 +65,7 @@ export function Recommend() {
         }
       }
     
-    const calculateValue = async (field: "time" | "setting" | "duration" | "food" | "company", option: string) => {
+    const calculateValue = async (field: "time" | "setting" | "food" | "company", option: string) => {
         // Get the average rating for the option
         const averageRating = await getAverageRating(field, option);
         // Get the weighting for the attribute
