@@ -13,44 +13,26 @@ export function Recommend() {
         var qCount = 0;
         var sum = 0;
 
-        // try
         try {
-            // for every event
             queryDocs?.forEach((event) => {
-                // if this event has ratings
+                qCount++;
                 if (event.data().ratings) {
-                    // accumulate this event's average rating into sum
                     sum += average(event.data().ratings)
-                    // increment num events rated
                     rCount++;
-                    // increment num events queried
-                    qCount++;
-                }
-                // ELSE if this event doesnt have ratings 
-                else {
-                    // increment num events queried
-                    qCount++;
                 }
             })
 
-            // if there were events rated
             if (rCount > 0) {
-                // the average rating is sum ratings / num ratings
                 var avgRating = (sum / rCount);
-                // adjust to reduce value of repeated attributes
                 var adjRating = avgRating * (Math.pow((4.5 + avgRating)/10, qCount - 1))
-                
                 return adjRating ;
             }
-            // ELSE if there were no events rated,
             else {
                 return 2.5;
             }
 
         }
-        // catch
         catch (error: any) {
-            // throw err
             console.error(error.message);
         }
       }
