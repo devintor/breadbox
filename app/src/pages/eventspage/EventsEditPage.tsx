@@ -133,12 +133,18 @@ import { Recommend } from "../../components/events/Recommend"
             let localVals = window.localStorage.getItem("Event Rec Values")
             if (localVals && localVals != "{}") { // null and empty check
                 let parsedVals = JSON.parse(localVals);
-                let proj = 2
+                let proj = 0
                 if (eventLocal.food) {
                     proj += parsedVals.food[eventLocal.food];
                 }
                 if (eventLocal.company) {
                     proj += parsedVals.company[eventLocal.company];
+                }
+                if (eventLocal.setting) {
+                    proj += parsedVals.setting[eventLocal.setting];
+                }
+                if (eventLocal.time) {
+                    proj += parsedVals.time[eventLocal.time];
                 }
                 setEventLocal((prev: any) => ({
                     ...prev,
