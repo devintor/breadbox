@@ -46,8 +46,6 @@ import { Recommend } from "../../components/events/Recommend"
     const [imagesSearched, setImagesSearched] = useState<any>();
     const [imageSelected, setImageSelected] = useState<string>();
 
-    const [ratingProjection, setRatingProjection] = useState<number>(0);
-
     
     const getClosestFutureMonday = () => {
         const now = new Date();
@@ -61,7 +59,6 @@ import { Recommend } from "../../components/events/Recommend"
         const closestMonday = getClosestFutureMonday();
         const startTime = Timestamp.fromDate(new Date(closestMonday.getTime() + 19 * 60 * 60 * 1000))
         const endTime = Timestamp.fromDate(new Date(closestMonday.getTime() + 21 * 60 * 60 * 1000))
-        const duration = Math.ceil((endTime.seconds - startTime.seconds) / 1800) * 30;
         setEventLocal({
             startTime: startTime,
             endTime: endTime,
@@ -72,10 +69,13 @@ import { Recommend } from "../../components/events/Recommend"
             description: '',
             company: '',
             place: '',
-            duration: prevEventLocal.startTime - prevEventLocal.endTime,
+            duration: '',
+            time: '',
+            setting: '',
+            ratingProjection: '',
             food: '',
             image: '',
-            status: "Upcoming"
+            status: ''
         }))
         // console.log(`This event is ${duration} minutes long (${duration / 60} hours)`)
     }
@@ -140,10 +140,36 @@ import { Recommend } from "../../components/events/Recommend"
                 if (eventLocal.company) {
                     proj += parsedVals.company[eventLocal.company];
                 }
-                setRatingProjection(proj);
+                setEventLocal((prev: any) => ({
+                    ...prev,
+                    ratingProjection: proj
+                }));
             }
         }
-    }, [eventLocal])
+        console.log(eventLocal)
+    }, [eventLocal?.company, eventLocal?.food, eventLocal?.time, eventLocal?.duration, eventLocal?.setting])
+
+    useEffect(() => {
+        // live update duration and time
+        if (eventLocal?.startTime && eventLocal?.endTime) {
+            const startDate = eventLocal.startTime.toDate();
+            const hours = startDate.getHours();
+            console.log(hours)
+            var time = "Overnight";
+            if (hours >= 18) {
+                time = "Evening";
+            } else if (hours >= 12) {
+                time = "Afternoon";
+            } else if (hours >= 6) {
+                time = "Morning";
+            }
+            setEventLocal((prev:any) => ({
+                ...prev,
+                duration: durationCalc(eventLocal.startTime, eventLocal.endTime),
+                time: time
+            }))
+        }
+    }, [eventLocal?.startTime, eventLocal?.endTime, eventLocal?.place])
 
 
 
@@ -153,6 +179,8 @@ import { Recommend } from "../../components/events/Recommend"
             await updateDoc(doc(db, "Events", eventId), {
               ...eventLocal,
               duration: durationCalc(eventLocal.startTime, eventLocal.endTime)
+            //   time: timeCalc(eventLocal.startTime)
+            // setting: settingCalc
             });
           }
           toast.success("Event Saved Successfully!!", {
@@ -240,7 +268,7 @@ import { Recommend } from "../../components/events/Recommend"
                         Upcoming
                     </Badge>
                     <Badge variant="outline" className="ml-auto sm:ml-0">
-                        Projected Rating: {ratingProjection}
+                        Projected Rating: {eventLocal.ratingProjection}
                     </Badge>
                     <div className="hidden items-center gap-2 md:ml-auto md:flex">
                         <AlertDialog>
@@ -344,8 +372,6 @@ import { Recommend } from "../../components/events/Recommend"
                                                 value={eventLocal.startTime ? new Date(eventLocal.startTime.seconds * 1000) : new Date()}
                                                 onChange={(date) => {
                                                     const startTime = date && Timestamp.fromDate(date);
-                                                    console.log(startTime)
-                                                    console.log(eventLocal)
                                                     if (startTime && startTime.seconds && (startTime.seconds > eventLocal.endTime.seconds)) {
                                                         setEventLocal((prevEventLocal: any) => ({
                                                             ...prevEventLocal,
@@ -356,7 +382,6 @@ import { Recommend } from "../../components/events/Recommend"
                                                         setEventLocal((prevEventLocal: any) => ({
                                                             ...prevEventLocal,
                                                             startTime: startTime,
-                                                            duration: durationCalc(startTime, eventLocal.endTime)
                                                         }));
                                                     }
                                                 }}
