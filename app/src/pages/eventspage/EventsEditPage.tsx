@@ -283,7 +283,7 @@ import { Recommend } from "../../components/events/Recommend"
                         {eventLocal.title || "Untitled Event"}
                     </h1>
                     <Badge variant="outline" className="ml-auto sm:ml-0">
-                        Upcoming
+                        {eventLocal.status}
                     </Badge>
                     <Badge variant="outline" className="ml-auto sm:ml-0">
                         Projected Rating: {eventLocal.ratingProjection}

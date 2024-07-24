@@ -211,7 +211,7 @@ export function EventsPage() {
                         {event.id}
                       </TableCell>
                       <TableCell>
-                          <Badge variant="outline">Upcoming</Badge>
+                          <Badge variant="outline">{event.data().status}</Badge>
                         </TableCell>
                     <TableCell className="hidden md:table-cell">
                       {event.data().food || "None"}
