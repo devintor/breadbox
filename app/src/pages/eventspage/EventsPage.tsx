@@ -28,6 +28,7 @@ import { QueryDocumentSnapshot, addDoc, collection, deleteDoc, doc, getDocs } fr
 import { db } from "../../config/firebase-config";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../../components/ui/alert-dialog";
 
 
 export function EventsPage() {
@@ -245,23 +246,38 @@ export function EventsPage() {
                       {event.data().place || "TBD"}
                       </TableCell>
                       <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem onClick={() => navigate(`/admin/events/${event.id}/edit`)}>Edit</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleDeleteEvent(event.id)}>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        <AlertDialog>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                aria-haspopup="true"
+                                size="icon"
+                                variant="ghost"
+                              >
+                                <MoreHorizontal className="h-4 w-4" />
+                                <span className="sr-only">Toggle menu</span>
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              <DropdownMenuItem onClick={() => navigate(`/admin/events/${event.id}/edit`)}>Edit</DropdownMenuItem>
+                              <DropdownMenuItem><AlertDialogTrigger>Delete</AlertDialogTrigger></DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    This action cannot be undone. This will permanently delete this event
+                                    and remove its data from our servers.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => handleDeleteEvent(event.id)}>Delete</AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       </TableCell>
                     </TableRow>
                   ))}
