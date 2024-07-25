@@ -38,6 +38,8 @@ import { Recommend } from "../../components/events/Recommend"
     const navigate = useNavigate();
     
     const [eventLocal, setEventLocal] = useState<any>();
+    // const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+    // const [endDate, setEndDate] = useState<Date | undefined>(undefined)
 
     const [imageQuery, setImageQuery] = useState<string>();
     const [imagesSearched, setImagesSearched] = useState<any>();
@@ -57,8 +59,8 @@ import { Recommend } from "../../components/events/Recommend"
         const startTime = Timestamp.fromDate(new Date(closestMonday.getTime() + 19 * 60 * 60 * 1000))
         const endTime = Timestamp.fromDate(new Date(closestMonday.getTime() + 21 * 60 * 60 * 1000))
         setEventLocal({
-            startTime: startTime,
-            endTime: endTime,
+            startTime: undefined,
+            endTime: undefined,
         })
         setEventLocal((prevEventLocal: any) => ({
             ...prevEventLocal,
@@ -149,17 +151,46 @@ import { Recommend } from "../../components/events/Recommend"
                 }));
             }
         }
-        console.log(eventLocal)
     }, [eventLocal?.company, eventLocal?.food, eventLocal?.time, eventLocal?.duration, eventLocal?.setting, eventLocal?.place])
 
     useEffect(() => {
+        const startDate = eventLocal?.startTime?.toDate();
+        const endDate = eventLocal?.endTime?.toDate();
+
+        // if start is set, but end isnt
+        if (startDate && !endDate) {
+            console.log('adjust')
+            // set endDate to 2 hours after startDate
+            const adjStart = startDate.setHours(startDate.getHours() + 19)
+            console.log(adjStart)
+
+            const adjEnd = startDate.setHours(startDate.getHours() + 2)
+            console.log(adjEnd)
+
+            setEventLocal((prev: any) => ({
+                ...prev,
+                startTime: Timestamp.fromMillis(adjStart),
+                endTime: Timestamp.fromMillis(adjEnd),
+            }))
+        }
+
         // live update status, time, duration
-        if (eventLocal?.startTime && eventLocal?.endTime) {
-            const startDate = eventLocal.startTime.toDate();
-            const endDate = eventLocal.endTime.toDate();
+        if (startDate && endDate) {
+            // if start is after end, make end 2hrs after start
+            if (startDate > endDate) {
+                var adjEnd = startDate;
+                adjEnd.setHours(adjEnd.getHours() + 2);
+
+                setEventLocal((prev: any) => ({
+                    ...prev,
+                    endTime: Timestamp.fromDate(adjEnd),
+                }))
+            }
+            
             const currentDate = new Date();
             const hours = startDate.getHours();
             const place = eventLocal.place;
+            
             
             var status = "Upcoming"
             if (startDate < currentDate && endDate < currentDate) {
@@ -192,16 +223,15 @@ import { Recommend } from "../../components/events/Recommend"
         }
     }, [eventLocal?.startTime, eventLocal?.endTime, eventLocal?.place])
 
-
+    useEffect(() => {
+        eventLocal && console.log(eventLocal)
+    }, [eventLocal])
 
     async function handleSaveEvent() {
         try {
           if (eventLocal) {
             await updateDoc(doc(db, "Events", eventId), {
               ...eventLocal,
-              duration: durationCalc(eventLocal.startTime, eventLocal.endTime)
-            //   time: timeCalc(eventLocal.startTime)
-            // setting: settingCalc
             });
           }
           toast.success("Event Saved Successfully!!", {
@@ -363,20 +393,14 @@ import { Recommend } from "../../components/events/Recommend"
                                             <Label>Start Time</Label>
                                             <DateTimePicker
                                                 granularity="minute"
-                                                value={eventLocal.startTime ? new Date(eventLocal.startTime.seconds * 1000) : new Date()}
+                                                value={eventLocal.startTime?.toDate()}
                                                 onChange={(date) => {
-                                                    const startTime = date && Timestamp.fromDate(date);
-                                                    if (startTime && startTime.seconds && (startTime.seconds > eventLocal.endTime.seconds)) {
-                                                        setEventLocal((prevEventLocal: any) => ({
-                                                            ...prevEventLocal,
-                                                            startTime: startTime,
-                                                            endTime: startTime
-                                                        }));
-                                                    } else if (startTime) {
-                                                        setEventLocal((prevEventLocal: any) => ({
-                                                            ...prevEventLocal,
-                                                            startTime: startTime,
-                                                        }));
+                                                    if (date) {
+                                                        const startTime = Timestamp.fromDate(date);
+                                                        setEventLocal((prev: any) => ({
+                                                            ...prev,
+                                                            startTime: startTime
+                                                        }))
                                                     }
                                                 }}
                                                 hourCycle={12}
@@ -386,21 +410,14 @@ import { Recommend } from "../../components/events/Recommend"
                                             <Label>End Time</Label>
                                             <DateTimePicker
                                                 granularity="minute"
-                                                value={eventLocal.endTime ? new Date(eventLocal.endTime.seconds * 1000) : new Date()}
+                                                value={eventLocal.endTime?.toDate()}
                                                 onChange={(date) => {
-                                                    const endTime = date && Timestamp.fromDate(date);
-                                                    if (endTime && (endTime.seconds <= eventLocal.startTime.seconds)) {
-                                                        setEventLocal((prevEventLocal: any) => ({
-                                                            ...prevEventLocal,
-                                                            startTime: endTime,
+                                                    if (date) {
+                                                        const endTime = Timestamp.fromDate(date);
+                                                        setEventLocal((prev: any) => ({
+                                                            ...prev,
                                                             endTime: endTime
-                                                        }));
-                                                    } else if (endTime) {
-                                                        setEventLocal((prevEventLocal: any) => ({
-                                                            ...prevEventLocal,
-                                                            endTime: endTime,
-                                                            duration: durationCalc(eventLocal.startTime, endTime)
-                                                        }));
+                                                        }))
                                                     }
                                                 }}
                                                 hourCycle={12}
