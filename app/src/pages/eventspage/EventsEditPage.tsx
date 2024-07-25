@@ -331,9 +331,6 @@ import { Recommend } from "../../components/events/Recommend"
                         <Card x-chunk="dashboard-07-chunk-0">
                             <CardHeader>
                                 <CardTitle>Event Details</CardTitle>
-                                <CardDescription>
-                                Lipsum dolor sit amet, consectetur adipiscing elit
-                                </CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <div className="grid gap-6">
@@ -343,7 +340,7 @@ import { Recommend } from "../../components/events/Recommend"
                                             id="title"
                                             type="text"
                                             className="w-full"
-                                            defaultValue={eventLocal.title}
+                                            defaultValue={eventLocal.title!="Untitled Event" ? eventLocal.title : ''}
                                             placeholder="Enter a title"
                                             onChange={(e)=>{
                                                 setEventLocal((prevEventLocal: any) => ({
@@ -374,9 +371,6 @@ import { Recommend } from "../../components/events/Recommend"
                         <Card x-chunk="dashboard-07-chunk-1">
                             <CardHeader>
                                 <CardTitle>Location and Time</CardTitle>
-                                <CardDescription>
-                                    Lipsum dolor sit amet, consectetur adipiscing elit
-                                </CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <div className="grid gap-6">
@@ -499,9 +493,7 @@ import { Recommend } from "../../components/events/Recommend"
                         <Card className="overflow-hidden" x-chunk="dashboard-07-chunk-4">
                             <CardHeader>
                                 <CardTitle>Event Images</CardTitle>
-                                <CardDescription>
-                                        Lipsum dolor sit amet, consectetur adipiscing elit
-                                </CardDescription>
+
                             </CardHeader>
                             <CardContent>
                                 <div className="grid gap-2">
