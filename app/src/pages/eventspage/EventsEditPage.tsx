@@ -292,11 +292,15 @@ import { Recommend } from "../../components/events/Recommend"
                         {eventLocal.title || "Untitled Event"}
                     </h1>
                     <Badge variant="outline" className="ml-auto sm:ml-0">
-                        {eventLocal.status}
+                        {eventLocal.status || "Draft"}
                     </Badge>
+                    
+                    {eventLocal.projection?.rating ? (
                     <Badge variant="outline" className="ml-auto sm:ml-0">
-                        Projected Rating ({(new Date(eventLocal.projection?.calculatedAt?.seconds * 1000)).toLocaleDateString()}): {eventLocal.projection?.rating}
+                        {`Projected Rating ${(new Date(eventLocal.projection?.calculatedAt?.seconds * 1000)).toLocaleDateString()}: ${eventLocal.projection?.rating}`}
                     </Badge>
+                    ) : ('')}
+                    
                     <div className="hidden items-center gap-2 md:ml-auto md:flex">
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
