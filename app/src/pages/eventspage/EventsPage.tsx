@@ -52,7 +52,7 @@ export function EventsPage() {
 
   async function handleCreateEvent() {
     try {
-        await addDoc(collection(db, "Events"), {})
+        await addDoc(collection(db, "Events"), {title: "Untitled Event", status: "Draft"})
         .then((event) => navigate(`/admin/events/${event.id}/edit`))
     } catch (error: any) {
       toast.error(error.message, {
