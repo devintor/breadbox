@@ -151,17 +151,46 @@ import { Recommend } from "../../components/events/Recommend"
                 }));
             }
         }
-        console.log(eventLocal)
     }, [eventLocal?.company, eventLocal?.food, eventLocal?.time, eventLocal?.duration, eventLocal?.setting, eventLocal?.place])
 
     useEffect(() => {
+        const startDate = eventLocal?.startTime?.toDate();
+        const endDate = eventLocal?.endTime?.toDate();
+
+        // if start is set, but end isnt
+        if (startDate && !endDate) {
+            console.log('adjust')
+            // set endDate to 2 hours after startDate
+            const adjStart = startDate.setHours(startDate.getHours() + 19)
+            console.log(adjStart)
+
+            const adjEnd = startDate.setHours(startDate.getHours() + 2)
+            console.log(adjEnd)
+
+            setEventLocal((prev: any) => ({
+                ...prev,
+                startTime: Timestamp.fromMillis(adjStart),
+                endTime: Timestamp.fromMillis(adjEnd),
+            }))
+        }
+
         // live update status, time, duration
-        if (eventLocal?.startTime && eventLocal?.endTime) {
-            const startDate = eventLocal.startTime.toDate();
-            const endDate = eventLocal.endTime.toDate();
+        if (startDate && endDate) {
+            // if start is after end, make end 2hrs after start
+            if (startDate > endDate) {
+                var adjEnd = startDate;
+                adjEnd.setHours(adjEnd.getHours() + 2);
+
+                setEventLocal((prev: any) => ({
+                    ...prev,
+                    endTime: Timestamp.fromDate(adjEnd),
+                }))
+            }
+            
             const currentDate = new Date();
             const hours = startDate.getHours();
             const place = eventLocal.place;
+            
             
             var status = "Upcoming"
             if (startDate < currentDate && endDate < currentDate) {
@@ -194,16 +223,15 @@ import { Recommend } from "../../components/events/Recommend"
         }
     }, [eventLocal?.startTime, eventLocal?.endTime, eventLocal?.place])
 
-
+    useEffect(() => {
+        eventLocal && console.log(eventLocal)
+    }, [eventLocal])
 
     async function handleSaveEvent() {
         try {
           if (eventLocal) {
             await updateDoc(doc(db, "Events", eventId), {
               ...eventLocal,
-              duration: durationCalc(eventLocal.startTime, eventLocal.endTime)
-            //   time: timeCalc(eventLocal.startTime)
-            // setting: settingCalc
             });
           }
           toast.success("Event Saved Successfully!!", {
