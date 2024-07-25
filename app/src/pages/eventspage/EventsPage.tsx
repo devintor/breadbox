@@ -261,7 +261,7 @@ export function EventsPage() {
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Actions</DropdownMenuLabel>
                               <DropdownMenuItem onClick={() => navigate(`/admin/events/${event.id}/edit`)}>Edit</DropdownMenuItem>
-                              <DropdownMenuItem><AlertDialogTrigger>Delete</AlertDialogTrigger></DropdownMenuItem>
+                              <AlertDialogTrigger asChild><DropdownMenuItem>Delete</DropdownMenuItem></AlertDialogTrigger>
                             </DropdownMenuContent>
                           </DropdownMenu>
                           <AlertDialogContent>
