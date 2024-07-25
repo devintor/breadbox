@@ -16,6 +16,6 @@ https://docs.google.com/document/d/1GVyPnsLH5rL8adoctKH-0OlUI8M6l8hnTNk9tjbzFpM/
 
 now run (in breadbox/api)
 
-npm run start
+node index.cjs
 
 and the server should run at http://localhost:3000/
