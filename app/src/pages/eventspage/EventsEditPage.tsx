@@ -147,7 +147,10 @@ import { Recommend } from "../../components/events/Recommend"
                 }
                 setEventLocal((prev: any) => ({
                     ...prev,
-                    ratingProjection: proj
+                    projection: {
+                        rating: proj,
+                        calculatedAt: parsedVals.calculatedAt
+                    }
                 }));
             }
         }
@@ -292,7 +295,7 @@ import { Recommend } from "../../components/events/Recommend"
                         {eventLocal.status}
                     </Badge>
                     <Badge variant="outline" className="ml-auto sm:ml-0">
-                        Projected Rating: {eventLocal.ratingProjection}
+                        Projected Rating ({(new Date(eventLocal.projection?.calculatedAt?.seconds * 1000)).toLocaleDateString()}): {eventLocal.projection?.rating}
                     </Badge>
                     <div className="hidden items-center gap-2 md:ml-auto md:flex">
                         <AlertDialog>
