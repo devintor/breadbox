@@ -9,6 +9,7 @@ import { collection, getDocs, where, query, Query, QueryConstraint } from "fireb
 export function FuzzyishSearchBar() {
     const [userInput, setUserInput] = useState<string>();
     const [searchTerms, setSearchTerms] = useState<any>();
+    const [queryCondition, setQueryCondition] = useState<QueryConstraint[]>();
 
     // async function constructQuery(matchedOptions: any) {
     //     const eventsRef = collection(db, "Events");
@@ -39,17 +40,17 @@ export function FuzzyishSearchBar() {
         // const queryCondition: QueryConstraint[] = searchTerms.map(([]) => 
         //     where(field, "in", )
         // )
-        if (searchTerms) {
-            Object.entries(searchTerms).map(([field, option]) => {
-                if (typeof field === 'string' && Array.isArray(option)) {
-                    if (option.length > 0) {
-                        console.log(`${field}: ${option}`);
-                    }
-                } else {
-                    console.error(`Invalid data type for search terms: expected string, got ${typeof field} and ${typeof option}`);
-                }
-            })
-        }
+        // if (searchTerms) {
+        //     setQueryCondition(Object.entries(searchTerms).map(([field, option]) => {
+        //         if (typeof field === 'string' && Array.isArray(option)) {
+        //             if (option.length > 0) {
+        //                 return where(field, "in", option)
+        //             }
+        //         } else {
+        //             console.error(`Invalid data type for search terms: expected string, got ${typeof field} and ${typeof option}`);
+        //         }
+        //     }))
+        // }
         
     }
 
@@ -111,7 +112,15 @@ export function FuzzyishSearchBar() {
             })
 
             // console.log({ food: matchedFood, company: matchedCompany, time: matchedTime, setting: matchedSetting })
-            return { food: matchedFood, company: matchedCompany, time: matchedTime, setting: matchedSetting };
+            return [
+                { property: "food",     value: matchedFood },
+                { property: "company",  value: matchedCompany },
+                { property: "time",     value: matchedTime },
+                { property: "setting",  value: matchedSetting }
+            ]
+            
+            
+            // { food: matchedFood, company: matchedCompany, time: matchedTime, setting: matchedSetting };
         }
         
     }
