@@ -287,7 +287,7 @@ export function EventsPage() {
               </CardContent>
               <CardFooter>
                 <div className="text-xs text-muted-foreground">
-                  Showing <strong>1-3</strong> of <strong>3</strong> events
+                  Showing <strong>1-{events?.length}</strong> of <strong>{events?.length}</strong> events
                 </div>
               </CardFooter>
             </Card>
