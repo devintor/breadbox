@@ -1,12 +1,11 @@
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { auth, db } from "../../config/firebase-config";
 import { setDoc, getDoc, doc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import uscnsbe from '../../assets/uscnsbe.png'
-import { Header } from "../headers/Header";
 
 
 function Login() {
@@ -21,7 +20,6 @@ function Login() {
                 const userRef = doc(db, "Users", user.uid);
                 const userSnap = await getDoc(userRef);
                 if (userSnap.exists()) {
-                    console.log("User is already logged in\nNavigating home");
                     navigate('/home');
                 } else {
                     navigate('/profile')
@@ -34,17 +32,15 @@ function Login() {
 
 
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: Event) => {
         e.preventDefault();
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            console.log("User logged in Successfully");
             navigate("/home");
             toast.success("User logged in Successfully", {
                 position: "top-center",
             });
-        } catch (error) {
-            console.log(error.message);
+        } catch (error: any) {
 
             toast.error(error.message, {
                 position: "bottom-center",
@@ -55,23 +51,19 @@ function Login() {
     function googleLogin() {
         const provider = new GoogleAuthProvider();
         signInWithPopup(auth, provider).then(async (result) => {
-            console.log(result);
             const user = result.user;
             if (user) {
                 const userRef = doc(db, "Users", user.uid);
                 const userSnap = await getDoc(userRef);
                 if (!userSnap.exists()) {
-                    // user is new, sign up
                     await setDoc(doc(db, "Users", user.uid), {
                         email: user.email,
                         fullName: user.displayName,
-                        firstName: user.displayName.split(" ")[0],
-                        lastName: user.displayName.split(" ")[1],
+                        firstName: user.displayName?.split(" ")[0],
+                        lastName: user.displayName?.split(" ")[1],
                         photo: user.photoURL
                     });
                 }
-                // user already exists, just log in
-                console.log("User logged in Successfully");
                 toast.success("User logged in Successfully", {
                     position: "top-center",
                 });
@@ -115,7 +107,7 @@ function Login() {
                 </div>
 
                 <div className="d-grid">
-                    <button className="btn btn-primary" onClick={handleSubmit}>
+                    <button className="btn btn-primary" onClick={() => handleSubmit}>
                         Submit
                     </button>
                 </div>

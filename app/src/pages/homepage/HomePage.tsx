@@ -1,58 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { auth, db } from "../../config/firebase-config";
-import { deleteUser, GoogleAuthProvider, reauthenticateWithPopup } from "firebase/auth";
-import { doc, getDoc, setDoc, deleteDoc, QueryDocumentSnapshot, collection, getDocs } from "firebase/firestore";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { db } from "../../config/firebase-config";
+import { QueryDocumentSnapshot, collection, getDocs } from "firebase/firestore";
 import { Link } from "react-router-dom";
-
-import {
-    Activity,
-    ArrowUpRight,
-    CircleUser,
-    CreditCard,
-    DollarSign,
-    Menu,
-    Package2,
-    Search,
-    Users,
-  } from "lucide-react"
-
-  import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
-  } from "../../components/ui/sheet"
-
-  import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-  } from "../../components/ui/dropdown-menu"
-
-  import { Button } from "../../components/ui/button"
-  import { Input } from "../../components/ui/input"
-import { Header } from "../../components/headers/Header";
-import Profile from "../../components/auth/Profile";
+import { Button } from "../../components/ui/button"
 import { Badge } from "../../components/ui/badge";
-import { Card } from "../../components/ui/card";
 
 
 export function HomePage() {
-  const navigate = useNavigate();
   
   const [events, setEvents] = useState<QueryDocumentSnapshot[]>();
-
-  const [rating, setRating] = useState(0)
-  const handleRating = (rate: number) => {
-    setRating(rate)
-  }
 
   const average = (array: number[]) => {
     var sum = 0;
@@ -71,9 +27,7 @@ export function HomePage() {
         const eventsSnap = await getDocs(eventsRef);
         setEvents(eventsSnap.docs);
 
-        console.log(events);
     } catch (error: any) {
-        console.error(error.message);
     }
     
   };
@@ -82,7 +36,6 @@ export function HomePage() {
   }, []);
   return (
     <div className="flex min-h-screen w-full flex-col">
-      {/* <Profile /> */}
       <div className="w-full py-20 lg:py-40">
         <div className="container mx-auto">
           <div className="flex flex-col gap-10">
