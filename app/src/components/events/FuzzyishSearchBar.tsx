@@ -8,7 +8,7 @@ import { collection, getDocs, where, query, Query, QueryConstraint } from "fireb
 
 export function FuzzyishSearchBar() {
     const [userInput, setUserInput] = useState<string>();
-    const [query, setQuery] = useState<any>();
+    const [searchTerms, setSearchTerms] = useState<any>();
 
     // async function constructQuery(matchedOptions: any) {
     //     const eventsRef = collection(db, "Events");
@@ -35,12 +35,26 @@ export function FuzzyishSearchBar() {
     //     return query;
     //   }
 
+    function constructQuery(searchTerms: any) {
+        // const queryCondition: QueryConstraint[] = searchTerms.map(([]) => 
+        //     where(field, "in", )
+        // )
+        if (searchTerms) {
+            Object.entries(searchTerms).map(([field, option]) => {
+                if (typeof field === 'string' && Array.isArray(option)) {
+                    if (option.length > 0) {
+                        console.log(`${field}: ${option}`);
+                    }
+                } else {
+                    console.error(`Invalid data type for search terms: expected string, got ${typeof field} and ${typeof option}`);
+                }
+            })
+        }
+        
+    }
+
     function tokenize(userInput: string | undefined) {
         if (userInput) {
-            // const tokens = userInput.toLowerCase().split(/\W+/)
-            // console.log(tokens.filter(token=>token.length>2))
-            // return userInput.split(/\W+/);
-
             const tokens = userInput.toLowerCase().split(/\W+/);
             const result = [];
             for (let i = 0; i < tokens.length; i++) {
@@ -65,12 +79,8 @@ export function FuzzyishSearchBar() {
             distanceOptions.push(levenshteinDistance(token, option.split(' ')[index]?.toLowerCase()))
         })
         const distance = Math.min(...distanceOptions)
-
-        console.log(distance)
         
-
         const contains = option.toLowerCase().includes(token)
-        console.log(distance)
         
         if (distance < 2 || contains) { // adjust the threshold as needed
             acc.push(option);
@@ -100,54 +110,9 @@ export function FuzzyishSearchBar() {
                 }, []));
             })
 
+            // console.log({ food: matchedFood, company: matchedCompany, time: matchedTime, setting: matchedSetting })
+            return { food: matchedFood, company: matchedCompany, time: matchedTime, setting: matchedSetting };
         }
-
-
-
-
-
-        // if (userInput) {
-        //     const matchedFood = data.foodOptions.reduce((acc: string[], option) => {
-        //         const distance = levenshteinDistance(userInput.toLowerCase(), option.toLowerCase());
-        //         const contains = new RegExp(userInput.slice(0,3), "i").test(option.toLowerCase())
-  
-        //         console.log(distance)
-        //         if (distance < 3 || contains) { // adjust the threshold as needed
-        //             acc.push(option);
-        //         }
-        //         return acc;
-        //       }, []);
-    
-        //     const matchedCompany = data.companyOptions.reduce((acc: string[], option) => {
-        //         const distance = levenshteinDistance(userInput.toLowerCase(), option.toLowerCase());
-        //         console.log(distance)
-        //         if (distance < 3) { // adjust the threshold as needed
-        //             acc.push(option);
-        //         }
-        //         return acc;
-        //       }, []);
-    
-        //     const matchedTime = data.timeOptions.reduce((acc: string[], option) => {
-        //         const distance = levenshteinDistance(userInput.toLowerCase(), option.toLowerCase());
-        //         console.log(distance)
-        //         if (distance < 3) { // adjust the threshold as needed
-        //             acc.push(option);
-        //         }
-        //         return acc;
-        //       }, []);
-    
-        //     const matchedSetting = data.settingOptions.reduce((acc: string[], option) => {
-        //         const distance = levenshteinDistance(userInput.toLowerCase(), option.toLowerCase());
-        //         console.log(distance)
-        //         if (distance < 3) { // adjust the threshold as needed
-        //             acc.push(option);
-        //         }
-        //         return acc;
-        //       }, []);
-            
-              console.log({ food: matchedFood, company: matchedCompany, time: matchedTime, setting: matchedSetting })
-              return { food: matchedFood, company: matchedCompany, time: matchedTime, setting: matchedSetting };
-        // }
         
     }
 
@@ -156,8 +121,13 @@ export function FuzzyishSearchBar() {
     }
 
     useEffect( ()=> {
-        matchOptions(tokenize(userInput))
+        setSearchTerms(matchOptions(tokenize(userInput)))
     }, [userInput])
+
+    useEffect( ()=> {
+        constructQuery(searchTerms)
+
+    }, [searchTerms])
 
 
     return (
@@ -172,7 +142,6 @@ export function FuzzyishSearchBar() {
                     placeholder="Search for events..."
                     onChange={(e)=>{
                         setUserInput(e.target.value)
-                        console.log(e.target.value)
                     }}
                 />
             </div>
