@@ -51,6 +51,8 @@ export function FuzzyishSearchBar() {
         //         }
         //     }))
         // }
+        console.log(searchTerms)
+    
         
     }
 
@@ -112,12 +114,23 @@ export function FuzzyishSearchBar() {
             })
 
             // console.log({ food: matchedFood, company: matchedCompany, time: matchedTime, setting: matchedSetting })
-            return [
-                { property: "food",     value: matchedFood },
-                { property: "company",  value: matchedCompany },
-                { property: "time",     value: matchedTime },
-                { property: "setting",  value: matchedSetting }
-            ]
+
+            var keywordsList:{}[] = [];
+
+            if (matchedFood.length > 0) {
+                keywordsList.push({ property: "food", value: matchedFood })
+            }
+            if (matchedCompany.length > 0) {
+                keywordsList.push({ property: "company", value: matchedCompany })
+            }
+            if (matchedTime.length > 0) {
+                keywordsList.push({ property: "time", value: matchedTime })
+            }
+            if (matchedSetting.length > 0) {
+                keywordsList.push({ property: "setting", value: matchedSetting })
+            }
+
+            return keywordsList;
             
             
             // { food: matchedFood, company: matchedCompany, time: matchedTime, setting: matchedSetting };
