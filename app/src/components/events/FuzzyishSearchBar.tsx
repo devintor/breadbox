@@ -52,7 +52,6 @@ export function FuzzyishSearchBar() {
                 result.push(tokens[i]);
             }
             }
-            console.log(result)
             return result;
         }
 
@@ -62,8 +61,7 @@ export function FuzzyishSearchBar() {
     function determineMatch(acc: string[], token: string, option: string) {
         let distanceOptions:any[] = [];
 
-        option.split(' ').map((value: string, index: number) => {
-            console.log(value)
+        option.split(' ').map((_value: string, index: number) => {
             distanceOptions.push(levenshteinDistance(token, option.split(' ')[index]?.toLowerCase()))
         })
         const distance = Math.min(...distanceOptions)
@@ -81,41 +79,26 @@ export function FuzzyishSearchBar() {
     }
 
     function matchOptions(tokens: string[] | undefined) {
-        var matchedFood;
-        var matchedCompany;
-        var matchedTime;
-        var matchedSetting;
+        var matchedFood:string[] = [];
+        var matchedCompany:string[] = [];
+        var matchedTime:string[] = [];
+        var matchedSetting:string[] = [];
 
         if (tokens) {
             tokens.forEach((token) => {
-                matchedFood = data.foodOptions.reduce((acc: string[], option) => {
+                matchedFood.push(...data.foodOptions.reduce((acc: string[], option) => {
                     return determineMatch(acc, token, option)
-                }, []);
-                // matchedCompany = data.companyOptions.reduce((acc: string[], option) => {
-                //     const distance = (Math.min(
-                //         levenshteinDistance(token, option.toLowerCase()), 
-                //         levenshteinDistance(token, option[0].toLowerCase()),
-                //         levenshteinDistance(token, option[1].toLowerCase())
-                //     ));
-                        
-                //     const contains = option.toLowerCase().includes(token)
-                //     console.log(distance)
-                //     if (distance < 2 || contains) { // adjust the threshold as needed
-                //         acc.push(option);
-                //     }
-                //     return acc;
-                // }, []);
-
+                }, []));
+                matchedCompany.push(...data.companyOptions.reduce((acc: string[], option) => {
+                    return determineMatch(acc, token, option)
+                }, []));
+                matchedTime.push(...data.timeOptions.reduce((acc: string[], option) => {
+                    return determineMatch(acc, token, option)
+                }, []));
+                matchedSetting.push(...data.settingOptions.reduce((acc: string[], option) => {
+                    return determineMatch(acc, token, option)
+                }, []));
             })
-            
-            // for each token in tokens
-                // if token is found in foodoptions/companyoptions/timeoptions/settingoptions
-                    // set keyword match
-                // if is within threshold of ...
-                    // set keyword match
-
-
-
 
         }
 
