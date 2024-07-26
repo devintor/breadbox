@@ -35,6 +35,24 @@ export function FuzzyishSearchBar() {
     //     return query;
     //   }
 
+    function constructQuery(searchTerms: any) {
+        // const queryCondition: QueryConstraint[] = searchTerms.map(([]) => 
+        //     where(field, "in", )
+        // )
+        if (searchTerms) {
+            Object.entries(searchTerms).map(([field, option]) => {
+                if (typeof field === 'string' && Array.isArray(option)) {
+                    if (option.length > 0) {
+                        console.log(`${field}: ${option}`);
+                    }
+                } else {
+                    console.error(`Invalid data type for search terms: expected string, got ${typeof field} and ${typeof option}`);
+                }
+            })
+        }
+        
+    }
+
     function tokenize(userInput: string | undefined) {
         if (userInput) {
             const tokens = userInput.toLowerCase().split(/\W+/);
@@ -107,7 +125,8 @@ export function FuzzyishSearchBar() {
     }, [userInput])
 
     useEffect( ()=> {
-        console.log(searchTerms)
+        constructQuery(searchTerms)
+
     }, [searchTerms])
 
 
@@ -123,7 +142,6 @@ export function FuzzyishSearchBar() {
                     placeholder="Search for events..."
                     onChange={(e)=>{
                         setUserInput(e.target.value)
-                        console.log(e.target.value)
                     }}
                 />
             </div>
