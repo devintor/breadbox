@@ -8,7 +8,7 @@ import { collection, getDocs, where, query, Query, QueryConstraint } from "fireb
 
 export function FuzzyishSearchBar() {
     const [userInput, setUserInput] = useState<string>();
-    const [query, setQuery] = useState<any>();
+    const [searchTerms, setSearchTerms] = useState<any>();
 
     // async function constructQuery(matchedOptions: any) {
     //     const eventsRef = collection(db, "Events");
@@ -92,10 +92,9 @@ export function FuzzyishSearchBar() {
                 }, []));
             })
 
+            // console.log({ food: matchedFood, company: matchedCompany, time: matchedTime, setting: matchedSetting })
+            return { food: matchedFood, company: matchedCompany, time: matchedTime, setting: matchedSetting };
         }
-
-        console.log({ food: matchedFood, company: matchedCompany, time: matchedTime, setting: matchedSetting })
-        return { food: matchedFood, company: matchedCompany, time: matchedTime, setting: matchedSetting };
         
     }
 
@@ -104,8 +103,12 @@ export function FuzzyishSearchBar() {
     }
 
     useEffect( ()=> {
-        matchOptions(tokenize(userInput))
+        setSearchTerms(matchOptions(tokenize(userInput)))
     }, [userInput])
+
+    useEffect( ()=> {
+        console.log(searchTerms)
+    }, [searchTerms])
 
 
     return (
