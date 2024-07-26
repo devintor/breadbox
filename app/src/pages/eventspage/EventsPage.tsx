@@ -261,7 +261,7 @@ export function EventsPage() {
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Actions</DropdownMenuLabel>
                               <DropdownMenuItem onClick={() => navigate(`/admin/events/${event.id}/edit`)}>Edit</DropdownMenuItem>
-                              <DropdownMenuItem><AlertDialogTrigger>Delete</AlertDialogTrigger></DropdownMenuItem>
+                              <AlertDialogTrigger asChild><DropdownMenuItem>Delete</DropdownMenuItem></AlertDialogTrigger>
                             </DropdownMenuContent>
                           </DropdownMenu>
                           <AlertDialogContent>
@@ -287,7 +287,7 @@ export function EventsPage() {
               </CardContent>
               <CardFooter>
                 <div className="text-xs text-muted-foreground">
-                  Showing <strong>1-3</strong> of <strong>3</strong> events
+                  Showing <strong>1-{events?.length}</strong> of <strong>{events?.length}</strong> events
                 </div>
               </CardFooter>
             </Card>
