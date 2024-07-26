@@ -10,6 +10,37 @@ export function FuzzyishSearchBar() {
 
     function handleEventSearch(e: FormEvent<Element>): void {
         e.preventDefault();
+        const matchedFood = data.foodOptions.reduce((acc: string[], option) => {
+            const distance = levenshteinDistance(userInput, option);
+            if (distance < 3) { // adjust the threshold as needed
+                acc.push(option);
+            }
+            return acc;
+          }, []);
+
+        const matchedCompany = data.companyOptions.reduce((acc: string[], option) => {
+            const distance = levenshteinDistance(userInput, option);
+            if (distance < 3) { // adjust the threshold as needed
+                acc.push(option);
+            }
+            return acc;
+          }, []);
+
+        const matchedTime = data.timeOptions.reduce((acc: string[], option) => {
+            const distance = levenshteinDistance(userInput, option);
+            if (distance < 3) { // adjust the threshold as needed
+                acc.push(option);
+            }
+            return acc;
+          }, []);
+
+        const matchedSetting = data.settingOptions.reduce((acc: string[], option) => {
+            const distance = levenshteinDistance(userInput, option);
+            if (distance < 3) { // adjust the threshold as needed
+                acc.push(option);
+            }
+            return acc;
+          }, []);
     }
 
     return (
