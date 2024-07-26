@@ -35,63 +35,146 @@ export function FuzzyishSearchBar() {
     //     return query;
     //   }
 
-    function tokenize() {
+    function tokenize(userInput: string | undefined) {
         if (userInput) {
-            console.log(userInput.split(/\W+/));
+            // const tokens = userInput.toLowerCase().split(/\W+/)
+            // console.log(tokens.filter(token=>token.length>2))
+            // return userInput.split(/\W+/);
+
+            const tokens = userInput.toLowerCase().split(/\W+/);
+            const result = [];
+            for (let i = 0; i < tokens.length; i++) {
+            if (tokens[i].length <= 2) {
+                if (result.length > 0) {
+                result[result.length - 1] += tokens[i];
+                }
+            } else {
+                result.push(tokens[i]);
+            }
+            }
+            console.log(result)
+            return result;
         }
+
+        
     }
 
-    function matchOptions() {
-        if (userInput) {
-            const matchedFood = data.foodOptions.reduce((acc: string[], option) => {
-                const distance = levenshteinDistance(userInput.toLowerCase(), option.toLowerCase());
-                const contains = new RegExp(userInput.slice(0,3), "i").test(option.toLowerCase())
+    function determineMatch(acc: string[], token: string, option: string) {
+        let distanceOptions:any[] = [];
+
+        option.split(' ').map((value: string, index: number) => {
+            console.log(value)
+            distanceOptions.push(levenshteinDistance(token, option.split(' ')[index]?.toLowerCase()))
+        })
+        const distance = Math.min(...distanceOptions)
+
+        console.log(distance)
+        
+
+        const contains = option.toLowerCase().includes(token)
+        console.log(distance)
+        
+        if (distance < 2 || contains) { // adjust the threshold as needed
+            acc.push(option);
+        }
+        return acc;
+    }
+
+    function matchOptions(tokens: string[] | undefined) {
+        var matchedFood;
+        var matchedCompany;
+        var matchedTime;
+        var matchedSetting;
+
+        if (tokens) {
+            tokens.forEach((token) => {
+                matchedFood = data.foodOptions.reduce((acc: string[], option) => {
+                    return determineMatch(acc, token, option)
+                }, []);
+                // matchedCompany = data.companyOptions.reduce((acc: string[], option) => {
+                //     const distance = (Math.min(
+                //         levenshteinDistance(token, option.toLowerCase()), 
+                //         levenshteinDistance(token, option[0].toLowerCase()),
+                //         levenshteinDistance(token, option[1].toLowerCase())
+                //     ));
+                        
+                //     const contains = option.toLowerCase().includes(token)
+                //     console.log(distance)
+                //     if (distance < 2 || contains) { // adjust the threshold as needed
+                //         acc.push(option);
+                //     }
+                //     return acc;
+                // }, []);
+
+            })
+            
+            // for each token in tokens
+                // if token is found in foodoptions/companyoptions/timeoptions/settingoptions
+                    // set keyword match
+                // if is within threshold of ...
+                    // set keyword match
+
+
+
+
+        }
+
+
+
+
+
+        // if (userInput) {
+        //     const matchedFood = data.foodOptions.reduce((acc: string[], option) => {
+        //         const distance = levenshteinDistance(userInput.toLowerCase(), option.toLowerCase());
+        //         const contains = new RegExp(userInput.slice(0,3), "i").test(option.toLowerCase())
   
-                console.log(distance)
-                if (distance < 3 || contains) { // adjust the threshold as needed
-                    acc.push(option);
-                }
-                return acc;
-              }, []);
+        //         console.log(distance)
+        //         if (distance < 3 || contains) { // adjust the threshold as needed
+        //             acc.push(option);
+        //         }
+        //         return acc;
+        //       }, []);
     
-            const matchedCompany = data.companyOptions.reduce((acc: string[], option) => {
-                const distance = levenshteinDistance(userInput.toLowerCase(), option.toLowerCase());
-                console.log(distance)
-                if (distance < 3) { // adjust the threshold as needed
-                    acc.push(option);
-                }
-                return acc;
-              }, []);
+        //     const matchedCompany = data.companyOptions.reduce((acc: string[], option) => {
+        //         const distance = levenshteinDistance(userInput.toLowerCase(), option.toLowerCase());
+        //         console.log(distance)
+        //         if (distance < 3) { // adjust the threshold as needed
+        //             acc.push(option);
+        //         }
+        //         return acc;
+        //       }, []);
     
-            const matchedTime = data.timeOptions.reduce((acc: string[], option) => {
-                const distance = levenshteinDistance(userInput.toLowerCase(), option.toLowerCase());
-                console.log(distance)
-                if (distance < 3) { // adjust the threshold as needed
-                    acc.push(option);
-                }
-                return acc;
-              }, []);
+        //     const matchedTime = data.timeOptions.reduce((acc: string[], option) => {
+        //         const distance = levenshteinDistance(userInput.toLowerCase(), option.toLowerCase());
+        //         console.log(distance)
+        //         if (distance < 3) { // adjust the threshold as needed
+        //             acc.push(option);
+        //         }
+        //         return acc;
+        //       }, []);
     
-            const matchedSetting = data.settingOptions.reduce((acc: string[], option) => {
-                const distance = levenshteinDistance(userInput.toLowerCase(), option.toLowerCase());
-                console.log(distance)
-                if (distance < 3) { // adjust the threshold as needed
-                    acc.push(option);
-                }
-                return acc;
-              }, []);
+        //     const matchedSetting = data.settingOptions.reduce((acc: string[], option) => {
+        //         const distance = levenshteinDistance(userInput.toLowerCase(), option.toLowerCase());
+        //         console.log(distance)
+        //         if (distance < 3) { // adjust the threshold as needed
+        //             acc.push(option);
+        //         }
+        //         return acc;
+        //       }, []);
             
               console.log({ food: matchedFood, company: matchedCompany, time: matchedTime, setting: matchedSetting })
               return { food: matchedFood, company: matchedCompany, time: matchedTime, setting: matchedSetting };
-        }
+        // }
         
     }
 
     function handleEventSearch(e: FormEvent<Element>): void {
         e.preventDefault();
-        tokenize();
-        matchOptions();
     }
+
+    useEffect( ()=> {
+        matchOptions(tokenize(userInput))
+    }, [userInput])
 
 
     return (
