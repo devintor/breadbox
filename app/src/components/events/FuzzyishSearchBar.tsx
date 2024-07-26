@@ -4,53 +4,34 @@ import { db } from "../../config/firebase-config";
 import { Search } from "lucide-react";
 import { Input } from "../ui/input";
 import { FormEvent, useEffect, useState } from "react";
-import { collection, getDocs, where, query, Query, QueryConstraint } from "firebase/firestore";
+import { collection, getDocs, where, query, Query, DocumentData, QueryFieldFilterConstraint, or } from "firebase/firestore";
 
 export function FuzzyishSearchBar() {
     const [userInput, setUserInput] = useState<string>();
-    const [searchTerms, setSearchTerms] = useState<any>();
+    const [queryToPerform, setQueryToPerform] = useState<Query<DocumentData>>();
 
-    // async function constructQuery(matchedOptions: any) {
-    //     const eventsRef = collection(db, "Events");
-        
-    //     const queryConditions: QueryConstraint[] = matchedOptions.map((field) => 
-    //         where(field, "in", )
-    //     );
+    async function fetchQuery(queryToPerform: Query<DocumentData>) {
+        const querySnap = await getDocs(queryToPerform);
+        console.log(querySnap.docs)
+    }
 
-
-    //     const querySnap = await getDocs(query(eventsRef, where(field, "==", option)));
-        
-    //     if (matchedOptions.food.length > 0) {
-    //       query = query.where('food', 'in', matchedOptions.food);
-    //     }
-    //     if (matchedOptions.company.length > 0) {
-    //       query = query.where('company', 'in', matchedOptions.company);
-    //     }
-    //     if (matchedOptions.time.length > 0) {
-    //       query = query.where('time', 'in', matchedOptions.time);
-    //     }
-    //     if (matchedOptions.setting.length > 0) {
-    //       query = query.where('setting', 'in', matchedOptions.setting);
-    //     }
-    //     return query;
-    //   }
 
     function constructQuery(searchTerms: any) {
-        // const queryCondition: QueryConstraint[] = searchTerms.map(([]) => 
-        //     where(field, "in", )
-        // )
-        if (searchTerms) {
-            Object.entries(searchTerms).map(([field, option]) => {
-                if (typeof field === 'string' && Array.isArray(option)) {
-                    if (option.length > 0) {
-                        console.log(`${field}: ${option}`);
-                    }
-                } else {
-                    console.error(`Invalid data type for search terms: expected string, got ${typeof field} and ${typeof option}`);
-                }
-            })
-        }
+        console.log(searchTerms)
         
+        if (searchTerms) {
+            const queryConstraints: QueryFieldFilterConstraint[] = searchTerms.map((condition:any) =>
+                where(condition.property, "in", condition.value)
+            )
+
+            const eventsRef = collection(db, "Events");
+            const queryToPerform: Query<DocumentData> = query(
+                eventsRef,
+                or(...queryConstraints)
+            )
+            return queryToPerform
+            // const queryToPerform: QueryCompositeFilterConstraint
+        }
     }
 
     function tokenize(userInput: string | undefined) {
@@ -111,23 +92,43 @@ export function FuzzyishSearchBar() {
             })
 
             // console.log({ food: matchedFood, company: matchedCompany, time: matchedTime, setting: matchedSetting })
-            return { food: matchedFood, company: matchedCompany, time: matchedTime, setting: matchedSetting };
+
+            var keywordsList:{}[] = [];
+
+            if (matchedFood.length > 0) {
+                keywordsList.push({ property: "food", value: matchedFood })
+            }
+            if (matchedCompany.length > 0) {
+                keywordsList.push({ property: "company", value: matchedCompany })
+            }
+            if (matchedTime.length > 0) {
+                keywordsList.push({ property: "time", value: matchedTime })
+            }
+            if (matchedSetting.length > 0) {
+                keywordsList.push({ property: "setting", value: matchedSetting })
+            }
+
+            return keywordsList;
+            
+            
+            // { food: matchedFood, company: matchedCompany, time: matchedTime, setting: matchedSetting };
         }
         
     }
 
     function handleEventSearch(e: FormEvent<Element>): void {
         e.preventDefault();
+        if (queryToPerform) {
+            fetchQuery(queryToPerform)
+        }
+        console.log('pressed')
+        
     }
 
     useEffect( ()=> {
-        setSearchTerms(matchOptions(tokenize(userInput)))
+        setQueryToPerform(constructQuery(matchOptions(tokenize(userInput))))
     }, [userInput])
 
-    useEffect( ()=> {
-        constructQuery(searchTerms)
-
-    }, [searchTerms])
 
 
     return (
