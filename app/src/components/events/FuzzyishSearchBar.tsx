@@ -81,16 +81,33 @@ export function FuzzyishSearchBar() {
     }
 
     function matchOptions(tokens: string[] | undefined) {
-        var matchedFood;
-        var matchedCompany;
-        var matchedTime;
-        var matchedSetting;
+        var matchedFood:string[];
+        var matchedCompany:string[];
+        var matchedTime:string[];
+        var matchedSetting:string[];
 
         if (tokens) {
             tokens.forEach((token) => {
-                matchedFood = data.foodOptions.reduce((acc: string[], option) => {
-                    return determineMatch(acc, token, option)
-                }, []);
+                if (!matchedFood?.length) {
+                    matchedFood = data.foodOptions.reduce((acc: string[], option) => {
+                        return determineMatch(acc, token, option)
+                    }, []);
+                } 
+                if (!matchedCompany?.length) {
+                    matchedCompany = data.companyOptions.reduce((acc: string[], option) => {
+                        return determineMatch(acc, token, option)
+                    }, []);
+                } 
+                if (!matchedTime?.length) {
+                    matchedTime = data.timeOptions.reduce((acc: string[], option) => {
+                        return determineMatch(acc, token, option)
+                    }, []);
+                } 
+                if (!matchedSetting?.length) {
+                    matchedSetting = data.settingOptions.reduce((acc: string[], option) => {
+                        return determineMatch(acc, token, option)
+                    }, []);
+                } 
                 // matchedCompany = data.companyOptions.reduce((acc: string[], option) => {
                 //     const distance = (Math.min(
                 //         levenshteinDistance(token, option.toLowerCase()), 
