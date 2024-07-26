@@ -4,12 +4,12 @@ import { db } from "../../config/firebase-config";
 import { Search } from "lucide-react";
 import { Input } from "../ui/input";
 import { FormEvent, useEffect, useState } from "react";
-import { collection, getDocs, where, query, Query, QueryConstraint } from "firebase/firestore";
+import { collection, getDocs, where, query, Query, QueryConstraint, DocumentData } from "firebase/firestore";
 
 export function FuzzyishSearchBar() {
     const [userInput, setUserInput] = useState<string>();
     const [searchTerms, setSearchTerms] = useState<any>();
-    const [queryCondition, setQueryCondition] = useState<QueryConstraint[]>();
+    const [query, setQuery] = useState<QueryConstraint[]>();
 
     // async function constructQuery(matchedOptions: any) {
     //     const eventsRef = collection(db, "Events");
@@ -37,23 +37,15 @@ export function FuzzyishSearchBar() {
     //   }
 
     function constructQuery(searchTerms: any) {
-        // const queryCondition: QueryConstraint[] = searchTerms.map(([]) => 
-        //     where(field, "in", )
-        // )
-        // if (searchTerms) {
-        //     setQueryCondition(Object.entries(searchTerms).map(([field, option]) => {
-        //         if (typeof field === 'string' && Array.isArray(option)) {
-        //             if (option.length > 0) {
-        //                 return where(field, "in", option)
-        //             }
-        //         } else {
-        //             console.error(`Invalid data type for search terms: expected string, got ${typeof field} and ${typeof option}`);
-        //         }
-        //     }))
-        // }
         console.log(searchTerms)
-    
         
+        if (searchTerms) {
+            const queryConditions: QueryConstraint[] = searchTerms.map((condition:any) =>
+                where(condition.property, "in", condition.value)
+            )
+
+            return queryConditions;
+        }
     }
 
     function tokenize(userInput: string | undefined) {
