@@ -1,46 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { auth, db } from "../../config/firebase-config";
-import { deleteUser, GoogleAuthProvider, reauthenticateWithPopup } from "firebase/auth";
-import { doc, getDoc, setDoc, deleteDoc, collection, getDocs, QueryDocumentSnapshot } from "firebase/firestore";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
-
-import {
-    Activity,
-    ArrowUpRight,
-    CircleUser,
-    CreditCard,
-    DollarSign,
-    Menu,
-    Package2,
-    Search,
-    Users,
-  } from "lucide-react"
-
-  import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
-  } from "../../components/ui/sheet"
-
-  import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-  } from "../../components/ui/dropdown-menu"
-
-  import { Button } from "../../components/ui/button"
-  import { Input } from "../../components/ui/input"
-import { Header } from "../../components/headers/Header";
-import Profile from "../../components/auth/Profile";
-
+import { useEffect, useState } from "react";
+import { db } from "../../config/firebase-config";
+import { collection, getDocs, QueryDocumentSnapshot } from "firebase/firestore";
 
 export function MembersPage() {
     const [members, setMembers] = useState<QueryDocumentSnapshot[]>();
@@ -52,9 +12,7 @@ export function MembersPage() {
             const membersSnap = await getDocs(membersRef);
             setMembers(membersSnap.docs);
             
-            console.log(members);
         } catch (error: any) {
-            console.error(error.message);
         }
         
 

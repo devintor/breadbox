@@ -1,7 +1,7 @@
 import { User } from "firebase/auth";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { auth, db } from "../../config/firebase-config";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 
 
 const UserContext = createContext<User | null>(null);
@@ -25,7 +25,6 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
           setIsAuth(true);
           setProfile(docSnap.data());
         } catch (error: any) {
-          console.error(error.message)
         }
       } else {
         setIsAuth(false);
@@ -38,7 +37,6 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
 
   useEffect(() => {
       fetchProfileData();
-      // console.log(profile);
   }, []);
 
   return (
@@ -55,7 +53,6 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
 };
 
 export const useUser = () => {
-  // console.log(useContext(UserContext));
   return useContext(UserContext);
 }
 

@@ -1,10 +1,8 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { auth, db } from "../../config/firebase-config";
 import { setDoc, getDoc, doc } from "firebase/firestore";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { Header } from "../headers/Header";
 
 function Register() {
   const [email, setEmail] = useState("");
@@ -20,7 +18,6 @@ function Register() {
             const userRef = doc(db, "Users", user.uid);
             const userSnap = await getDoc(userRef);
             if (userSnap.exists()) {
-                console.log("User is already logged in\nNavigating to profile");
                 navigate('/profile');
             }
             
@@ -28,7 +25,7 @@ function Register() {
     });
 }, []);
 
-  const handleRegister = async (e) => {
+  const handleRegister = async (e: any) => {
     e.preventDefault();
     try {
       await createUserWithEmailAndPassword(auth, email, password);
@@ -42,17 +39,18 @@ function Register() {
         });
       }
     } catch (error: any) {
-      console.error(error.message);
     }
   };
 
 
   function toggleVisibility() {
-    var pw = document.getElementById("password");
-    if (pw.type === "password") {
-      pw.type = "text";
-    } else {
-      pw.type = "password";
+    var pw:any = document.getElementById("password");
+    if (pw) {
+      if (pw.type === "password") {
+        pw.type = "text";
+      } else {
+        pw.type = "password";
+      }
     }
   }
 
@@ -97,7 +95,7 @@ function Register() {
 
       <div className="mb-3">
         <label>Password</label>
-        <button type="button" className="btn" data-toggle="button" aria-pressed="false" autoComplete="off" id="eye" onClick={toggleVisibility}>
+        <button type="button" className="btn" data-toggle="button" aria-pressed="false" id="eye" onClick={toggleVisibility}>
             <img src="https://cdn0.iconfinder.com/data/icons/feather/96/eye-16.png" alt="eye" />
         </button>
         <input

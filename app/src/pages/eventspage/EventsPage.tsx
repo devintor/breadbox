@@ -19,7 +19,6 @@ import {
 
   import { Button } from "../../components/ui/button"
   import { Badge } from "../../components/ui/badge"
-import { Header } from "../../components/headers/Header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
@@ -43,9 +42,7 @@ export function EventsPage() {
           const eventsSnap = await getDocs(eventsRef);
           setEvents(eventsSnap.docs);
 
-          console.log(events);
       } catch (error: any) {
-          console.error(error.message);
       }
       
   };
@@ -65,14 +62,12 @@ export function EventsPage() {
 
     try {
         deleteDoc(doc(db, "Events", eventId));
-        console.log("Event deleted successfully!");
         toast.success("Event deleted successfully!", {
             position: "top-center",
         });
 
         fetchEvents();
     } catch (error: any) {
-        console.error("Error deleting event:", error.message);
         toast.error(error.message, {
             position: "bottom-center",
           });
@@ -84,41 +79,8 @@ export function EventsPage() {
   }, []);
 
   
-
-  // return (
-  //   <div className="flex min-h-screen w-full flex-col">
-  //     <Header/>
-  //     {/* <h1>Events</h1>
-  //     <ul>
-  //       {events && events.map((event: QueryDocumentSnapshot) => (
-  //           <li key={event.id}>
-  //               <p>&emsp;{event.data().title}</p>
-  //               <p>&emsp;&emsp;{event.data().place}</p>
-  //               <p>&emsp;&emsp;{event.data().food}</p>
-  //               <p>&emsp;&emsp;{event.data().startTime}</p>
-  //               <img src={event.data().photo} width={"60px"}/>
-  //               &emsp;
-  //           </li>
-  //       ))}
-  //       </ul> */}
-  //       {events?.map((event) => (
-  //         <div key={event.id}>
-  //           <h2>{event.data().title}</h2>
-  //           <p>{event.data().place}</p>
-  //           <p>{event.data().food}</p>
-  //           <p>{event.data().company}</p>
-  //           <p>{event.data().ratings}</p>
-  //           <img src={event.data().image} width={"300px"}/>
-            
-  //           {/* <p>Event Date: {event.data().startTime.toDate().toLocaleString()}</p> */}
-  //         </div>
-  //       ))}
-  //   </div>
-  // )
-  
     return (
     <div className="flex min-h-screen w-full flex-col">
-      {/* <Profile /> */}
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
           <Tabs defaultValue="all">
             <div className="flex items-center">

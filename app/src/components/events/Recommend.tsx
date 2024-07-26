@@ -1,4 +1,4 @@
-import { QueryDocumentSnapshot, Timestamp, collection, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
+import { QueryDocumentSnapshot, Timestamp, collection, doc, getDoc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../../config/firebase-config";
 import { useEffect, useState } from "react";
 import data from "./events.json"
@@ -38,7 +38,6 @@ export function Recommend() {
 
         }
         catch (error: any) {
-            console.error(error.message);
         }
       }
     
@@ -58,26 +57,21 @@ export function Recommend() {
             const querySnap = await getDocs(query(eventsRef, where(field, "==", option)));
             
             if (querySnap.docs.length != 0) {
-                console.log(querySnap.docs);
                 const avgRating = averageRating(querySnap.docs, field=="food");
                 return avgRating;
             } else {
-                return 2.5; // no data yet -> mid rating
+                return 2.5;
             }
         } catch (error: any) {
-            console.error(error.message);
         }
       }
     
     const calculateValue = async (field: "time" | "setting" | "food" | "company", option: string) => {
-        // Get the average rating for the option
         const averageRating = await getAverageRating(field, option);
-        // Get the weighting for the attribute
         const weight = data.weights[field];
     
         if (averageRating) {
             const value = Math.round(averageRating * weight / 5 * 1000) / 1000;
-            console.log(`Average ${field}: "${option}" rating ${averageRating}, weighting ${weight}, and value ${value}`)
             setEventRecValuesLocal((prevEventRecValuesLocal: any) => ({
                 ...prevEventRecValuesLocal,
                 [field]: {
@@ -87,9 +81,7 @@ export function Recommend() {
                 calculatedAt: Timestamp.fromDate(new Date())
             }))
         } else {
-            console.log(`No rating for: ${option}`)
         }
-        // Calculate the value of the option
       }
 
     const calculateValues = async () => {
@@ -100,15 +92,12 @@ export function Recommend() {
             await calculateValue("food", food);
         }
         for (const company of data.companyOptions) {
-            console.log(company);
             await calculateValue("company", company);
         }
         for (const time of data.timeOptions) {
-            console.log(time);
             await calculateValue("time", time);
         }
         for (const setting of data.settingOptions) {
-            console.log(setting);
             await calculateValue("setting", setting);
         }
         
@@ -118,16 +107,13 @@ export function Recommend() {
         try {
             let localVals = window.localStorage.getItem("Event Rec Values")
             
-            if (localVals && localVals != "{}") { // null and empty check
-                // if there is data in local storage
+            if (localVals && localVals != "{}") {
                 setEventRecValuesLocal({
                     ...JSON.parse(localVals)
                 })
             } else {
-                // if there is no data in local storage
                 const valuesRef = doc(db, "Recommendations", "Event Rec Values");
                 const valuesSnap = await getDoc(valuesRef);
-                console.log(valuesSnap.data())
                 if (JSON.stringify(valuesSnap.data()) != '{}') {
                     setEventRecValuesLocal((prevEventRecValuesLocal: any) => ({
                         ...prevEventRecValuesLocal,
@@ -140,14 +126,12 @@ export function Recommend() {
             }
             
         } catch (error: any) {
-          console.error(error.message);
         }
       
       }
 
     useEffect( () => {
         (async () => {
-            eventRecValuesLocal.food && eventRecValuesLocal.company && console.log(eventRecValuesLocal)
             await updateDoc(doc(db, "Recommendations", "Event Rec Values"), {  
                 ...eventRecValuesLocal
             })

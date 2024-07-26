@@ -6,7 +6,6 @@ import { Button } from "../../components/ui/button"
 import {
     Card,
     CardContent,
-    CardDescription,
     CardHeader,
     CardTitle,
 } from "../../components/ui/card"
@@ -23,7 +22,7 @@ import { Textarea } from "../../components/ui/textarea"
 import { useNavigate, useParams } from "react-router-dom"
 import { FormEvent, useEffect, useState } from "react"
 import { db } from "../../config/firebase-config"
-import { Timestamp, addDoc, collection, deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore"
+import { Timestamp, deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore"
 import { toast } from "react-toastify"
 import { DateTimePicker } from "../../components/ui/datetimepicker"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../../components/ui/alert-dialog"
@@ -38,26 +37,12 @@ import { Recommend } from "../../components/events/Recommend"
     const navigate = useNavigate();
     
     const [eventLocal, setEventLocal] = useState<any>();
-    // const [startDate, setStartDate] = useState<Date | undefined>(undefined);
-    // const [endDate, setEndDate] = useState<Date | undefined>(undefined)
 
     const [imageQuery, setImageQuery] = useState<string>();
     const [imagesSearched, setImagesSearched] = useState<any>();
     const [imageSelected, setImageSelected] = useState<string>();
 
-    
-    const getClosestFutureMonday = () => {
-        const now = new Date();
-        const dayOfWeek = now.getDay();
-        const daysUntilMonday = (8 - dayOfWeek) % 7;
-        const closestMonday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + daysUntilMonday);
-        return closestMonday;
-    };
-
     const resetEventLocal = () => {
-        const closestMonday = getClosestFutureMonday();
-        const startTime = Timestamp.fromDate(new Date(closestMonday.getTime() + 19 * 60 * 60 * 1000))
-        const endTime = Timestamp.fromDate(new Date(closestMonday.getTime() + 21 * 60 * 60 * 1000))
         setEventLocal({
             startTime: undefined,
             endTime: undefined,
@@ -76,7 +61,6 @@ import { Recommend } from "../../components/events/Recommend"
             image: '',
             status: ''
         }))
-        // console.log(`This event is ${duration} minutes long (${duration / 60} hours)`)
     }
     
 
@@ -85,22 +69,18 @@ import { Recommend } from "../../components/events/Recommend"
         try {
             const eventRef = doc(db, "Events", eventId);
             const eventSnap = await getDoc(eventRef);
-            console.log(eventSnap.data())
             setEventLocal((prevEventLocal: any) => ({
                 ...prevEventLocal,
                 ...eventSnap.data(),
             }))
-            eventLocal && console.log(await eventLocal)
 
         } catch (error: any) {
-            console.error(error.message);
         }
     
     };
     
     const durationCalc = (startTime: Timestamp, endTime: Timestamp) => {
         const duration = Math.ceil((endTime.seconds - startTime.seconds) / 1800) * 30;
-        console.log(duration);
         return duration;
     }
 
@@ -111,7 +91,6 @@ import { Recommend } from "../../components/events/Recommend"
             const images = data.images_results;
             return images;
         } catch (err) {
-            console.error(err);
             return null;
         }
 
@@ -130,7 +109,7 @@ import { Recommend } from "../../components/events/Recommend"
     useEffect(() => {
         if (eventLocal) {
             let localVals = window.localStorage.getItem("Event Rec Values")
-            if (localVals && localVals != "{}") { // null and empty check
+            if (localVals && localVals != "{}") {
                 let parsedVals = JSON.parse(localVals);
                 let proj = 0
                 if (eventLocal.food) {
@@ -160,15 +139,10 @@ import { Recommend } from "../../components/events/Recommend"
         const startDate = eventLocal?.startTime?.toDate();
         const endDate = eventLocal?.endTime?.toDate();
 
-        // if start is set, but end isnt
         if (startDate && !endDate) {
-            console.log('adjust')
-            // set endDate to 2 hours after startDate
             const adjStart = startDate.setHours(startDate.getHours() + 19)
-            console.log(adjStart)
 
             const adjEnd = startDate.setHours(startDate.getHours() + 2)
-            console.log(adjEnd)
 
             setEventLocal((prev: any) => ({
                 ...prev,
@@ -177,9 +151,7 @@ import { Recommend } from "../../components/events/Recommend"
             }))
         }
 
-        // live update status, time, duration
         if (startDate && endDate) {
-            // if start is after end, make end 2hrs after start
             if (startDate > endDate) {
                 var adjEnd = startDate;
                 adjEnd.setHours(adjEnd.getHours() + 2);
@@ -226,10 +198,6 @@ import { Recommend } from "../../components/events/Recommend"
         }
     }, [eventLocal?.startTime, eventLocal?.endTime, eventLocal?.place])
 
-    useEffect(() => {
-        eventLocal && console.log(eventLocal)
-    }, [eventLocal])
-
     async function handleSaveEvent() {
         try {
           if (eventLocal) {
@@ -250,7 +218,6 @@ import { Recommend } from "../../components/events/Recommend"
     async function handleDeleteEvent() {
         try {
             deleteDoc(doc(db, "Events", eventId));
-            console.log("Event deleted successfully!");
             toast.success("Event deleted successfully!", {
                 position: "top-center",
             });
@@ -258,7 +225,6 @@ import { Recommend } from "../../components/events/Recommend"
             
             navigate('/admin/events');
         } catch (error: any) {
-            console.error("Error deleting event:", error.message);
             toast.error(error.message, {
                 position: "bottom-center",
                 });
@@ -268,7 +234,6 @@ import { Recommend } from "../../components/events/Recommend"
     function handleImageSearch(e: FormEvent) {
         e.preventDefault();
         if (!imageQuery) {
-            console.log('no query')
         } else {
             fetchImages(imageQuery).then(images => {
               setImagesSearched(images);
@@ -583,7 +548,7 @@ import { Recommend } from "../../components/events/Recommend"
                                                             image: imageSelected,
                                                         }))
                                                     ):(
-                                                        console.log("No new image selected")
+                                                        <></>
                                                     )}
                                                 }}
                                             >

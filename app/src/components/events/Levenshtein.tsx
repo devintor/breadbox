@@ -20,7 +20,6 @@ export const levenshteinDistance = (s: any, t: any):number |undefined =>  {
             return arr[t.length][s.length];
     
         } catch (error: any) {
-            console.error(error)
         }
     }
 

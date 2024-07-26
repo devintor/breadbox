@@ -3,8 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import {
     CircleUser,
     Menu,
-    Package2,
-    Search,
   } from "lucide-react"
 
   import {
@@ -23,10 +21,9 @@ import {
   } from "../../components/ui/dropdown-menu"
 
   import { Button } from "../../components/ui/button"
-  import { Input } from "../../components/ui/input"
 
 
-  import { useUser, useProfile, useIsAuth } from "../context/UserContext";
+  import { useProfile, useIsAuth } from "../context/UserContext";
 import { handleLogout } from "../auth/Profile";
 
 import uscnsbe from "../../assets/uscnsbe.png";
@@ -35,14 +32,10 @@ import { FuzzyishSearchBar } from "../events/FuzzyishSearchBar";
 
 export function Header() {
   const isAuth = useIsAuth();
-  const user = useUser();
   const profile = useProfile();
 
   const navigate = useNavigate();
 
-  // console.log(`User: ${user?.displayName}`);
-  // console.log(`Profile: ${profile?.fullName}`);
-  // console.log(`Authorized: ${isAuth}`);
   return (
     <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
         <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
@@ -152,22 +145,15 @@ export function Header() {
         <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
           <FuzzyishSearchBar/>
           {isAuth==null ? (
-            // replace with loading skeleton
             <Button variant="secondary" size="icon" className="rounded-full">
               <CircleUser color="white" className="h-6 w-6" />  
                 <span className="sr-only">Toggle user menu</span>
             </Button>
           ) : (
-            // isAuth has loaded, now its either true or false
             isAuth ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="secondary" size="icon" className="rounded-full">
-                    {/* {profile ? (
-                      <img src={profile.photo} style={{ borderRadius: "50%" }}/>
-                    ) : (
-                      <CircleUser color="white" className="h-6 w-6" />  
-                    ) } */}
                     <Avatar className="h-full w-full sm:flex">
                       <AvatarImage src={profile.photo} alt="Avatar" />
                       <AvatarFallback>{profile.firstName[0] + profile.lastName[0]}</AvatarFallback>
@@ -179,7 +165,6 @@ export function Header() {
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <Link to="/profile"><DropdownMenuItem>Edit profile</DropdownMenuItem></Link>
-                  {/* <Link to="/register"><DropdownMenuItem>Sign up</DropdownMenuItem></Link> */}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
                 </DropdownMenuContent>

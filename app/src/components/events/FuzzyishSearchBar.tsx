@@ -17,7 +17,6 @@ export function FuzzyishSearchBar() {
 
 
     function constructQuery(searchTerms: any) {
-        console.log(searchTerms)
         
         if (searchTerms) {
             const queryConstraints: QueryFieldFilterConstraint[] = searchTerms.map((condition:any) =>
@@ -30,7 +29,6 @@ export function FuzzyishSearchBar() {
                 or(...queryConstraints)
             )
             return queryToPerform
-            // const queryToPerform: QueryCompositeFilterConstraint
         }
     }
 
@@ -63,7 +61,7 @@ export function FuzzyishSearchBar() {
         
         const contains = option.toLowerCase().includes(token)
         
-        if (distance < 2 || contains) { // adjust the threshold as needed
+        if (distance < 2 || contains) { 
             acc.push(option);
         }
         return acc;
@@ -91,8 +89,6 @@ export function FuzzyishSearchBar() {
                 }, []));
             })
 
-            // console.log({ food: matchedFood, company: matchedCompany, time: matchedTime, setting: matchedSetting })
-
             var keywordsList:{}[] = [];
 
             if (matchedFood.length > 0) {
@@ -110,8 +106,6 @@ export function FuzzyishSearchBar() {
 
             return keywordsList;
             
-            
-            // { food: matchedFood, company: matchedCompany, time: matchedTime, setting: matchedSetting };
         }
         
     }
@@ -121,7 +115,6 @@ export function FuzzyishSearchBar() {
         if (queryToPerform) {
             fetchQuery(queryToPerform)
         }
-        console.log('pressed')
         
     }
 

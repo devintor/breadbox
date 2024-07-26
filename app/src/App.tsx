@@ -7,15 +7,12 @@ import {
   Navigate,
 } from "react-router-dom";
 
-// styles for this kit
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 
 
 import { Header } from "./components/headers/Header";
 
-// import pages
 import { HomePage } from "./pages/homepage/HomePage";
-// import LandingPage from "./components/homepage/HomePage";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -58,10 +55,6 @@ function App() {
       
         <Header />
             <Routes>
-              {/* <Route
-                path="/"
-                element={user ? <Navigate to="/profile" /> : <Login />}
-              /> */}
               <Route index element={<HomePage />} />
               
             
@@ -77,11 +70,6 @@ function App() {
               <Route path="*" element={<Navigate to="/home" />} />
               <Route path="/home" element={<HomePage />} />
               <Route path="/auth/*" element={<AuthPage />} />
-
-              {/* <Route path="/login" element={<Login isAuth={isAuth}/>} />
-              <Route path="/register" element={<Register isAuth={isAuth}/>}/>
-              <Route path="/events/new" element={<NewEvent/>} /> */}
-              
             </Routes>
             <ToastContainer/>
       </div>
