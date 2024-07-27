@@ -10,7 +10,7 @@ const API_KEY = process.env.API_KEY;
 
 
 const server = createServer(async (req, res) => {
-  const allowed_domain = 'http://localhost:5173' 
+  const allowed_domain = 'https://breadbox-beta.vercel.app/' 
   res.setHeader('Access-Control-Allow-Origin', allowed_domain);
   res.setHeader('Access-Control-Allow-Methods', 'GET');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -40,5 +40,5 @@ const server = createServer(async (req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}/`);
+  console.log(`Server running at https://breadbox-serpapi.vercel.app/`);
 });
