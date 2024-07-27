@@ -4,6 +4,8 @@ import {
     ListFilter,
     PlusCircle,
     MoreHorizontal,
+    ChevronLeft,
+    Search,
   } from "lucide-react"
 
 
@@ -22,7 +24,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { QueryDocumentSnapshot, addDoc, collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { db } from "../../config/firebase-config";
 import { useNavigate, useParams } from "react-router-dom";
@@ -30,6 +32,8 @@ import { toast } from "react-toastify";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../../components/ui/alert-dialog";
 import { getQueryResult } from "../../components/events/ProcessQuery";
 import { useIsAuth } from "../../components/context/UserContext";
+import { FuzzyishSearchBar } from "../../components/events/FuzzyishSearchBar";
+import { Input } from "../../components/ui/input";
 
 
 export function EventsQueriedPage() {
@@ -87,139 +91,166 @@ export function EventsQueriedPage() {
 
   
     return (
-    <div className="flex min-h-screen w-full flex-col">
+    <div className="flex min-h-screen w-full flex-col bg-muted/40">
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-            <Card x-chunk="dashboard-06-chunk-0">
-                <CardHeader>
-                    <CardTitle>Events</CardTitle>
-                    <CardDescription>
-                        Search Results for "{userInput}"
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead className="hidden w-[100px] sm:table-cell">
-                                    <span className="sr-only">Location</span>
-                                </TableHead>
-                                <TableHead>Name</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead className="hidden md:table-cell">Food</TableHead>
-                                <TableHead className="hidden md:table-cell">Company Sponsors</TableHead>
-                                <TableHead className="hidden md:table-cell">RSVPs</TableHead>
-                                <TableHead className="hidden md:table-cell">Attendees</TableHead>
-                                <TableHead className="hidden md:table-cell">Date</TableHead>
-                                <TableHead className="hidden md:table-cell">Location</TableHead>
-                                
-                                {isAuth && (
-                                    <TableHead>
-                                        <span className="sr-only">Actions</span>
+            <div className="grid flex-1 auto-rows-max gap-4">
+                <div className="flex items-center gap-4">
+                    <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => navigate('/events')}>
+                        <ChevronLeft className="h-4 w-4" />
+                        <span className="sr-only">Back</span>
+                    </Button>
+                    <form name="event-query" className="flex-1 sm:flex-initial" onSubmit={(e: FormEvent) => {
+                        e.preventDefault()
+                        navigate(`/events/search/${userInput}`)
+                        window.location.reload()
+                    }}>
+                        <div className="relative">
+                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                            <Input
+                                id="event-query"
+                                type="search"
+                                className="pl-8 left-2.5 sm:w-[300px] md:w-[200px] lg:w-[300px]"
+                                defaultValue={userInput || ''}
+                                placeholder="Search for events..."
+                                onChange={(e)=>{
+                                    setUserInput(e.target.value)
+                                }}
+                            />
+                        </div>
+                    </form>
+                </div>
+                <Card x-chunk="dashboard-06-chunk-0">
+                    <CardHeader>
+                        <CardTitle>{`Showing results for [placeholder for processed query]`}</CardTitle>
+                        <CardDescription>
+                            Extracted from input: "{userInput}"
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead className="hidden w-[100px] sm:table-cell">
+                                        <span className="sr-only">Location</span>
                                     </TableHead>
-                                )}
-                                
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                    
+                                    <TableHead>Name</TableHead>
+                                    <TableHead>Status</TableHead>
+                                    <TableHead className="hidden md:table-cell">Food</TableHead>
+                                    <TableHead className="hidden md:table-cell">Company Sponsors</TableHead>
+                                    <TableHead className="hidden md:table-cell">RSVPs</TableHead>
+                                    <TableHead className="hidden md:table-cell">Attendees</TableHead>
+                                    <TableHead className="hidden md:table-cell">Date</TableHead>
+                                    <TableHead className="hidden md:table-cell">Location</TableHead>
+                                    
+                                    {isAuth && (
+                                        <TableHead>
+                                            <span className="sr-only">Actions</span>
+                                        </TableHead>
+                                    )}
+                                    
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                        
 
-                        {events?.map((event) => (
-                            <TableRow key={event.id}>
-                                <TableCell className="hidden sm:table-cell">
-                                    {event.data().image ? (
+                            {events?.map((event) => (
+                                <TableRow key={event.id}>
+                                    <TableCell className="hidden sm:table-cell">
+                                        {event.data().image ? (
+                                            <img
+                                                alt="Event image"
+                                                className="aspect-square rounded-md object-cover"
+                                                height="64"
+                                                src={event.data().image}
+                                                width="64"
+                                            />
+                                        ) : (
                                         <img
                                             alt="Event image"
                                             className="aspect-square rounded-md object-cover"
                                             height="64"
-                                            src={event.data().image}
+                                            src='/placeholder.svg'
                                             width="64"
                                         />
-                                    ) : (
-                                    <img
-                                        alt="Event image"
-                                        className="aspect-square rounded-md object-cover"
-                                        height="64"
-                                        src='/placeholder.svg'
-                                        width="64"
-                                    />
-                                    )
-                                    }
-                                </TableCell>
-                                <TableCell className="font-medium">
-                                    {event.data().title}
-                                </TableCell>
-                                <TableCell>
-                                    <Badge variant="outline">{event.data().status}</Badge>
+                                        )
+                                        }
                                     </TableCell>
-                                <TableCell className="hidden md:table-cell">
-                                {event.data().food || "None"}
-                                </TableCell>
-                                <TableCell className="hidden md:table-cell">
-                                {event.data().company || "None"}
-                                </TableCell>
-                                <TableCell className="hidden md:table-cell">
-                                {event.data().usersRegistered ? event.data().usersRegistered.length : "None"}
-                                </TableCell>
-                                <TableCell className="hidden md:table-cell">
-                                {event.data().usersAttended ? event.data().usersAttended.length : "None"}
-                                </TableCell>
-                                <TableCell className="hidden md:table-cell">
-                                {event.data().startTime?.seconds ? new Date(event.data().startTime.seconds * 1000).toLocaleDateString('en-US') : "TBD"}
-                                <br></br>
-                                {event.data().startTime?.seconds ? new Date(event.data().startTime.seconds * 1000).toLocaleTimeString('en-US', { hour12: true, second: undefined }) : ""}
-                                </TableCell>
-                                <TableCell className="hidden md:table-cell">
-                                {event.data().place || "TBD"}
-                                </TableCell>
-                                {isAuth && (
+                                    <TableCell className="font-medium">
+                                        {event.data().title}
+                                    </TableCell>
                                     <TableCell>
-                                        <AlertDialog>
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                            <Button
-                                                aria-haspopup="true"
-                                                size="icon"
-                                                variant="ghost"
-                                            >
-                                                <MoreHorizontal className="h-4 w-4" />
-                                                <span className="sr-only">Toggle menu</span>
-                                            </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
-                                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                            <DropdownMenuItem onClick={() => navigate(`/admin/events/${event.id}/edit`)}>Edit</DropdownMenuItem>
-                                            <AlertDialogTrigger asChild><DropdownMenuItem>Delete</DropdownMenuItem></AlertDialogTrigger>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                        <AlertDialogContent>
-                                            <AlertDialogHeader>
-                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                <AlertDialogDescription>
-                                                    This action cannot be undone. This will permanently delete this event
-                                                    and remove its data from our servers.
-                                                </AlertDialogDescription>
-                                            </AlertDialogHeader>
-                                            <AlertDialogFooter>
-                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                            <AlertDialogAction onClick={() => handleDeleteEvent(event.id)}>Delete</AlertDialogAction>
-                                            </AlertDialogFooter>
-                                        </AlertDialogContent>
-                                        </AlertDialog>
+                                        <Badge variant="outline">{event.data().status}</Badge>
+                                        </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                    {event.data().food || "None"}
                                     </TableCell>
-                                )}
-                            
-                            </TableRow>
-                        ))}
+                                    <TableCell className="hidden md:table-cell">
+                                    {event.data().company || "None"}
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                    {event.data().usersRegistered ? event.data().usersRegistered.length : "None"}
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                    {event.data().usersAttended ? event.data().usersAttended.length : "None"}
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                    {event.data().startTime?.seconds ? new Date(event.data().startTime.seconds * 1000).toLocaleDateString('en-US') : "TBD"}
+                                    <br></br>
+                                    {event.data().startTime?.seconds ? new Date(event.data().startTime.seconds * 1000).toLocaleTimeString('en-US', { hour12: true, second: undefined }) : ""}
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                    {event.data().place || "TBD"}
+                                    </TableCell>
+                                    {isAuth && (
+                                        <TableCell>
+                                            <AlertDialog>
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                <Button
+                                                    aria-haspopup="true"
+                                                    size="icon"
+                                                    variant="ghost"
+                                                >
+                                                    <MoreHorizontal className="h-4 w-4" />
+                                                    <span className="sr-only">Toggle menu</span>
+                                                </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="end">
+                                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                                <DropdownMenuItem onClick={() => navigate(`/admin/events/${event.id}/edit`)}>Edit</DropdownMenuItem>
+                                                <AlertDialogTrigger asChild><DropdownMenuItem>Delete</DropdownMenuItem></AlertDialogTrigger>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                            <AlertDialogContent>
+                                                <AlertDialogHeader>
+                                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                    <AlertDialogDescription>
+                                                        This action cannot be undone. This will permanently delete this event
+                                                        and remove its data from our servers.
+                                                    </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter>
+                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                <AlertDialogAction onClick={() => handleDeleteEvent(event.id)}>Delete</AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                            </AlertDialog>
+                                        </TableCell>
+                                    )}
+                                
+                                </TableRow>
+                            ))}
 
-                  </TableBody>
-                </Table>
-              </CardContent>
-              <CardFooter>
-                <div className="text-xs text-muted-foreground">
-                  Showing <strong>1-{events?.length}</strong> of <strong>{events?.length}</strong> events
-                </div>
-              </CardFooter>
-            </Card>
+                    </TableBody>
+                    </Table>
+                </CardContent>
+                <CardFooter>
+                    <div className="text-xs text-muted-foreground">
+                    Showing <strong>1-{events?.length}</strong> of <strong>{events?.length}</strong> events
+                    </div>
+                </CardFooter>
+                </Card>
+            </div>
         </main>
     </div>
     )
