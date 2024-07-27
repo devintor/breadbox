@@ -86,7 +86,7 @@ import { Recommend } from "../../components/events/Recommend"
 
     const fetchImages = async (imageQuery: string) => {
         try {
-            const response = await fetch(`https://breadbox-serpapi.vercel.app/?query=${imageQuery}`);
+            const response = await fetch(`http://localhost:3000/${imageQuery}`);
             const data = await response.json();
             const images = data.images_results;
             return images;
