@@ -1,3 +1,6 @@
+View deployed app at
+https://breadbox-beta.vercel.app/
+
 In the breadbox/app directory, add an env file with contents from the attached document
 
 https://docs.google.com/document/d/1EsS4dfMoUuR3vbaHDwiOnuWw5NNoNZQg5JDxmXe9dtc/edit
