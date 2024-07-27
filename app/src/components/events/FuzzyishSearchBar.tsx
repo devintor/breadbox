@@ -9,7 +9,6 @@ export function FuzzyishSearchBar() {
 
     function handleEventSearch(e: FormEvent<Element>): void {
         e.preventDefault();
-        console.log(userInput)
         navigate(`/events/search/${userInput}`)
         window.location.reload()
         

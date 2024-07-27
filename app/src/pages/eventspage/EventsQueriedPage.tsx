@@ -47,7 +47,6 @@ export function EventsQueriedPage() {
     const [events, setEvents] = useState<QueryDocumentSnapshot[]>();
 
     const fetchEvents = async () => {
-        console.log(userInput)
         if (userInput) {
             try {
                 setEvents((await getQueryResult(userInput))?.docs);
@@ -121,7 +120,7 @@ export function EventsQueriedPage() {
                 </div>
                 <Card x-chunk="dashboard-06-chunk-0">
                     <CardHeader>
-                        <h3 className="flex-1 shrink-0 whitespace-nowrap text-xl tracking-tight sm:grow-0">
+                        <h3 className="flex-1 shrink-0 text-xl tracking-tight sm:grow-0">
                             Showing results for <span className="font-semibold"><a href="">{getQuery(userInput)}</a></span>
                         </h3>
                         <CardDescription>
