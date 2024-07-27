@@ -1,9 +1,9 @@
 // index.js
-const dotenv=require("dotenv");
+const dotenv = require("dotenv");
 dotenv.config();
 
 const { getJson } = require("serpapi");
-import http from 'http';
+const http = require('http');
 
 const PORT = process.env.PORT;
 const API_KEY = process.env.API_KEY;
