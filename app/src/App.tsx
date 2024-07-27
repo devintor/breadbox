@@ -30,6 +30,7 @@ import { Dashboard } from "./pages/nav-samples/Dashboard";
 import { Settings } from "./pages/nav-samples/Settings";
 import { Transactions } from "./pages/nav-samples/Transactions";
 import { TooltipProvider } from "./components/ui/tooltip";
+import { EventsQueriedPage } from "./pages/eventspage/EventsQueriedPage";
 
 
 function App() {
@@ -69,6 +70,9 @@ function App() {
 
               <Route path="*" element={<Navigate to="/home" />} />
               <Route path="/home" element={<HomePage />} />
+              <Route path="/events" element={<HomePage />} />
+              
+              <Route path="/events/search/:searchParam" element={<EventsQueriedPage />} />
               <Route path="/auth/*" element={<AuthPage />} />
             </Routes>
             <ToastContainer/>

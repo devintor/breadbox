@@ -5,15 +5,13 @@ import { Search } from "lucide-react";
 import { Input } from "../ui/input";
 import { FormEvent, useEffect, useState } from "react";
 import { collection, getDocs, where, query, Query, DocumentData, QueryFieldFilterConstraint, or } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 
 export function FuzzyishSearchBar() {
     const [userInput, setUserInput] = useState<string>();
     const [queryToPerform, setQueryToPerform] = useState<Query<DocumentData>>();
 
-    async function fetchQuery(queryToPerform: Query<DocumentData>) {
-        const querySnap = await getDocs(queryToPerform);
-        console.log(querySnap.docs)
-    }
+    const navigate = useNavigate();
 
 
     function constructQuery(searchTerms: any) {
@@ -110,11 +108,20 @@ export function FuzzyishSearchBar() {
         
     }
 
+    async function fetchQuery(queryToPerform: Query<DocumentData>) {
+        const querySnap = await getDocs(queryToPerform);
+        window.localStorage.setItem("Events Queried", JSON.stringify(querySnap.docs))
+    }
+
     function handleEventSearch(e: FormEvent<Element>): void {
         e.preventDefault();
+        window.localStorage.removeItem("Events Queried");
+        window.localStorage.removeItem("Event Query")
+        window.localStorage.setItem("Event Query", JSON.stringify(userInput))
         if (queryToPerform) {
             fetchQuery(queryToPerform)
         }
+        navigate(`/events/search/${userInput}`)
         
     }
 
