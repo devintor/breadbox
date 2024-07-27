@@ -70,7 +70,7 @@ export function EventsQueriedPage() {
   
     useEffect(() => {
         fetchEvents();
-    }, []);
+    }, [userInput]);
 
   
     return (
