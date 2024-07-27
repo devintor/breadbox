@@ -12,7 +12,7 @@ export function FuzzyishSearchBar() {
 
     async function fetchQuery(queryToPerform: Query<DocumentData>) {
         const querySnap = await getDocs(queryToPerform);
-        console.log(querySnap.docs)
+        window.localStorage.setItem("Events Queried", JSON.stringify(querySnap.docs))
     }
 
 
@@ -112,6 +112,9 @@ export function FuzzyishSearchBar() {
 
     function handleEventSearch(e: FormEvent<Element>): void {
         e.preventDefault();
+        window.localStorage.removeItem("Events Queried");
+        window.localStorage.removeItem("Event Query")
+        window.localStorage.setItem("Event Query", JSON.stringify(userInput))
         if (queryToPerform) {
             fetchQuery(queryToPerform)
         }
