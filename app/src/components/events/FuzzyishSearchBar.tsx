@@ -1,24 +1,18 @@
-import data from "./events.json"
-import { db } from "../../config/firebase-config";
 import { Search } from "lucide-react";
 import { Input } from "../ui/input";
-import { FormEvent, useEffect, useState } from "react";
-import { collection, getDocs, where, query, Query, DocumentData, QueryFieldFilterConstraint, or } from "firebase/firestore";
+import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export function FuzzyishSearchBar() {
     const [userInput, setUserInput] = useState<string>();
-
     const navigate = useNavigate();
 
     function handleEventSearch(e: FormEvent<Element>): void {
         e.preventDefault();
-        console.log(userInput)
         navigate(`/events/search/${userInput}`)
+        window.location.reload()
         
     }
-
-
 
     return (
         <form name="event-query" className="ml-auto flex-1 sm:flex-initial" onSubmit={(e: FormEvent) => handleEventSearch(e)}>
