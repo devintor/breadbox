@@ -18,7 +18,6 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useState } from "react";
 import { auth } from "./config/firebase-config";
-import { User } from 'firebase/auth';
 
 import { ContextProvider } from "./components/context/UserContext";
 import { AuthPage } from "./pages/authpage/AuthPage";
@@ -34,12 +33,10 @@ import { EventsQueriedPage } from "./pages/eventspage/EventsQueriedPage";
 
 
 function App() {
-  const [user, setUser] = useState<User | null>(null);
   const [isAuth, setIsAuth] = useState<boolean>(true);
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
-      setUser(user);
       if (user) {
         setIsAuth(true);
       } else {

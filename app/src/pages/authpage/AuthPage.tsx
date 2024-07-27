@@ -1,6 +1,5 @@
-import { Navigate, Outlet, Route, Routes, useNavigate } from "react-router-dom";
+import { Outlet, Route, Routes, useNavigate } from "react-router-dom";
 
-import { Header } from "../../components/headers/Header";
 import Login from "../../components/auth/Login";
 import { useIsAuth } from "../../components/context/UserContext";
 import Register from "../../components/auth/Register";
