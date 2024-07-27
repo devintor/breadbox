@@ -30,7 +30,7 @@ import { db } from "../../config/firebase-config";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../../components/ui/alert-dialog";
-import { getQueryResult } from "../../components/events/ProcessQuery";
+import { getQuery, getQueryResult } from "../../components/events/ProcessQuery";
 import { useIsAuth } from "../../components/context/UserContext";
 import { FuzzyishSearchBar } from "../../components/events/FuzzyishSearchBar";
 import { Input } from "../../components/ui/input";
@@ -121,9 +121,11 @@ export function EventsQueriedPage() {
                 </div>
                 <Card x-chunk="dashboard-06-chunk-0">
                     <CardHeader>
-                        <CardTitle>{`Showing results for [placeholder for processed query]`}</CardTitle>
+                        <h3 className="flex-1 shrink-0 whitespace-nowrap text-xl tracking-tight sm:grow-0">
+                            Showing results for <span className="font-semibold"><a href="">{getQuery(userInput)}</a></span>
+                        </h3>
                         <CardDescription>
-                            Extracted from input: "{userInput}"
+                            From user input of "{userInput}"
                         </CardDescription>
                     </CardHeader>
                     <CardContent>

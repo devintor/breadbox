@@ -133,3 +133,15 @@ export const getQueryResult = (userInput: string) => {
     }
     
 }
+
+export const getQuery = (userInput: string | undefined) => {
+    const query:any = matchOptions(tokenize(userInput))
+    if (query) {
+        const queryString = query.map((field: any) => 
+            field.value.join(', ')
+        )
+
+        return queryString.join(', ');
+    }
+    
+}
