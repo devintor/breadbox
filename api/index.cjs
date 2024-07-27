@@ -1,4 +1,4 @@
-
+// import express, { json } from "express";
 const dotenv=require("dotenv");
 dotenv.config();
 
@@ -10,7 +10,7 @@ const API_KEY = process.env.API_KEY;
 
 
 const server = createServer(async (req, res) => {
-  const allowed_domain = 'https://breadbox-beta.vercel.app/' 
+  const allowed_domain = 'http://localhost:5173'  // Adjust with your domain or localhost port
   res.setHeader('Access-Control-Allow-Origin', allowed_domain);
   res.setHeader('Access-Control-Allow-Methods', 'GET');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -23,7 +23,7 @@ const server = createServer(async (req, res) => {
     const response = await getJson({
         engine: "google_images",
         google_domain: "google.com",
-        api_key: API_KEY,
+        api_key: API_KEY, // Get your API_KEY first
         q: query, 
         location: "Los Angeles, California",
         tbs: "isz:l,itp:photo"
@@ -33,6 +33,7 @@ const server = createServer(async (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(response));
 } catch (error) {
+    // handle any error
     res.statusCode = 500;
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify({ error: error.message }));
@@ -40,5 +41,5 @@ const server = createServer(async (req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Server running at https://breadbox-serpapi.vercel.app/`);
+  console.log(`Server running at http://localhost:${PORT}/`);
 });
