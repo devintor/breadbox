@@ -1,8 +1,5 @@
 
 import {
-    File,
-    ListFilter,
-    PlusCircle,
     MoreHorizontal,
     ChevronLeft,
     Search,
@@ -11,28 +8,24 @@ import {
 
   import {
     DropdownMenu,
-    DropdownMenuCheckboxItem,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
   } from "../../components/ui/dropdown-menu"
 
   import { Button } from "../../components/ui/button"
   import { Badge } from "../../components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader } from "../../components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
 import { FormEvent, useEffect, useState } from "react";
-import { QueryDocumentSnapshot, addDoc, collection, deleteDoc, doc, getDocs } from "firebase/firestore";
+import { QueryDocumentSnapshot, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../../config/firebase-config";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../../components/ui/alert-dialog";
 import { getQuery, getQueryResult } from "../../components/events/ProcessQuery";
 import { useIsAuth } from "../../components/context/UserContext";
-import { FuzzyishSearchBar } from "../../components/events/FuzzyishSearchBar";
 import { Input } from "../../components/ui/input";
 
 
@@ -57,15 +50,6 @@ export function EventsQueriedPage() {
             }
         }
       
-    };
-
-    async function handleCreateEvent() {
-        try {
-            await addDoc(collection(db, "Events"), {title: "Untitled Event", status: "Draft"})
-            .then((event) => navigate(`/admin/events/${event.id}/edit`))
-        } catch (error: any) {
-            
-        }
     };
 
   async function handleDeleteEvent(eventId: string) {
