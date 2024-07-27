@@ -28,37 +28,39 @@ import { db } from "../../config/firebase-config";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../../components/ui/alert-dialog";
+import { getQueryResult } from "../../components/events/ProcessQuery";
 
 
 export function EventsQueriedPage() {
     const { searchParam } = useParams();
-    const userInput:string = searchParam || '';
-  const navigate = useNavigate();
+    const [userInput, setUserInput] = useState<string | undefined>(searchParam)
+
+    const navigate = useNavigate();
   
-  const [events, setEvents] = useState<QueryDocumentSnapshot[]>();
+    const [events, setEvents] = useState<QueryDocumentSnapshot[]>();
 
-  const fetchEvents = async () => {
+    const fetchEvents = async () => {
+        console.log(userInput)
+        if (userInput) {
+            try {
+                setEvents((await getQueryResult(userInput))?.docs);
+            } catch (error: any) {
+                toast.error(error.message, {
+                    position: "bottom-center",
+                });
+            }
+        }
       
-      try {
-          const eventsRef = collection(db, "Events");
-          const eventsSnap = await getDocs(eventsRef);
-          setEvents(eventsSnap.docs);
+    };
 
-      } catch (error: any) {
-      }
-      
-  };
-
-  async function handleCreateEvent() {
-    try {
-        await addDoc(collection(db, "Events"), {title: "Untitled Event", status: "Draft"})
-        .then((event) => navigate(`/admin/events/${event.id}/edit`))
-    } catch (error: any) {
-      toast.error(error.message, {
-        position: "bottom-center",
-      });
-    }
-  };
+    async function handleCreateEvent() {
+        try {
+            await addDoc(collection(db, "Events"), {title: "Untitled Event", status: "Draft"})
+            .then((event) => navigate(`/admin/events/${event.id}/edit`))
+        } catch (error: any) {
+            
+        }
+    };
 
   async function handleDeleteEvent(eventId: string) {
 
@@ -76,9 +78,9 @@ export function EventsQueriedPage() {
     }
 }
   
-  useEffect(() => {
-      fetchEvents();
-  }, []);
+    useEffect(() => {
+        fetchEvents();
+    }, []);
 
   
     return (
