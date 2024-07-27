@@ -29,9 +29,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../../components/ui/alert-dialog";
 import { getQueryResult } from "../../components/events/ProcessQuery";
+import { useIsAuth } from "../../components/context/UserContext";
 
 
 export function EventsQueriedPage() {
+    const isAuth = useIsAuth();
+    
     const { searchParam } = useParams();
     const [userInput, setUserInput] = useState<string | undefined>(searchParam)
 
@@ -108,9 +111,13 @@ export function EventsQueriedPage() {
                                 <TableHead className="hidden md:table-cell">Attendees</TableHead>
                                 <TableHead className="hidden md:table-cell">Date</TableHead>
                                 <TableHead className="hidden md:table-cell">Location</TableHead>
-                                <TableHead>
-                                    <span className="sr-only">Actions</span>
-                                </TableHead>
+                                
+                                {isAuth && (
+                                    <TableHead>
+                                        <span className="sr-only">Actions</span>
+                                    </TableHead>
+                                )}
+                                
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -164,40 +171,43 @@ export function EventsQueriedPage() {
                                 <TableCell className="hidden md:table-cell">
                                 {event.data().place || "TBD"}
                                 </TableCell>
-                            <TableCell>
-                                <AlertDialog>
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                    <Button
-                                        aria-haspopup="true"
-                                        size="icon"
-                                        variant="ghost"
-                                    >
-                                        <MoreHorizontal className="h-4 w-4" />
-                                        <span className="sr-only">Toggle menu</span>
-                                    </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end">
-                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                    <DropdownMenuItem onClick={() => navigate(`/admin/events/${event.id}/edit`)}>Edit</DropdownMenuItem>
-                                    <AlertDialogTrigger asChild><DropdownMenuItem>Delete</DropdownMenuItem></AlertDialogTrigger>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                                <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                            This action cannot be undone. This will permanently delete this event
-                                            and remove its data from our servers.
-                                        </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction onClick={() => handleDeleteEvent(event.id)}>Delete</AlertDialogAction>
-                                    </AlertDialogFooter>
-                                </AlertDialogContent>
-                                </AlertDialog>
-                            </TableCell>
+                                {isAuth && (
+                                    <TableCell>
+                                        <AlertDialog>
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                            <Button
+                                                aria-haspopup="true"
+                                                size="icon"
+                                                variant="ghost"
+                                            >
+                                                <MoreHorizontal className="h-4 w-4" />
+                                                <span className="sr-only">Toggle menu</span>
+                                            </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                            <DropdownMenuItem onClick={() => navigate(`/admin/events/${event.id}/edit`)}>Edit</DropdownMenuItem>
+                                            <AlertDialogTrigger asChild><DropdownMenuItem>Delete</DropdownMenuItem></AlertDialogTrigger>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                        <AlertDialogContent>
+                                            <AlertDialogHeader>
+                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                    This action cannot be undone. This will permanently delete this event
+                                                    and remove its data from our servers.
+                                                </AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                            <AlertDialogAction onClick={() => handleDeleteEvent(event.id)}>Delete</AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                        </AlertDialog>
+                                    </TableCell>
+                                )}
+                            
                             </TableRow>
                         ))}
 
