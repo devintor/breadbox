@@ -1,4 +1,3 @@
-import { Search } from "lucide-react";
 import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SearchBar } from "../ui/searchbar";
