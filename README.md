@@ -1,5 +1,5 @@
 View deployed app at
-https://breadbox-beta.vercel.app/
+https://nsbebreadbox.web.app/
 
 In the breadbox/app directory, add an env file with contents from the attached document
 
