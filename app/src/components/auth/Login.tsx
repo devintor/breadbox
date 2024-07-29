@@ -32,8 +32,8 @@ function Login() {
 
 
 
-    const handleSubmit = async (e: Event) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
+        console.log("clicked")
         try {
             await signInWithEmailAndPassword(auth, email, password);
             navigate("/home");
@@ -107,7 +107,7 @@ function Login() {
                 </div>
 
                 <div className="d-grid">
-                    <button className="btn btn-primary" onClick={() => handleSubmit}>
+                    <button className="btn btn-primary" onClick={handleSubmit}>
                         Submit
                     </button>
                 </div>
