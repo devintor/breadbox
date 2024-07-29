@@ -27,6 +27,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { getQuery, getQueryResult } from "../../components/events/ProcessQuery";
 import { useIsAuth } from "../../components/context/UserContext";
 import { Input } from "../../components/ui/input";
+import { SearchBar } from "../../components/ui/searchbar";
 
 
 export function EventsQueriedPage() {
@@ -87,12 +88,12 @@ export function EventsQueriedPage() {
                         navigate(`/events/search/${userInput}`)
                         window.location.reload()
                     }}>
-                        <div className="relative">
-                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                            <Input
+                        <div className="relative flex items-center">
+                            <Search className="absolute ml-3 h-4 w-4 text-muted-foreground" />
+                            <SearchBar
                                 id="event-query"
                                 type="search"
-                                className="pl-8 left-2.5 sm:w-[300px] md:w-[200px] lg:w-[300px]"
+                                className="pr-3 pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
                                 defaultValue={userInput || ''}
                                 placeholder="Search for events..."
                                 onChange={(e)=>{

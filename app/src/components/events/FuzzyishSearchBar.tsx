@@ -2,6 +2,7 @@ import { Search } from "lucide-react";
 import { Input } from "../ui/input";
 import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { SearchBar } from "../ui/searchbar";
 
 export function FuzzyishSearchBar() {
     const [userInput, setUserInput] = useState<string>();
@@ -15,9 +16,9 @@ export function FuzzyishSearchBar() {
 
     return (
         <form name="event-query" className="ml-auto flex-1 sm:flex-initial" onSubmit={(e: FormEvent) => handleEventSearch(e)}>
-            <div className="relative">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
+            <div className="relative flex items-center">
+                <Search className="absolute ml-3 h-4 w-4 text-muted-foreground" />
+                <SearchBar
                     id="event-query"
                     type="search"
                     className="pl-8 left-2.5 sm:w-[300px] md:w-[200px] lg:w-[300px]"
