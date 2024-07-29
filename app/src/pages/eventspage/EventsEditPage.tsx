@@ -354,7 +354,7 @@ import { Recommend } from "../../components/events/Recommend"
                                             }}
                                         />
                                     </div>
-                                    <div className="grid grid-cols-2 gap-6">
+                                    <div className="grid sm:grid-cols-2 gap-6">
                                         <div className="grid gap-3">
                                             <Label>Start Time</Label>
                                             <DateTimePicker
