@@ -2,7 +2,6 @@
 import {
     MoreHorizontal,
     ChevronLeft,
-    Search,
   } from "lucide-react"
 
 
@@ -85,10 +84,8 @@ export function EventsQueriedPage() {
                     <form name="event-query" className="flex-1 sm:flex-initial" onSubmit={(e: FormEvent) => {
                         e.preventDefault()
                         navigate(`/events/search/${userInput}`)
-                        window.location.reload()
                     }}>
-                        <div className="relative flex items-center">
-                            <Search className="absolute ml-3 h-4 w-4 text-muted-foreground" />
+                        <div className="relative flex items-center text-muted-foreground focus-within:text-black">
                             <SearchBar
                                 id="event-query"
                                 type="search"
