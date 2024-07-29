@@ -15,8 +15,7 @@ export function FuzzyishSearchBar() {
 
     return (
         <form name="event-query" className="ml-auto flex-1 sm:flex-initial" onSubmit={(e: FormEvent) => handleEventSearch(e)}>
-            <div className="relative flex items-center">
-                <Search className="absolute ml-3 h-4 w-4 text-muted-foreground" />
+            <div className="relative flex items-center text-muted-foreground focus-within:text-black">
                 <SearchBar
                     id="event-query"
                     type="search"
