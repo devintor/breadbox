@@ -33,7 +33,6 @@ function Login() {
 
 
     const handleSubmit = async () => {
-        console.log("clicked")
         try {
             await signInWithEmailAndPassword(auth, email, password);
             navigate("/home");
