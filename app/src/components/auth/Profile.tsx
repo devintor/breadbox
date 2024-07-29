@@ -4,6 +4,7 @@ import { deleteUser, GoogleAuthProvider, reauthenticateWithPopup } from "firebas
 import { doc, getDoc, deleteDoc, updateDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export default function Profile() {
 
@@ -135,7 +136,7 @@ export default function Profile() {
                     </button>
                     <div style={{ display: "flex", justifyContent: "center" }}>
                         <img
-                            src={profileLocal.photo}
+                            src={profileLocal.photo || "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"}
                             width={"40%"}
                             style={{ borderRadius: "50%" }}
                         />
