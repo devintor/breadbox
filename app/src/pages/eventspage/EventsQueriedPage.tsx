@@ -26,7 +26,6 @@ import { toast } from "react-toastify";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../../components/ui/alert-dialog";
 import { getQuery, getQueryResult } from "../../components/events/ProcessQuery";
 import { useIsAuth } from "../../components/context/UserContext";
-import { Input } from "../../components/ui/input";
 import { SearchBar } from "../../components/ui/searchbar";
 
 

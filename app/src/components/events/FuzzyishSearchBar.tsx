@@ -1,5 +1,4 @@
 import { Search } from "lucide-react";
-import { Input } from "../ui/input";
 import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SearchBar } from "../ui/searchbar";
