@@ -7,7 +7,10 @@ type Props = {
 
 const EventItem: FC<Props> = ({item}: Props) => {
     return (
-        <p>{item.title}</p>
+        <>
+            <p>{item.title}</p>
+            <p>{item.description}</p>
+        </>
     )
 }
 
