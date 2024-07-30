@@ -21,7 +21,7 @@ import {
 import { Textarea } from "../../components/ui/textarea"
 import { useNavigate, useParams } from "react-router-dom"
 import { FormEvent, useEffect, useState } from "react"
-import { db } from "../../config/firebase-config"
+import { db } from "../../firebase/firebase-config"
 import { Timestamp, deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore"
 import { toast } from "react-toastify"
 import { DateTimePicker } from "../../components/ui/datetimepicker"

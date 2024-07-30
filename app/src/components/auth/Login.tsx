@@ -1,7 +1,7 @@
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useState, useEffect } from "react";
-import { auth, db } from "../../config/firebase-config";
+import { auth, db } from "../../firebase/firebase-config";
 import { setDoc, getDoc, doc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";

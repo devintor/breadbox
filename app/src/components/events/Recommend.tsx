@@ -1,5 +1,5 @@
 import { QueryDocumentSnapshot, Timestamp, collection, doc, getDoc, getDocs, query, updateDoc, where } from "firebase/firestore";
-import { db } from "../../config/firebase-config";
+import { db } from "../../firebase/firebase-config";
 import { useEffect, useState } from "react";
 import data from "./events.json"
 import { Button } from "../ui/button";

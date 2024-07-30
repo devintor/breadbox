@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { db } from "../../config/firebase-config";
+import { db } from "../../firebase/firebase-config";
 import { collection, getDocs, QueryDocumentSnapshot } from "firebase/firestore";
 
 export function MembersPage() {

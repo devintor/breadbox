@@ -1,5 +1,5 @@
 import data from "./events.json"
-import { db } from "../../config/firebase-config";
+import { db } from "../../firebase/firebase-config";
 import { collection, getDocs, where, query, Query, DocumentData, QueryFieldFilterConstraint, or } from "firebase/firestore";
 
 function tokenize (userInput: string | undefined) {
