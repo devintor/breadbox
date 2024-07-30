@@ -31,6 +31,7 @@ import { Transactions } from "./pages/nav-samples/Transactions";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { EventsQueriedPage } from "./pages/eventspage/EventsQueriedPage";
 import Events from "./components/events/Events";
+import CreateEvent from "./components/events/CreateEvent";
 
 
 function App() {
@@ -78,7 +79,12 @@ function App() {
     // </Router>
     // </TooltipProvider>
     // </ContextProvider>
-    <Events />
+    <Router>
+      <Routes>
+        <Route path="/admin/events" element={<Events />} />
+        <Route path="/admin/events/create" element={<CreateEvent />} />
+      </Routes>
+    </Router>
   );
 }
 

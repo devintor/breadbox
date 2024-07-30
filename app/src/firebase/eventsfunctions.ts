@@ -1,9 +1,10 @@
-import { getDocs, collection } from "firebase/firestore"
+import { getDocs, collection, addDoc, serverTimestamp, onSnapshot } from "firebase/firestore"
 import { db } from "./firebase-config"
 import { EventType } from "../lib/types"
 
 export const getEvents = async (): Promise<EventType[]> => {
-    return getDocs(collection(db, 'Events'))
+    return (
+        await getDocs(collection(db, 'Events'))
             .then(result => result.docs)
             .then(docs => docs.map(doc => ({
                 id: doc.id,
@@ -27,4 +28,16 @@ export const getEvents = async (): Promise<EventType[]> => {
                 status: "string",
                 time: "string",
             })))
+    )
+}
+
+export const streamEvents = async (observer) => {
+    onSnapshot(collection(db, "Events"), observer)
+}
+
+export const createEvent = async (event: EventType) => {
+    return await addDoc(collection(db, 'Events'), {
+        ...event,
+        createdAt: serverTimestamp(),
+    })
 }

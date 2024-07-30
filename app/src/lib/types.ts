@@ -1,7 +1,7 @@
 import { DocumentReference, Timestamp } from "firebase/firestore"
 
 export type EventType = {
-    id: string
+    id?: string
     title?: string,
     description?: string,
     company?: string,
