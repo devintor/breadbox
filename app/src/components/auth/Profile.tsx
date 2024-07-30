@@ -4,7 +4,6 @@ import { deleteUser, GoogleAuthProvider, reauthenticateWithPopup } from "firebas
 import { doc, getDoc, deleteDoc, updateDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export default function Profile() {
 
