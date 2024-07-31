@@ -8,6 +8,8 @@ export const streamEvents = (observer: any) => {
 }
 
 export const processEvent = (document: DocumentSnapshot): EventType => {
+    
+    
     return {
         id: document.id,
         ...document.data(),

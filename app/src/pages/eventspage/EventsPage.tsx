@@ -22,30 +22,20 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { QueryDocumentSnapshot, addDoc, collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { db } from "../../firebase/firebase-config";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../../components/ui/alert-dialog";
+import { EventType } from "../../lib/types";
 
+type Props = {
+  events: EventType[]
+}
 
-export function EventsPage() {
+export const EventsPage: FC<Props> = ({events}: Props) => {
   const navigate = useNavigate();
-  
-  const [events, setEvents] = useState<QueryDocumentSnapshot[]>();
-
-  const fetchEvents = async () => {
-      
-      try {
-          const eventsRef = collection(db, "Events");
-          const eventsSnap = await getDocs(eventsRef);
-          setEvents(eventsSnap.docs);
-
-      } catch (error: any) {
-      }
-      
-  };
 
   async function handleCreateEvent() {
     try {
@@ -65,18 +55,12 @@ export function EventsPage() {
         toast.success("Event deleted successfully!", {
             position: "top-center",
         });
-
-        fetchEvents();
     } catch (error: any) {
         toast.error(error.message, {
             position: "bottom-center",
           });
     }
 }
-  
-  useEffect(() => {
-      fetchEvents();
-  }, []);
 
   
     return (
@@ -162,12 +146,12 @@ export function EventsPage() {
                   {events?.map((event) => (
                     <TableRow key={event.id}>
                       <TableCell className="hidden sm:table-cell">
-                        {event.data().image ? (
+                        {event.image ? (
                           <img
                             alt="Event image"
                             className="aspect-square rounded-md object-cover"
                             height="64"
-                            src={event.data().image}
+                            src={event.image}
                             width="64"
                           />
                         ) : (
@@ -182,30 +166,30 @@ export function EventsPage() {
                         }
                       </TableCell>
                       <TableCell className="font-medium">
-                        {event.data().title}
+                        {event.title}
                       </TableCell>
                       <TableCell>
-                          <Badge variant="outline">{event.data().status}</Badge>
+                          <Badge variant="outline">{event.status}</Badge>
                         </TableCell>
                     <TableCell className="hidden md:table-cell">
-                      {event.data().food || "None"}
+                      {event.food || "None"}
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
-                      {event.data().company || "None"}
+                      {event.company || "None"}
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
-                      {event.data().usersRegistered ? event.data().usersRegistered.length : "None"}
+                      {event.registrees ? event.registrees.length : "None"}
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
-                      {event.data().usersAttended ? event.data().usersAttended.length : "None"}
+                      {event.attendees ? event.attendees.length : "None"}
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
-                      {event.data().startTime?.seconds ? new Date(event.data().startTime.seconds * 1000).toLocaleDateString('en-US') : "TBD"}
+                      {event.startTime?.seconds ? new Date(event.startTime.seconds * 1000).toLocaleDateString('en-US') : "TBD"}
                       <br></br>
-                      {event.data().startTime?.seconds ? new Date(event.data().startTime.seconds * 1000).toLocaleTimeString('en-US', { hour12: true, second: undefined }) : ""}
+                      {event.startTime?.seconds ? new Date(event.startTime.seconds * 1000).toLocaleTimeString('en-US', { hour12: true, second: undefined }) : ""}
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
-                      {event.data().place || "TBD"}
+                      {event.place || "TBD"}
                       </TableCell>
                       <TableCell>
                         <AlertDialog>
@@ -236,7 +220,7 @@ export function EventsPage() {
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                               <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction onClick={() => handleDeleteEvent(event.id)}>Delete</AlertDialogAction>
+                              <AlertDialogAction onClick={() => {event.id && handleDeleteEvent(event.id)}}>Delete</AlertDialogAction>
                             </AlertDialogFooter>
                           </AlertDialogContent>
                         </AlertDialog>
