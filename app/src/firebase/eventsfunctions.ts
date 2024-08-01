@@ -1,4 +1,4 @@
-import { getDocs, collection, addDoc, serverTimestamp, onSnapshot, DocumentSnapshot, Timestamp, deleteDoc, doc } from "firebase/firestore"
+import { getDocs, collection, addDoc, serverTimestamp, onSnapshot, DocumentSnapshot, Timestamp, deleteDoc, doc, updateDoc } from "firebase/firestore"
 import { db } from "./firebase-config"
 import { EventType } from "../lib/types"
 import { toast } from "react-toastify";
@@ -13,7 +13,7 @@ export const streamEvents = (observer: any) => {
 }
 
 export const processEvent = (document: DocumentSnapshot): EventType => {
-    if (document) {
+    try {
         var event: EventType = {
             id: document.id,
             ...document.data()
@@ -49,12 +49,16 @@ export const processEvent = (document: DocumentSnapshot): EventType => {
         
 
         return event
+    } catch (error: any) {
+        toast.error(error.message, {
+            position: "bottom-center",
+          });
+        return <EventType>{}
     }
-    return {}
 }
 
 export const calculateEventStatus = (event: EventType, currentDate: Date): EventType => {
-    if (event) {
+    try {
         const startDate = event.startTime?.toDate();
         const endDate = event.endTime?.toDate();
 
@@ -73,20 +77,47 @@ export const calculateEventStatus = (event: EventType, currentDate: Date): Event
             ...event,
             status: status
         }
+    } catch (error: any) {
+        toast.error(error.message, {
+            position: "bottom-center",
+          });
+        return <EventType>{}
     }
-
-    return {}
-
 }
 
 export const createEvent = () => {
     // const navigate = useNavigate();
-    return addDoc(collection(db, "Events"), {
-        title: "Untitled Event",
-        status: "Draft",
-        createdAt: serverTimestamp()
-    })
-  };
+    try {
+        return addDoc(collection(db, "Events"), {
+            title: "Untitled Event",
+            status: "Draft",
+            createdAt: serverTimestamp()
+        })
+    } catch (error: any) {
+        toast.error(error.message, {
+          position: "bottom-center",
+        });
+        return <Promise<any>>{}
+    }
+    
+};
+
+export const handleSaveEvent = (event: EventType) => {
+    try {
+        const promise = updateDoc(doc(db, "Events", event.id), {
+            ...event,
+        });
+        toast.success("Event Saved Successfully!!", {
+            position: "top-center",
+        });
+        return promise;
+    } catch (error: any) {
+        toast.error(error.message, {
+          position: "bottom-center",
+        });
+        return <Promise<any>>{}
+    }
+};
 
 export const handleDeleteEvent = (eventId: string) => {
     try {
