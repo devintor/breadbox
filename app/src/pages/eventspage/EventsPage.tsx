@@ -22,11 +22,8 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
-import { FC, useEffect, useState } from "react";
-import { QueryDocumentSnapshot, addDoc, collection, deleteDoc, doc, getDocs } from "firebase/firestore";
-import { db } from "../../firebase/firebase-config";
+import { FC } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../../components/ui/alert-dialog";
 import { EventType } from "../../lib/types";
 import { createEvent, handleDeleteEvent } from "../../firebase/eventsfunctions";

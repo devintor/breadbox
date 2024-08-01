@@ -1,7 +1,6 @@
 import { getDocs, collection, addDoc, serverTimestamp, onSnapshot, DocumentSnapshot, Timestamp, deleteDoc, doc } from "firebase/firestore"
 import { db } from "./firebase-config"
 import { EventType } from "../lib/types"
-import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify";
 
 const durationCalc = (startTime: Timestamp, endTime: Timestamp) => {
