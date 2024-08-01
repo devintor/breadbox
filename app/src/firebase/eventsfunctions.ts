@@ -1,4 +1,4 @@
-import { getDocs, collection, addDoc, serverTimestamp, onSnapshot, DocumentSnapshot, Timestamp } from "firebase/firestore"
+import { getDocs, collection, addDoc, serverTimestamp, onSnapshot, DocumentSnapshot, Timestamp, deleteDoc, doc } from "firebase/firestore"
 import { db } from "./firebase-config"
 import { EventType } from "../lib/types"
 import { useNavigate } from "react-router-dom"
@@ -79,7 +79,6 @@ export const calculateEventStatus = (event: EventType, currentDate: Date): Event
 
 }
 
-
 export const handleCreateEvent = () => {
     // const navigate = useNavigate();
     return addDoc(collection(db, "Events"), {
@@ -87,6 +86,18 @@ export const handleCreateEvent = () => {
         status: "Draft",
         createdAt: serverTimestamp()
     })
-        
   };
+
+export const handleDeleteEvent = (eventId: string) => {
+    try {
+        deleteDoc(doc(db, "Events", eventId));
+        toast.success("Event deleted successfully!", {
+            position: "top-center",
+        });
+    } catch (error: any) {
+        toast.error(error.message, {
+            position: "bottom-center",
+            });
+    }
+}
 

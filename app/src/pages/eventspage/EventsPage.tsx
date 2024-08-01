@@ -29,7 +29,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../../components/ui/alert-dialog";
 import { EventType } from "../../lib/types";
-import { handleCreateEvent } from "../../firebase/eventsfunctions";
+import { handleCreateEvent, handleDeleteEvent } from "../../firebase/eventsfunctions";
 
 type Props = {
   events: EventType[]
@@ -37,20 +37,6 @@ type Props = {
 
 export const EventsPage: FC<Props> = ({events}: Props) => {
   const navigate = useNavigate();
-
-  async function handleDeleteEvent(eventId: string) {
-
-    try {
-        deleteDoc(doc(db, "Events", eventId));
-        toast.success("Event deleted successfully!", {
-            position: "top-center",
-        });
-    } catch (error: any) {
-        toast.error(error.message, {
-            position: "bottom-center",
-          });
-    }
-}
 
   
     return (

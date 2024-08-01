@@ -84,34 +84,34 @@ function App() {
   return (
     <ContextProvider>
       <TooltipProvider>
-    <Router>
-      <div className="App">
-        <Header />
-        <p>{time.toLocaleTimeString()}</p>
-            <Routes>
-              <Route index element={<HomePage />} />
-              
-            
-              <Route path="/admin/events" element={isAuth ? <EventsPage events={events || []} /> : <Navigate to='/auth' />} />
-              <Route path="/admin/events/:eventParam/edit" element={isAuth ? <EventsEditPage /> : <Navigate to='/auth' />} />
-              <Route path="/admin/members" element={isAuth ? <MembersPage /> : <Navigate to='/auth' />} />
-              <Route path="/admin/dashboard" element={isAuth ? <Dashboard /> : <Navigate to='/auth' />} />
-              <Route path="/admin/transactions" element={isAuth ? <Transactions /> : <Navigate to='/auth' />} />
-              <Route path="/admin/settings" element={isAuth ? <Settings /> : <Navigate to='/auth' />} />
+        <Router>
+          <div className="App">
+            <Header />
+            <p>{time.toLocaleTimeString()}</p>
+                <Routes>
+                  <Route index element={<HomePage />} />
+                  
+                
+                  <Route path="/admin/events" element={isAuth ? <EventsPage events={events || []} /> : <Navigate to='/auth' />} />
+                  <Route path="/admin/events/:eventParam/edit" element={isAuth ? <EventsEditPage /> : <Navigate to='/auth' />} />
+                  <Route path="/admin/members" element={isAuth ? <MembersPage /> : <Navigate to='/auth' />} />
+                  <Route path="/admin/dashboard" element={isAuth ? <Dashboard /> : <Navigate to='/auth' />} />
+                  <Route path="/admin/transactions" element={isAuth ? <Transactions /> : <Navigate to='/auth' />} />
+                  <Route path="/admin/settings" element={isAuth ? <Settings /> : <Navigate to='/auth' />} />
 
-              <Route path="/profile" element={isAuth ? <ProfilePage /> : <Navigate to='/auth' />} />
+                  <Route path="/profile" element={isAuth ? <ProfilePage /> : <Navigate to='/auth' />} />
 
-              <Route path="*" element={<Navigate to="/home" />} />
-              <Route path="/home" element={<HomePage />} />
-              <Route path="/events" element={<HomePage />} />
-              
-              <Route path="/events/search/:searchParam" element={<EventsQueriedPage />} />
-              <Route path="/auth/*" element={<AuthPage />} />
-            </Routes>
-            <ToastContainer/>
-      </div>
-    </Router>
-    </TooltipProvider>
+                  <Route path="*" element={<Navigate to="/home" />} />
+                  <Route path="/home" element={<HomePage />} />
+                  <Route path="/events" element={<HomePage />} />
+                  
+                  <Route path="/events/search/:searchParam" element={<EventsQueriedPage />} />
+                  <Route path="/auth/*" element={<AuthPage />} />
+                </Routes>
+                <ToastContainer/>
+          </div>
+        </Router>
+      </TooltipProvider>
     </ContextProvider>
     // <Router>
     //   <Routes>
