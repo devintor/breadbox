@@ -79,7 +79,7 @@ export const calculateEventStatus = (event: EventType, currentDate: Date): Event
 
 }
 
-export const handleCreateEvent = () => {
+export const createEvent = () => {
     // const navigate = useNavigate();
     return addDoc(collection(db, "Events"), {
         title: "Untitled Event",
@@ -100,4 +100,6 @@ export const handleDeleteEvent = (eventId: string) => {
             });
     }
 }
+
+
 

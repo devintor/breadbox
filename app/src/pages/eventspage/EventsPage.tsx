@@ -29,7 +29,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../../components/ui/alert-dialog";
 import { EventType } from "../../lib/types";
-import { handleCreateEvent, handleDeleteEvent } from "../../firebase/eventsfunctions";
+import { createEvent, handleDeleteEvent } from "../../firebase/eventsfunctions";
 
 type Props = {
   events: EventType[]
@@ -38,6 +38,10 @@ type Props = {
 export const EventsPage: FC<Props> = ({events}: Props) => {
   const navigate = useNavigate();
 
+  const handleCreateEvent = () => {
+    createEvent()
+    .then((event) => navigate(`/admin/events/${event.id}/edit`))
+  }
   
     return (
     <div className="flex min-h-screen w-full flex-col">
@@ -80,10 +84,7 @@ export const EventsPage: FC<Props> = ({events}: Props) => {
                     Export
                   </span>
                 </Button>
-                <Button size="sm" className="h-8 gap-1" onClick={() => {
-                    handleCreateEvent()
-                    .then((event) => navigate(`/admin/events/${event.id}/edit`))
-                }}>
+                <Button size="sm" className="h-8 gap-1" onClick={handleCreateEvent}>
                   <PlusCircle className="h-3.5 w-3.5" />
                   <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                     Add Event
