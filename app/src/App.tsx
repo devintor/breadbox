@@ -34,7 +34,7 @@ import Events from "./components/events/Events";
 import CreateEvent from "./components/events/CreateEvent";
 import { EventType } from "./lib/types";
 import { QuerySnapshot } from "firebase/firestore";
-import { streamEvents, processEvent } from "./firebase/eventsfunctions";
+import { streamEvents, processEvent, calculateEventStatus } from "./firebase/eventsfunctions";
 
 
 function App() {
@@ -50,13 +50,28 @@ function App() {
     });
   });
 
+  const [time, setTime] = useState(new Date());
+
+  useEffect(()=> {
+    setInterval(()=>setTime(new Date()), 1000)
+  },[])
+
   const [events, setEvents] = useState<EventType[]>()
+
+  useEffect(()=> {
+    const eventsLive = events?.map(event => calculateEventStatus(event, time))
+    
+    if (eventsLive) {
+      setEvents(eventsLive)
+    }
+  }, [time])
 
   useEffect(() => {
       const unsubscribe = streamEvents({
           next: (querySnapshot: QuerySnapshot) => {
               const events = querySnapshot
                   .docs.map(docSnapshot => processEvent(docSnapshot))
+              
               console.log(events)
               setEvents(events)
           },
@@ -64,14 +79,15 @@ function App() {
       })
       return unsubscribe;
   }, [setEvents])
+
   
   return (
     <ContextProvider>
       <TooltipProvider>
     <Router>
       <div className="App">
-      
         <Header />
+        <p>{time.toLocaleTimeString()}</p>
             <Routes>
               <Route index element={<HomePage />} />
               
