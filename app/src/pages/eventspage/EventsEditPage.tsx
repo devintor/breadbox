@@ -21,7 +21,7 @@ import {
 import { Textarea } from "../../components/ui/textarea"
 import { useNavigate, useParams } from "react-router-dom"
 import { FormEvent, useEffect, useState } from "react"
-import { db } from "../../config/firebase-config"
+import { db } from "../../firebase/firebase-config"
 import { Timestamp, deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore"
 import { toast } from "react-toastify"
 import { DateTimePicker } from "../../components/ui/datetimepicker"
@@ -79,10 +79,7 @@ import { Recommend } from "../../components/events/Recommend"
     
     };
     
-    const durationCalc = (startTime: Timestamp, endTime: Timestamp) => {
-        const duration = Math.ceil((endTime.seconds - startTime.seconds) / 1800) * 30;
-        return duration;
-    }
+    
 
     const fetchImages = async (imageQuery: string) => {
         try {
@@ -190,7 +187,7 @@ import { Recommend } from "../../components/events/Recommend"
 
             setEventLocal((prev:any) => ({
                 ...prev,
-                duration: durationCalc(eventLocal.startTime, eventLocal.endTime),
+                // duration: durationCalc(eventLocal.startTime, eventLocal.endTime),
                 time: time,
                 status: status,
                 setting: setting

@@ -19,7 +19,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader } from "../.
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
 import { FormEvent, useEffect, useState } from "react";
 import { QueryDocumentSnapshot, deleteDoc, doc } from "firebase/firestore";
-import { db } from "../../config/firebase-config";
+import { db } from "../../firebase/firebase-config";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../../components/ui/alert-dialog";

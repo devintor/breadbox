@@ -32,7 +32,7 @@
     "clsx": "^2.1.1",
     "cors": "^2.8.5",
     "date-fns": "^3.6.0",
-    "firebase": "^10.12.3",
+    "firebase": "^10.12.4",
     "https": "^1.0.0",
     "lucide-react": "^0.407.0",
     "querystring": "^0.2.1",

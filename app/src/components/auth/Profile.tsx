@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import { auth, db } from "../../config/firebase-config";
+import { auth, db } from "../../firebase/firebase-config";
 import { deleteUser, GoogleAuthProvider, reauthenticateWithPopup } from "firebase/auth";
 import { doc, getDoc, deleteDoc, updateDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export default function Profile() {
 
