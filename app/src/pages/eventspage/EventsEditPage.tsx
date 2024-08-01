@@ -39,50 +39,52 @@ type Props = {
     const { eventParam } = useParams();
     const eventId:string = eventParam || '';
     
+    const [eventLocal, setEventLocal] = useState<EventType>(events.find((event)=>event.id==eventId) || {})
+
     const navigate = useNavigate();
     
-    const [eventLocal, setEventLocal] = useState<any>();
+    // const [eventLocal, setEventLocal] = useState<any>();
 
     const [imageQuery, setImageQuery] = useState<string>();
     const [imagesSearched, setImagesSearched] = useState<any>();
     const [imageSelected, setImageSelected] = useState<string>();
 
-    const resetEventLocal = () => {
-        setEventLocal({
-            startTime: undefined,
-            endTime: undefined,
-        })
-        setEventLocal((prevEventLocal: any) => ({
-            ...prevEventLocal,
-            title: '',
-            description: '',
-            company: '',
-            place: '',
-            duration: '',
-            time: '',
-            setting: '',
-            ratingProjection: '',
-            food: '',
-            image: '',
-            status: ''
-        }))
-    }
+    // const resetEventLocal = () => {
+    //     setEventLocal({
+    //         startTime: undefined,
+    //         endTime: undefined,
+    //     })
+    //     setEventLocal((prevEventLocal: any) => ({
+    //         ...prevEventLocal,
+    //         title: '',
+    //         description: '',
+    //         company: '',
+    //         place: '',
+    //         duration: '',
+    //         time: '',
+    //         setting: '',
+    //         ratingProjection: '',
+    //         food: '',
+    //         image: '',
+    //         status: ''
+    //     }))
+    // }
     
 
 
-    const fetchEvent = async () => {
-        try {
-            const eventRef = doc(db, "Events", eventId);
-            const eventSnap = await getDoc(eventRef);
-            setEventLocal((prevEventLocal: any) => ({
-                ...prevEventLocal,
-                ...eventSnap.data(),
-            }))
+    // const fetchEvent = async () => {
+    //     try {
+    //         const eventRef = doc(db, "Events", eventId);
+    //         const eventSnap = await getDoc(eventRef);
+    //         setEventLocal((prevEventLocal: any) => ({
+    //             ...prevEventLocal,
+    //             ...eventSnap.data(),
+    //         }))
 
-        } catch (error: any) {
-        }
+    //     } catch (error: any) {
+    //     }
     
-    };
+    // };
     
     
 
@@ -103,10 +105,10 @@ type Props = {
 
     
 
-    useEffect(() => {
-        resetEventLocal();
-        fetchEvent();
-    }, []);
+    // useEffect(() => {
+    //     resetEventLocal();
+    //     fetchEvent();
+    // }, []);
 
     useEffect(() => {
         if (eventLocal) {
@@ -126,13 +128,17 @@ type Props = {
                 if (eventLocal.time) {
                     proj += parsedVals.time[eventLocal.time];
                 }
-                setEventLocal((prev: any) => ({
-                    ...prev,
-                    projection: {
-                        rating: proj,
-                        calculatedAt: parsedVals.calculatedAt
-                    }
-                }));
+
+                if (proj != 0) {
+                    setEventLocal((prev: any) => ({
+                        ...prev,
+                        projection: {
+                            rating: proj,
+                            calculatedAt: parsedVals.calculatedAt
+                        }
+                    }));
+                }
+                
             }
         }
     }, [eventLocal?.company, eventLocal?.food, eventLocal?.time, eventLocal?.duration, eventLocal?.setting, eventLocal?.place])
@@ -164,41 +170,8 @@ type Props = {
                 }))
             }
             
-            const currentDate = new Date();
-            const hours = startDate.getHours();
-            const place = eventLocal.place;
-            
-            
-            var status = "Upcoming"
-            if (startDate < currentDate && endDate < currentDate) {
-                status = "Past"
-            } else if (startDate < currentDate && endDate > currentDate) {
-                status = "Active"
-            }
-            
-            var time = "Overnight";
-            if (hours >= 18) {
-                time = "Evening";
-            } else if (hours >= 12) {
-                time = "Afternoon";
-            } else if (hours >= 6) {
-                time = "Morning";
-            }
-
-            var setting = "Indoor";
-            if (new RegExp("quad", 'i').test(place)) {
-                setting = "Outdoor";
-            }
-
-            setEventLocal((prev:any) => ({
-                ...prev,
-                // duration: durationCalc(eventLocal.startTime, eventLocal.endTime),
-                time: time,
-                status: status,
-                setting: setting
-            }))
         }
-    }, [eventLocal?.startTime, eventLocal?.endTime, eventLocal?.place])
+    }, [eventLocal?.startTime, eventLocal?.endTime])
 
     async function handleSaveEvent() {
         try {
@@ -262,11 +235,11 @@ type Props = {
                         {eventLocal.status}
                     </Badge>
                     
-                    {eventLocal.projection?.rating ? (
+                    {/* {eventLocal.projection?.rating ? (
                     <Badge variant="outline" className="ml-auto sm:ml-0">
                         {`Projected Rating ${(new Date(eventLocal.projection?.calculatedAt?.seconds * 1000)).toLocaleDateString()}: ${eventLocal.projection?.rating}`}
                     </Badge>
-                    ) : ('')}
+                    ) : ('')} */}
                     
                     <div className="hidden items-center gap-2 md:ml-auto md:flex">
                         <AlertDialog>
