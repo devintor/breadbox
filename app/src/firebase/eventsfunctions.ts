@@ -1,7 +1,13 @@
 import { getDocs, collection, addDoc, serverTimestamp, onSnapshot, DocumentSnapshot, Timestamp } from "firebase/firestore"
 import { db } from "./firebase-config"
 import { EventType } from "../lib/types"
+import { useNavigate } from "react-router-dom"
+import { toast } from "react-toastify";
 
+const durationCalc = (startTime: Timestamp, endTime: Timestamp) => {
+    const duration = Math.ceil((endTime.seconds - startTime.seconds) / 1800) * 30;
+    return duration;
+}
 
 export const streamEvents = (observer: any) => {
     onSnapshot(collection(db, "Events"), observer)
@@ -9,23 +15,11 @@ export const streamEvents = (observer: any) => {
 
 export const processEvent = (document: DocumentSnapshot): EventType => {
     if (document) {
-        const currentDate = new Date();
-        const startDate: Date = document.data()?.startTime.toDate()
-        const endDate: Date = document.data()?.endTime.toDate()
-
-        const hours = startDate.getHours();
+        const startDate: Date = document.data()?.startTime?.toDate()
+        
+        const hours = startDate?.getHours();
 
         const place = document.data()?.place;
-        
-        
-        var status = "Draft"
-        if (startDate < currentDate && endDate < currentDate) {
-            status = "Past"
-        } else if (startDate < currentDate && endDate > currentDate) {
-            status = "Active"
-        } else if (startDate > currentDate && endDate > currentDate) {
-            status = "Upcoming"
-        }
 
         var time = "Overnight";
         if (hours >= 18) {
@@ -41,12 +35,17 @@ export const processEvent = (document: DocumentSnapshot): EventType => {
             setting = "Outdoor";
         }
 
+        var duration;
+        if (document.data()?.startTime && document.data()?.endTime) {
+            duration = durationCalc(document.data()?.startTime, document.data()?.endTime)
+        }
+        
+
         return {
             id: document.id,
             ...document.data(),
-            duration: durationCalc(document.data()?.startTime, document.data()?.endTime),
+            duration: duration,
             time: time,
-            status: status,
             setting: setting,
         }
 
@@ -80,16 +79,14 @@ export const calculateEventStatus = (event: EventType, currentDate: Date): Event
 
 }
 
-const durationCalc = (startTime: Timestamp, endTime: Timestamp) => {
-    const duration = Math.ceil((endTime.seconds - startTime.seconds) / 1800) * 30;
-    return duration;
-}
 
-
-
-export const createEvent = async (event: EventType) => {
-    return await addDoc(collection(db, 'Events'), {
-        ...event,
-        createdAt: serverTimestamp(),
+export const handleCreateEvent = () => {
+    // const navigate = useNavigate();
+    return addDoc(collection(db, "Events"), {
+        title: "Untitled Event",
+        status: "Draft",
+        createdAt: serverTimestamp()
     })
-}
+        
+  };
+

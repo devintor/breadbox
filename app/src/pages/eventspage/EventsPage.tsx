@@ -29,6 +29,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../../components/ui/alert-dialog";
 import { EventType } from "../../lib/types";
+import { handleCreateEvent } from "../../firebase/eventsfunctions";
 
 type Props = {
   events: EventType[]
@@ -36,17 +37,6 @@ type Props = {
 
 export const EventsPage: FC<Props> = ({events}: Props) => {
   const navigate = useNavigate();
-
-  async function handleCreateEvent() {
-    try {
-        await addDoc(collection(db, "Events"), {title: "Untitled Event", status: "Draft"})
-        .then((event) => navigate(`/admin/events/${event.id}/edit`))
-    } catch (error: any) {
-      toast.error(error.message, {
-        position: "bottom-center",
-      });
-    }
-  };
 
   async function handleDeleteEvent(eventId: string) {
 
@@ -104,7 +94,10 @@ export const EventsPage: FC<Props> = ({events}: Props) => {
                     Export
                   </span>
                 </Button>
-                <Button size="sm" className="h-8 gap-1" onClick={() => handleCreateEvent()}>
+                <Button size="sm" className="h-8 gap-1" onClick={() => {
+                    handleCreateEvent()
+                    .then((event) => navigate(`/admin/events/${event.id}/edit`))
+                }}>
                   <PlusCircle className="h-3.5 w-3.5" />
                   <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                     Add Event
