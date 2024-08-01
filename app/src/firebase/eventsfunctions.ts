@@ -14,40 +14,41 @@ export const streamEvents = (observer: any) => {
 
 export const processEvent = (document: DocumentSnapshot): EventType => {
     if (document) {
+        var event: EventType = {
+            id: document.id,
+            ...document.data()
+        }
+
         const startDate: Date = document.data()?.startTime?.toDate()
         
         const hours = startDate?.getHours();
+        if (hours) {
+            if (hours >= 18) {
+                event.time = "Evening";
+            } else if (hours >= 12) {
+                event.time = "Afternoon";
+            } else if (hours >= 6) {
+                event.time = "Morning";
+            } else if (hours < 6) {
+                event.time = "Overnight";
+            }
+        }
 
         const place = document.data()?.place;
-
-        var time = "Overnight";
-        if (hours >= 18) {
-            time = "Evening";
-        } else if (hours >= 12) {
-            time = "Afternoon";
-        } else if (hours >= 6) {
-            time = "Morning";
+        if (place) {
+            if (new RegExp("quad", 'i').test(place)) {
+                event.setting = "Outdoor";
+            } else {
+                event.setting = "Indoor";
+            }
         }
-
-        var setting = "Indoor";
-        if (new RegExp("quad", 'i').test(place)) {
-            setting = "Outdoor";
-        }
-
-        var duration;
+        
         if (document.data()?.startTime && document.data()?.endTime) {
-            duration = durationCalc(document.data()?.startTime, document.data()?.endTime)
+            event.duration = durationCalc(document.data()?.startTime, document.data()?.endTime)
         }
         
 
-        return {
-            id: document.id,
-            ...document.data(),
-            duration: duration,
-            time: time,
-            setting: setting,
-        }
-
+        return event
     }
     return {}
 }
