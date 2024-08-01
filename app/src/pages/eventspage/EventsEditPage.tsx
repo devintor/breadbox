@@ -20,7 +20,7 @@ import {
 } from "../../components/ui/select"
 import { Textarea } from "../../components/ui/textarea"
 import { useNavigate, useParams } from "react-router-dom"
-import { FormEvent, useEffect, useState } from "react"
+import { FC, FormEvent, useEffect, useState } from "react"
 import { db } from "../../firebase/firebase-config"
 import { Timestamp, deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore"
 import { toast } from "react-toastify"
@@ -29,8 +29,13 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../../components/ui/dialog"
 import data from "../../components/events/events.json"
 import { Recommend } from "../../components/events/Recommend"
+import { EventType } from "../../lib/types"
 
-  export function EventsEditPage() {
+type Props = {
+    events: EventType[]
+  }
+
+  export const EventsEditPage: FC<Props> = ({events}: Props) => {
     const { eventParam } = useParams();
     const eventId:string = eventParam || '';
     
