@@ -30,60 +30,34 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import data from "../../components/events/events.json"
 import { Recommend } from "../../components/events/Recommend"
 import { EventType } from "../../lib/types"
+import { handleSaveEvent } from "../../firebase/eventsfunctions"
 
 type Props = {
     events: EventType[]
   }
 
-  export const EventsEditPage: FC<Props> = ({events}: Props) => {
-    const { eventParam } = useParams();
-    const eventId:string = eventParam || '';
+export const EventsEditPage: FC<Props> = ({events}: Props) => {
+    const { eventId } = useParams();
+    // const eventId:string = eventParam || '';
     
+    const [event, setEvent] = useState<EventType>({id: "loading"})
+
+    useEffect(()=>{
+        var event = events.find((event)=>event.id==eventId)
+        if (event) {
+            setEvent(event)
+        }
+    },[events])
+
+    useEffect(()=> {
+        console.log(event)
+    }, [event])
+
     const navigate = useNavigate();
-    
-    const [eventLocal, setEventLocal] = useState<any>();
 
     const [imageQuery, setImageQuery] = useState<string>();
     const [imagesSearched, setImagesSearched] = useState<any>();
     const [imageSelected, setImageSelected] = useState<string>();
-
-    const resetEventLocal = () => {
-        setEventLocal({
-            startTime: undefined,
-            endTime: undefined,
-        })
-        setEventLocal((prevEventLocal: any) => ({
-            ...prevEventLocal,
-            title: '',
-            description: '',
-            company: '',
-            place: '',
-            duration: '',
-            time: '',
-            setting: '',
-            ratingProjection: '',
-            food: '',
-            image: '',
-            status: ''
-        }))
-    }
-    
-
-
-    const fetchEvent = async () => {
-        try {
-            const eventRef = doc(db, "Events", eventId);
-            const eventSnap = await getDoc(eventRef);
-            setEventLocal((prevEventLocal: any) => ({
-                ...prevEventLocal,
-                ...eventSnap.data(),
-            }))
-
-        } catch (error: any) {
-        }
-    
-    };
-    
     
 
     const fetchImages = async (imageQuery: string) => {
@@ -99,54 +73,49 @@ type Props = {
     };
 
 
-    
-
-    
-
     useEffect(() => {
-        resetEventLocal();
-        fetchEvent();
-    }, []);
-
-    useEffect(() => {
-        if (eventLocal) {
+        if (event) {
             let localVals = window.localStorage.getItem("Event Rec Values")
             if (localVals && localVals != "{}") {
                 let parsedVals = JSON.parse(localVals);
                 let proj = 0
-                if (eventLocal.food) {
-                    proj += parsedVals.food[eventLocal.food];
+                if (event.food) {
+                    proj += parsedVals.food[event.food];
                 }
-                if (eventLocal.company) {
-                    proj += parsedVals.company[eventLocal.company];
+                if (event.company) {
+                    proj += parsedVals.company[event.company];
                 }
-                if (eventLocal.setting) {
-                    proj += parsedVals.setting[eventLocal.setting];
+                if (event.setting) {
+                    proj += parsedVals.setting[event.setting];
                 }
-                if (eventLocal.time) {
-                    proj += parsedVals.time[eventLocal.time];
+                if (event.time) {
+                    proj += parsedVals.time[event.time];
                 }
-                setEventLocal((prev: any) => ({
-                    ...prev,
-                    projection: {
-                        rating: proj,
-                        calculatedAt: parsedVals.calculatedAt
-                    }
-                }));
+
+                if (proj != 0) {
+                    setEvent((prev: any) => ({
+                        ...prev,
+                        projection: {
+                            rating: proj,
+                            calculatedAt: parsedVals.calculatedAt
+                        }
+                    }));
+                }
+                
             }
         }
-    }, [eventLocal?.company, eventLocal?.food, eventLocal?.time, eventLocal?.duration, eventLocal?.setting, eventLocal?.place])
+    }, [event?.company, event?.food, event?.time, event?.duration, event?.setting, event?.place])
 
     useEffect(() => {
-        const startDate = eventLocal?.startTime?.toDate();
-        const endDate = eventLocal?.endTime?.toDate();
+        const startDate = event?.startTime?.toDate();
+        const endDate = event?.endTime?.toDate();
 
         if (startDate && !endDate) {
             const adjStart = startDate.setHours(startDate.getHours() + 19)
 
             const adjEnd = startDate.setHours(startDate.getHours() + 2)
 
-            setEventLocal((prev: any) => ({
+            setEvent((prev: any) => ({
                 ...prev,
                 startTime: Timestamp.fromMillis(adjStart),
                 endTime: Timestamp.fromMillis(adjEnd),
@@ -158,71 +127,24 @@ type Props = {
                 var adjEnd = startDate;
                 adjEnd.setHours(adjEnd.getHours() + 2);
 
-                setEventLocal((prev: any) => ({
+                setEvent((prev: any) => ({
                     ...prev,
                     endTime: Timestamp.fromDate(adjEnd),
                 }))
             }
             
-            const currentDate = new Date();
-            const hours = startDate.getHours();
-            const place = eventLocal.place;
-            
-            
-            var status = "Upcoming"
-            if (startDate < currentDate && endDate < currentDate) {
-                status = "Past"
-            } else if (startDate < currentDate && endDate > currentDate) {
-                status = "Active"
-            }
-            
-            var time = "Overnight";
-            if (hours >= 18) {
-                time = "Evening";
-            } else if (hours >= 12) {
-                time = "Afternoon";
-            } else if (hours >= 6) {
-                time = "Morning";
-            }
-
-            var setting = "Indoor";
-            if (new RegExp("quad", 'i').test(place)) {
-                setting = "Outdoor";
-            }
-
-            setEventLocal((prev:any) => ({
-                ...prev,
-                // duration: durationCalc(eventLocal.startTime, eventLocal.endTime),
-                time: time,
-                status: status,
-                setting: setting
-            }))
         }
-    }, [eventLocal?.startTime, eventLocal?.endTime, eventLocal?.place])
-
-    async function handleSaveEvent() {
-        try {
-          if (eventLocal) {
-            await updateDoc(doc(db, "Events", eventId), {
-              ...eventLocal,
-            });
-          }
-          toast.success("Event Saved Successfully!!", {
-            position: "top-center",
-          });
-        } catch (error: any) {
-          toast.error(error.message, {
-            position: "bottom-center",
-          });
-        }
-      };
+    }, [event?.startTime, event?.endTime])
 
     async function handleDeleteEvent() {
         try {
-            deleteDoc(doc(db, "Events", eventId));
-            toast.success("Event deleted successfully!", {
-                position: "top-center",
-            });
+            if (event.id) {
+                await deleteDoc(doc(db, "Events", event.id));
+                toast.success("Event deleted successfully!", {
+                    position: "top-center",
+                });
+            }
+            
             
             
             navigate('/admin/events');
@@ -248,7 +170,7 @@ type Props = {
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
         
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-            {eventLocal ? (
+            {event ? (
             <div className="mx-auto grid max-w-[59rem] flex-1 auto-rows-max gap-4">
                 <div className="flex items-center gap-4">
                     <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => navigate('/admin/events')}>
@@ -256,15 +178,15 @@ type Props = {
                         <span className="sr-only">Back</span>
                     </Button>
                     <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-                        {eventLocal.title || "Untitled Event"}
+                        {event.title || "Untitled Event"}
                     </h1>
                     <Badge variant="outline" className="ml-auto sm:ml-0">
-                        {eventLocal.status}
+                        {event.status}
                     </Badge>
                     
-                    {eventLocal.projection?.rating ? (
+                    {event.projection?.rating ? (
                     <Badge variant="outline" className="ml-auto sm:ml-0">
-                        {`Projected Rating ${(new Date(eventLocal.projection?.calculatedAt?.seconds * 1000)).toLocaleDateString()}: ${eventLocal.projection?.rating}`}
+                        {`Projected Rating ${(new Date(event.projection?.calculatedAt?.seconds * 1000)).toLocaleDateString()}: ${event.projection?.rating}`}
                     </Badge>
                     ) : ('')}
                     
@@ -290,7 +212,7 @@ type Props = {
                             </AlertDialogContent>
                         </AlertDialog>
                         <Recommend/>
-                        <Button size="sm" onClick={handleSaveEvent}>Save Event</Button>
+                        <Button size="sm" onClick={() => handleSaveEvent(event).then(() => navigate("/admin/events"))}>Save Event</Button>
                     </div>
                 </div>
                 <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
@@ -307,11 +229,11 @@ type Props = {
                                             id="title"
                                             type="text"
                                             className="w-full"
-                                            defaultValue={eventLocal.title!="Untitled Event" ? eventLocal.title : ''}
+                                            defaultValue={event.title!="Untitled Event" ? event.title : ''}
                                             placeholder="Enter a title"
                                             onChange={(e)=>{
-                                                setEventLocal((prevEventLocal: any) => ({
-                                                    ...prevEventLocal,
+                                                setEvent((prevEvent: any) => ({
+                                                    ...prevEvent,
                                                     title: e.target.value,
                                                 }))
                                             }}
@@ -321,12 +243,12 @@ type Props = {
                                         <Label htmlFor="description">Description</Label>
                                         <Textarea
                                             id="description"
-                                            defaultValue={eventLocal.description}
+                                            defaultValue={event.description}
                                             placeholder="Enter a description"
                                             className="min-h-32"
                                             onChange={(e)=>{
-                                                setEventLocal((prevEventLocal: any) => ({
-                                                    ...prevEventLocal,
+                                                setEvent((prevEvent: any) => ({
+                                                    ...prevEvent,
                                                     description: e.target.value,
                                                 }))
                                             }}
@@ -345,12 +267,12 @@ type Props = {
                                         <Label htmlFor="location">Location</Label>
                                         <Input
                                             id="location"
-                                            defaultValue={eventLocal.place}
+                                            defaultValue={event.place}
                                             placeholder="Enter a location"
                                             className="w-full"
                                             onChange={(e) => {
-                                                setEventLocal((prevEventLocal: any) => ({
-                                                ...prevEventLocal,
+                                                setEvent((prevEvent: any) => ({
+                                                ...prevEvent,
                                                 place: e.target.value,
                                                 }));
                                             }}
@@ -361,11 +283,11 @@ type Props = {
                                             <Label>Start Time</Label>
                                             <DateTimePicker
                                                 granularity="minute"
-                                                value={eventLocal.startTime?.toDate()}
+                                                value={event.startTime?.toDate()}
                                                 onChange={(date) => {
                                                     if (date) {
                                                         const startTime = Timestamp.fromDate(date);
-                                                        setEventLocal((prev: any) => ({
+                                                        setEvent((prev: any) => ({
                                                             ...prev,
                                                             startTime: startTime
                                                         }))
@@ -378,11 +300,11 @@ type Props = {
                                             <Label>End Time</Label>
                                             <DateTimePicker
                                                 granularity="minute"
-                                                value={eventLocal.endTime?.toDate()}
+                                                value={event.endTime?.toDate()}
                                                 onChange={(date) => {
                                                     if (date) {
                                                         const endTime = Timestamp.fromDate(date);
-                                                        setEventLocal((prev: any) => ({
+                                                        setEvent((prev: any) => ({
                                                             ...prev,
                                                             endTime: endTime
                                                         }))
@@ -406,16 +328,16 @@ type Props = {
                                     <div className="grid gap-3">
                                         <Label>Company</Label>
                                         <Select
-                                            defaultValue={eventLocal.company}
+                                            defaultValue={event.company}
                                             onValueChange={(value)=>{
-                                                setEventLocal((prevEventLocal: any) => ({
-                                                    ...prevEventLocal,
+                                                setEvent((prevEvent: any) => ({
+                                                    ...prevEvent,
                                                     company: value,
                                                 }))
                                             }}
                                         >
                                             <SelectTrigger id="company" aria-label="Select company">
-                                                <SelectValue placeholder={eventLocal.company || "Select company"} />
+                                                <SelectValue placeholder={event.company || "Select company"} />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 {data.companyOptions.map((option: string) => (
@@ -436,16 +358,16 @@ type Props = {
                                     <div className="grid gap-3">
                                         <Label>Food</Label>
                                         <Select
-                                            defaultValue={eventLocal.food}
+                                            defaultValue={event.food}
                                             onValueChange={(value)=>{
-                                                setEventLocal((prevEventLocal: any) => ({
-                                                    ...prevEventLocal,
+                                                setEvent((prevEvent: any) => ({
+                                                    ...prevEvent,
                                                     food: value,
                                                 }))
                                             }}
                                         >
                                             <SelectTrigger id="food" aria-label="Select food">
-                                                <SelectValue placeholder={eventLocal.food || "Select food"} />
+                                                <SelectValue placeholder={event.food || "Select food"} />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 {data.foodOptions.map((option: string) => (
@@ -468,7 +390,7 @@ type Props = {
                                         alt="Event image"
                                         className="w-full rounded-md object-cover"
                                         height="auto"
-                                        src={eventLocal.image || '/placeholder.svg'}
+                                        src={event.image || '/placeholder.svg'}
                                         width="300"
                                     />
                                     <Dialog onOpenChange={()=>{
@@ -491,7 +413,7 @@ type Props = {
                                                     id="image-query"
                                                     type="text"
                                                     className="w-full"
-                                                    placeholder={eventLocal.company}
+                                                    placeholder={event.company}
                                                     onChange={(e)=>{
                                                         setImageQuery(e.target.value)
                                                     }}
@@ -545,8 +467,8 @@ type Props = {
                                                 type="submit"
                                                 onClick={()=>{
                                                     {imageSelected ? (
-                                                        setEventLocal((prevEventLocal: any) => ({
-                                                            ...prevEventLocal,
+                                                        setEvent((prevEvent: any) => ({
+                                                            ...prevEvent,
                                                             image: imageSelected,
                                                         }))
                                                     ):(

@@ -6,7 +6,7 @@ import { setDoc, getDoc, doc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import uscnsbe from '../../assets/uscnsbe.png'
-import nsbepic from '../../assets/6C2A1627.jpeg'
+import nsbepic from '../../assets/nsbepic.jpeg'
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";

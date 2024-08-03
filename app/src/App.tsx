@@ -93,7 +93,7 @@ function App() {
                   
                 
                   <Route path="/admin/events" element={isAuth ? <EventsPage events={events || []} /> : <Navigate to='/auth' />} />
-                  <Route path="/admin/events/:eventParam/edit" element={isAuth ? <EventsEditPage events={events || []} /> : <Navigate to='/auth' />} />
+                  <Route path="/admin/events/:eventId/edit" element={isAuth ? <EventsEditPage events={events || []} /> : <Navigate to='/auth' />} />
                   <Route path="/admin/members" element={isAuth ? <MembersPage /> : <Navigate to='/auth' />} />
                   <Route path="/admin/dashboard" element={isAuth ? <Dashboard /> : <Navigate to='/auth' />} />
                   <Route path="/admin/transactions" element={isAuth ? <Transactions /> : <Navigate to='/auth' />} />
