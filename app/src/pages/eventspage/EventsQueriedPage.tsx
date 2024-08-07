@@ -28,6 +28,7 @@ import { useIsAuth } from "../../components/context/UserContext";
 import { SearchBar } from "../../components/ui/searchbar";
 
 
+
 export function EventsQueriedPage() {
     const isAuth = useIsAuth();
     
