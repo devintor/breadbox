@@ -57,12 +57,16 @@ function App() {
   const [events, setEvents] = useState<EventType[]>()
 
   useEffect(()=> {
-    const eventsLive = events?.map(event => calculateEventStatus(event, time))
-    
-    if (eventsLive) {
-      setEvents(eventsLive)
+    if (events) {
+      const updatedEvents = events?.map((event) => calculateEventStatus(event, time));
+      const hasUpdates = updatedEvents?.some((newEvent, index) => newEvent.status !== events[index].status);
+      if (hasUpdates) {
+        setEvents(updatedEvents);
+      }
     }
+
   }, [time])
+
 
   useEffect(() => {
       const unsubscribe = streamEvents({
@@ -74,7 +78,6 @@ function App() {
               if (!b.startTime) return -1;
               return a.startTime.seconds - b.startTime.seconds;
             });
-          console.log(events);
           setEvents(events);
         },
           error: (error: Error) => console.log(error)

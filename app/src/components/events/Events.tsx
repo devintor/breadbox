@@ -15,7 +15,6 @@ const Events: FC = () => {
             next: (querySnapshot: QuerySnapshot) => {
                 const events = querySnapshot
                     .docs.map(docSnapshot => processEvent(docSnapshot))
-                console.log(events)
                 setEvents(events)
             },
             error: (error: Error) => console.log(error)

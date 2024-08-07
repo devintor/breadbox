@@ -49,10 +49,6 @@ export const EventsEditPage: FC<Props> = ({events}: Props) => {
         }
     },[events])
 
-    useEffect(()=> {
-        console.log(event)
-    }, [event])
-
     const navigate = useNavigate();
 
     const [imageQuery, setImageQuery] = useState<string>();
