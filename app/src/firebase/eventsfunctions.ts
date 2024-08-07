@@ -47,6 +47,8 @@ export const processEvent = (document: DocumentSnapshot): EventType => {
             event.duration = durationCalc(document.data()?.startTime, document.data()?.endTime)
         }
         
+        event = calculateEventStatus(event, new Date());
+
 
         return event
     } catch (error: any) {
