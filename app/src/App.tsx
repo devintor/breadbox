@@ -68,13 +68,17 @@ function App() {
 
   useEffect(() => {
       const unsubscribe = streamEvents({
-          next: (querySnapshot: QuerySnapshot) => {
-              const events = querySnapshot
-                  .docs.map(docSnapshot => processEvent(docSnapshot))
-              
-              console.log(events)
-              setEvents(events)
-          },
+        next: (querySnapshot: QuerySnapshot) => {
+          const events = querySnapshot
+            .docs.map(docSnapshot => processEvent(docSnapshot))
+            .sort((a, b) => {
+              if (!a.startTime) return 1;
+              if (!b.startTime) return -1;
+              return a.startTime.seconds - b.startTime.seconds;
+            });
+          console.log(events);
+          setEvents(events);
+        },
           error: (error: Error) => console.log(error)
       })
       return unsubscribe;

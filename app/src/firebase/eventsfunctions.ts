@@ -9,7 +9,7 @@ const durationCalc = (startTime: Timestamp, endTime: Timestamp) => {
 }
 
 export const streamEvents = (observer: any) => {
-    onSnapshot(query(collection(db, "Events"), orderBy("startTime", "desc")), observer)
+    onSnapshot(collection(db, "Events"), observer)
 }
 
 export const processEvent = (document: DocumentSnapshot): EventType => {

@@ -46,14 +46,14 @@ export const EventsPage: FC<Props> = ({events}: Props) => {
     return (
     <div className="flex min-h-screen w-full flex-col">
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-          <Tabs defaultValue="all">
+          <Tabs defaultValue="All">
             <div className="flex items-center">
               <TabsList>
-                <TabsTrigger value="all">All</TabsTrigger>
-                <TabsTrigger value="active">Active</TabsTrigger>
-                <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
-                <TabsTrigger value="history" className="hidden sm:flex">
-                  Archived
+                <TabsTrigger value="All">All</TabsTrigger>
+                <TabsTrigger value="Active">Active</TabsTrigger>
+                <TabsTrigger value="Upcoming">Upcoming</TabsTrigger>
+                <TabsTrigger value="Past" className="hidden sm:flex">
+                  Past
                 </TabsTrigger>
               </TabsList>
               <div className="ml-auto flex items-center gap-2">
@@ -74,7 +74,7 @@ export const EventsPage: FC<Props> = ({events}: Props) => {
                     </DropdownMenuCheckboxItem>
                     <DropdownMenuCheckboxItem>Upcoming</DropdownMenuCheckboxItem>
                     <DropdownMenuCheckboxItem>
-                      Archived
+                      Past
                     </DropdownMenuCheckboxItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -92,9 +92,14 @@ export const EventsPage: FC<Props> = ({events}: Props) => {
                 </Button>
               </div>
             </div>
-            <TabsContent value="all">
-              <EventsTable events={events} />
+            <TabsContent value="All">
+                <EventsTable events={events?.filter((event) => event.status != "Past")} />
             </TabsContent>
+            {statusOptions.map((status) => (
+              <TabsContent key={status} value={status}>
+                <EventsTable events={events?.filter((event) => event.status === status)} />
+              </TabsContent>
+            ))}
           </Tabs>
         </main>
     </div>
