@@ -1,4 +1,4 @@
-import { getDocs, collection, addDoc, serverTimestamp, onSnapshot, DocumentSnapshot, Timestamp, deleteDoc, doc, updateDoc } from "firebase/firestore"
+import { getDocs, collection, addDoc, serverTimestamp, onSnapshot, DocumentSnapshot, Timestamp, deleteDoc, doc, updateDoc, query, orderBy } from "firebase/firestore"
 import { db } from "./firebase-config"
 import { EventType } from "../lib/types"
 import { toast } from "react-toastify";
@@ -9,7 +9,7 @@ const durationCalc = (startTime: Timestamp, endTime: Timestamp) => {
 }
 
 export const streamEvents = (observer: any) => {
-    onSnapshot(collection(db, "Events"), observer)
+    onSnapshot(query(collection(db, "Events"), orderBy("startTime", "desc")), observer)
 }
 
 export const processEvent = (document: DocumentSnapshot): EventType => {
