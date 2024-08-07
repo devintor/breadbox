@@ -29,12 +29,14 @@ import { handleLogout } from "../auth/Profile";
 import uscnsbe from "../../assets/uscnsbe.png";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { FuzzyishSearchBar } from "../events/FuzzyishSearchBar";
+import { useLocation } from "react-router-dom";
 
 export function Header() {
   const isAuth = useIsAuth();
   const profile = useProfile();
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <header className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
@@ -142,8 +144,8 @@ export function Header() {
             </nav>
           </SheetContent>
         </Sheet>
-        <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-          <FuzzyishSearchBar/>
+        <div className="flex w-full items-center justify-end gap-4 md:ml-auto md:gap-2 lg:gap-4">
+        {!/\/events\/search\//.test(location.pathname) && <FuzzyishSearchBar />}
           {isAuth==null ? (
             <Button variant="secondary" size="icon" className="rounded-full">
               <CircleUser color="white" className="h-6 w-6" />  

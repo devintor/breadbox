@@ -92,7 +92,7 @@ function App() {
         <Router>
           <div className="App">
             <Header />
-            <p>{time.toLocaleTimeString()}</p>
+            {/* <p>{time.toLocaleTimeString()}</p> */}
                 <Routes>
                   <Route index element={<HomePage />} />
                   
@@ -118,12 +118,6 @@ function App() {
         </Router>
       </TooltipProvider>
     </ContextProvider>
-    // <Router>
-    //   <Routes>
-    //     <Route path="/admin/events" element={<EventsPage events={events || []} />} />
-    //     <Route path="/admin/events/create" element={<CreateEvent />} />
-    //   </Routes>
-    // </Router>
   );
 }
 
