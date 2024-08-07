@@ -1,4 +1,4 @@
-import { getDocs, collection, addDoc, serverTimestamp, onSnapshot, DocumentSnapshot, Timestamp, deleteDoc, doc, updateDoc, query, orderBy } from "firebase/firestore"
+import { collection, addDoc, serverTimestamp, onSnapshot, DocumentSnapshot, Timestamp, deleteDoc, doc, updateDoc } from "firebase/firestore"
 import { db } from "./firebase-config"
 import { EventType } from "../lib/types"
 import { toast } from "react-toastify";

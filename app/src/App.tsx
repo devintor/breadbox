@@ -30,8 +30,6 @@ import { Settings } from "./pages/nav-samples/Settings";
 import { Transactions } from "./pages/nav-samples/Transactions";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { EventsQueriedPage } from "./pages/eventspage/EventsQueriedPage";
-import Events from "./components/events/Events";
-import CreateEvent from "./components/events/CreateEvent";
 import { EventType } from "./lib/types";
 import { QuerySnapshot } from "firebase/firestore";
 import { streamEvents, processEvent, calculateEventStatus } from "./firebase/eventsfunctions";

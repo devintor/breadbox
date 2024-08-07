@@ -3,7 +3,6 @@ import {
     File,
     ListFilter,
     PlusCircle,
-    MoreHorizontal,
   } from "lucide-react"
 
 
@@ -11,22 +10,17 @@ import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
     DropdownMenuContent,
-    DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
   } from "../../components/ui/dropdown-menu"
 
   import { Button } from "../../components/ui/button"
-  import { Badge } from "../../components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
 import { FC } from "react";
 import { useNavigate } from "react-router-dom";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../../components/ui/alert-dialog";
 import { EventType } from "../../lib/types";
-import { createEvent, handleDeleteEvent } from "../../firebase/eventsfunctions";
+import { createEvent } from "../../firebase/eventsfunctions";
 import { EventsTable } from "./EventsTable";
 
 type Props = {
