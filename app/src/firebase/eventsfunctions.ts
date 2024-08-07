@@ -90,7 +90,6 @@ export const createEvent = () => {
     try {
         return addDoc(collection(db, "Events"), {
             title: "Untitled Event",
-            status: "Draft",
             createdAt: serverTimestamp()
         })
     } catch (error: any) {
