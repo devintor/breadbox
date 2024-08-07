@@ -30,8 +30,6 @@ import { Settings } from "./pages/nav-samples/Settings";
 import { Transactions } from "./pages/nav-samples/Transactions";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { EventsQueriedPage } from "./pages/eventspage/EventsQueriedPage";
-import Events from "./components/events/Events";
-import CreateEvent from "./components/events/CreateEvent";
 import { EventType } from "./lib/types";
 import { QuerySnapshot } from "firebase/firestore";
 import { streamEvents, processEvent, calculateEventStatus } from "./firebase/eventsfunctions";
@@ -59,22 +57,29 @@ function App() {
   const [events, setEvents] = useState<EventType[]>()
 
   useEffect(()=> {
-    const eventsLive = events?.map(event => calculateEventStatus(event, time))
-    
-    if (eventsLive) {
-      setEvents(eventsLive)
+    if (events) {
+      const updatedEvents = events?.map((event) => calculateEventStatus(event, time));
+      const hasUpdates = updatedEvents?.some((newEvent, index) => newEvent.status !== events[index].status);
+      if (hasUpdates) {
+        setEvents(updatedEvents);
+      }
     }
+
   }, [time])
+
 
   useEffect(() => {
       const unsubscribe = streamEvents({
-          next: (querySnapshot: QuerySnapshot) => {
-              const events = querySnapshot
-                  .docs.map(docSnapshot => processEvent(docSnapshot))
-              
-              console.log(events)
-              setEvents(events)
-          },
+        next: (querySnapshot: QuerySnapshot) => {
+          const events = querySnapshot
+            .docs.map(docSnapshot => processEvent(docSnapshot))
+            .sort((a, b) => {
+              if (!a.startTime) return 1;
+              if (!b.startTime) return -1;
+              return a.startTime.seconds - b.startTime.seconds;
+            });
+          setEvents(events);
+        },
           error: (error: Error) => console.log(error)
       })
       return unsubscribe;

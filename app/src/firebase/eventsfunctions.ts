@@ -1,4 +1,4 @@
-import { getDocs, collection, addDoc, serverTimestamp, onSnapshot, DocumentSnapshot, Timestamp, deleteDoc, doc, updateDoc } from "firebase/firestore"
+import { collection, addDoc, serverTimestamp, onSnapshot, DocumentSnapshot, Timestamp, deleteDoc, doc, updateDoc } from "firebase/firestore"
 import { db } from "./firebase-config"
 import { EventType } from "../lib/types"
 import { toast } from "react-toastify";
@@ -47,6 +47,8 @@ export const processEvent = (document: DocumentSnapshot): EventType => {
             event.duration = durationCalc(document.data()?.startTime, document.data()?.endTime)
         }
         
+        event = calculateEventStatus(event, new Date());
+
 
         return event
     } catch (error: any) {
@@ -90,7 +92,6 @@ export const createEvent = () => {
     try {
         return addDoc(collection(db, "Events"), {
             title: "Untitled Event",
-            status: "Draft",
             createdAt: serverTimestamp()
         })
     } catch (error: any) {
@@ -102,20 +103,27 @@ export const createEvent = () => {
     
 };
 
+const omit = (obj: any, keys: string[]) => {
+    const result = { ...obj };
+    for (const key of keys) {
+      delete result[key];
+    }
+    return result;
+};
+
 export const handleSaveEvent = (event: EventType) => {
     try {
-        const promise = updateDoc(doc(db, "Events", event.id), {
-            ...event,
-        });
+        const eventToSave = omit(event, ['duration', 'setting', 'time', 'status']);
+        const promise = updateDoc(doc(db, "Events", event.id), eventToSave);
         toast.success("Event Saved Successfully!!", {
-            position: "top-center",
+          position: "top-center",
         });
         return promise;
-    } catch (error: any) {
+      } catch (error: any) {
         toast.error(error.message, {
           position: "bottom-center",
         });
-        return <Promise<any>>{}
+        return Promise.resolve(); // Return a resolved promise instead of an empty object
     }
 };
 
