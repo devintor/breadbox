@@ -56,7 +56,7 @@ function determineMatch(acc: string[], token: string, option: string) {
     
     const contains = option.toLowerCase().includes(token)
     
-    if (distance < 2 || contains) { 
+    if (distance < 3 || contains) { 
         acc.push(option);
     }
     return acc;

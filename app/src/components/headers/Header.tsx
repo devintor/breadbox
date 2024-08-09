@@ -157,8 +157,8 @@ export function Header() {
                 <DropdownMenuTrigger asChild>
                   <Button variant="secondary" size="icon" className="rounded-full">
                     <Avatar className="h-full w-full sm:flex">
-                      <AvatarImage src={profile.photo} alt="Avatar" />
-                      <AvatarFallback>{profile.firstName[0] + profile.lastName[0]}</AvatarFallback>
+                      <AvatarImage src={profile?.photo} alt="Avatar" />
+                      <AvatarFallback>{profile?.firstName[0] + profile?.lastName[0]}</AvatarFallback>
                     </Avatar>
                     <span className="sr-only">Toggle user menu</span>
                   </Button>
